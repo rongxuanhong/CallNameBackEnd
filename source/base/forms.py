@@ -15,5 +15,5 @@ class LoginForm(FlaskForm):
 
 class CreateAccountForm(FlaskForm):
     username = TextField('Username', id='username_create')
-    email = TextField('Email')
+    # email = TextField('Email')
     password = PasswordField('Password', id='pwd_create')

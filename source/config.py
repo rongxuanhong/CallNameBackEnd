@@ -10,3 +10,6 @@ class ProductionConfig(Config):
 
 class DebugConfig(Config):
     DEBUG = True
+
+
+permissions = [""]

@@ -1,11 +1,10 @@
 from config import DebugConfig
 from flask import Flask
-from flask_migrate import Migrate
+from flask_migrate import Migrate, MigrateCommand
 from importlib import import_module
 from logging import basicConfig, DEBUG, getLogger, StreamHandler
 from os.path import abspath, dirname, join, pardir
 import sys
-import sqlalchemy
 
 # prevent python from writing *.pyc files / __pycache__ folders
 sys.dont_write_bytecode = True
@@ -31,13 +30,14 @@ def register_blueprints(app):
     :param app:
     :return:
     """
-    for module_name in ('student_management','forms', 'ui', 'home', 'tables', 'data', 'additional', 'base'):
+    for module_name in (
+    'student_management', 'teacher_management', 'forms', 'ui', 'home', 'tables', 'data', 'additional', 'base'):
         module = import_module('{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
 
 
 def configure_login_manager(app, User):
-    @login_manager.user_loader #回调:用于从会话中存储的用户 ID 重新加载用户对象
+    @login_manager.user_loader  # 回调:用于从会话中存储的用户 ID 重新加载用户对象
     def user_loader(id):
         return db.session.query(User).filter_by(id=id).first()
 
@@ -50,8 +50,7 @@ def configure_login_manager(app, User):
 
 def configure_database(app):
     create_database()
-    Migrate(app, db) # 数据库升级需要 1.flask db init 生成migrations directory 2.flask db migrate 3. flask db upgrade(需要加入版本控制)
-                    #升级数据库，执行命令2，3
+    Migrate(app, db)
 
     @app.teardown_request
     def shutdown_session(exception=None):
@@ -75,7 +74,7 @@ def create_app(selenium=False):
     if selenium:
         app.config['LOGIN_DISABLED'] = True
     register_extensions(app)
-    register_blueprints(app) #注册蓝图 一般一个文件夹对应一个蓝图 url路径按文件来组织
+    register_blueprints(app)  # 注册蓝图 一般一个文件夹对应一个蓝图 url路径按文件来组织
     from base.models import User
     configure_login_manager(app, User)
     configure_database(app)
@@ -85,6 +84,5 @@ def create_app(selenium=False):
 
 app = create_app()
 
-
 if __name__ == '__main__':
-    app.run(host='localhost', port=8080, threaded=True)
+    app.run(host='localhost', port=8080, threaded=True, debug=True)

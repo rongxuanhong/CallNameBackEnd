@@ -1,6 +1,6 @@
 {% extends "base_site.html" %}
 
-{% block title %} Form Advanced {% endblock title %}
+{% block title %} 班级列表 {% endblock title %}
 
 {% block stylesheets %}
 {{ super() }}
@@ -11,75 +11,109 @@
 {% endblock stylesheets %}
 
 {% block content %}
-<div  class="right_col" role="main">
+
+<div class="right_col" role="main">
     <div>
-        <span class="glyphicon glyphicon-list" aria-hidden="true"></span>商品
-        <div class="btn-group btn-group-justified" role="group">
-            <div class="btn-group" role="group">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                <button type="button" class="btn btn-default">新增</button>
-            </div>
-            <div class="btn-group" role="group">
-                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-                <button type="button" class="btn btn-default">刷新</button>
+        <ol class="breadcrumb">
+            <li><a href="/index">首页</a></li>
+            <li class="active">学生列表</li>
+        </ol>
+    </div>
+    <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">导入Excel</button>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <!--<h4 class="modal-title" id="myModalLabel">Modal title</h4>-->
+                </div>
+                <div class="modal-body">
+                    是否导入学生数据Excel?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button id="input_excel" type="button" class="btn btn-primary">确定</button>
+                </div>
             </div>
         </div>
     </div>
-    <div>
-        <input type="text" class="form-control" aria-label="search description">
-        <i class="fas fa-search"></i>
-        <button type="button" class="btn btn-default">按类别查询</button>
+    <span>所在学院：</span>
+    <div class="btn-group">
+        <button id="colleague_btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+            {{colleagues[0]}} <span class="caret"></span>
+        </button>
+        <ul id="colleague" class="dropdown-menu">
+            {% for colleague in colleagues %}
+            <li><a class={{colleague}} href="#">{{colleague}}</a></li>
+            {% endfor %}
+        </ul>
     </div>
-    <div class="student">
-        <table class="student_table" style="width:100%">
+    <span>所在专业：</span>
+    <div class="btn-group">
+        <button id="profession_btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+            {{professions[0]}} <span class="caret"></span>
+        </button>
+        <ul id="profession" class="dropdown-menu">
+            {% for profession in professions %}
+            <li><a class={{profession}} href="#">{{profession}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <span>所在班级：</span>
+    <div class="btn-group">
+        <button id="classes_btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+            {{classes[0]}} <span class="caret"></span>
+        </button>
+        <ul id="classes" class="dropdown-menu">
+            {% for item in classes %}
+            <li><a class={{item}} href="#">{{item}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="x_content">
+        <table id="datatable" class="table table-striped table-bordered table-hover">
+            <thead>
             <tr>
-                <th>商品编号</th>
-                <th>商品名称</th>
-                <th>类别</th>
-                <th>规格</th>
-                <th>最低库存</th>
-                <th>最高库存</th>
-                <th>保质期</th>
+                <th>姓名</th>
+                <th>学号</th>
+                <th>班级</th>
+                <th>专业</th>
+                <th>学院</th>
+                <th>更新时间</th>
+                <th>操作</th>
             </tr>
+            </thead>
+            <tbody>
+            {% for student in students %}
             <tr>
-                <td>P00001</td>
-                <td>手机</td>
-                <td>电子</td>
-                <td></td>
-                <td>10</td>
-                <td>100</td>
-                <td>12</td>
+                <td>{{student[0]}}</td>
+                <td>{{student[1]}}</td>
+                <td>{{student[2]}}</td>
+                <td>{{student[3]}}</td>
+                <td>{{student[4]}}</td>
+                <td>{{student[5]}}</td>
+                <td>
+                    <span id="{{student[6]}}" class="student_delete">删除</span>
+                </td>
             </tr>
+            {% endfor %}
+            </tbody>
         </table>
     </div>
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            <li>
-                <a href="#" aria-label="First">
-                    <span aria-hidden="true">首页</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" aria-label="Previous">
-                    <span aria-hidden="true">上一页</span>
-                </a>
-            </li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li>
-                <a href="#" aria-label="Next">
-                    <span aria-hidden="true">下一页</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" aria-label="ast">
-                    <span aria-hidden="true">末页</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div>
-{% endblock content %}
+    {% endblock content %}
+    {% block javascripts %}
+    {{ super() }}
+    <!-- Datatables -->
+    <script src="{{ url_for('static', filename='vendors/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js') }}"></script>
+    {% endblock javascripts %}

@@ -218,7 +218,6 @@ $(document).ready(function() {
     }
 });
 // /iCheck
-
 // Table
 $('table input').on('ifChecked', function () {
     checkState = '';
@@ -1934,7 +1933,8 @@ if (typeof NProgress != 'undefined') {
 				$('.chart').easyPieChart({
 				  easing: 'easeOutElastic',
 				  delay: 3000,
-				  barColor: '#26B99A',
+//				  barColor: '#26B99A',
+				  barColor: '#000000',
 				  trackColor: '#fff',
 				  scaleColor: false,
 				  lineWidth: 20,
@@ -5024,9 +5024,57 @@ if (typeof NProgress != 'undefined') {
 	   
 			}
 	   
-		}  
-	   
-	   
+		}
+
+	$(document).ready(function() {
+	  var input_excel=$('#input_excel');
+	  input_excel.click(function () {
+         $('#myModal').modal('toggle');
+         // 开始导入excel数据
+        });
+	});
+
+    //控制学生列表学院显示
+    $(document).ready(function() {
+        var dropdown=$('#colleague');
+        dropdown.children().each(function(){
+         $(this).click(function(event){
+             var btn1=$('#colleague_btn')
+             btn1.text(event.target.innerText);
+             btn1.append(' <span class="caret"></span>');
+         });
+        });
+    });
+      //控制学生列表专业显示
+    $(document).ready(function() {
+        var dropdown=$('#profession');
+        dropdown.children().each(function(){
+         $(this).click(function(event){
+             var btn2=$('#profession_btn')
+             btn2.text(event.target.innerText);
+             btn2.append(' <span class="caret"></span>');
+         });
+        });
+    });
+      //控制学生列表班级显示
+    $(document).ready(function() {
+        var dropdown=$('#classes');
+        dropdown.children().each(function(){
+         $(this).click(function(event){
+             var btn3=$('#classes_btn')
+             btn3.text(event.target.innerText);
+             btn3.append(' <span class="caret"></span>');
+         });
+        });
+    });
+    //控制学生记录删除
+    $(document).ready(function(){
+        var student=$('.student_delete');
+        $(this).click(function(event){
+               console.log(event.target.id);
+        });
+    });
+
 	$(document).ready(function() {
 				
 		init_sparklines();
@@ -5063,7 +5111,7 @@ if (typeof NProgress != 'undefined') {
 		init_CustomNotification();
 		init_autosize();
 		init_autocomplete();
-				
-	});	
+	});
+
 	
 

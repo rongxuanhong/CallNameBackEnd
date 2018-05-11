@@ -1,16 +1,40 @@
-from flask_login import UserMixin # 管理用户会话的模块
-from sqlalchemy import Column, Integer, String
-from database import Base
+from flask_login import UserMixin  # 管理用户会话的模块
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Table, Float, SmallInteger, Boolean
+from database import Base, db
+from sqlalchemy.orm import relationship, backref
+from datetime import datetime
+
+# 关联表(多对多)
+# 用户课程关系表
+userinfo_course = Table('userinfo_course', Base.metadata,
+                        Column('userinfo_id', Integer, ForeignKey('userinfo.id'), primary_key=True),
+                        Column('course_id', Integer, ForeignKey('course.id'), primary_key=True))
+# 角色权限表
+role_permission = Table('role_permission', Base.metadata,
+                        Column('role_id', Integer, ForeignKey('role.id')),
+                        Column('permission_id', Integer, ForeignKey('permission.id')),
+                        Column('created_at', DateTime, default=datetime.now))
+
+# 角色菜单表
+role_menu = Table('role_menu', Base.metadata,
+                  Column('role_id', Integer, ForeignKey('role.id')),
+                  Column('menu_id', Integer, ForeignKey('menu.id')),
+                  Column('created_at', DateTime, default=datetime.now),
+                  Column('is_delete', Boolean, default=False))
+
 
 #  orm对象经历的状态transient, pending, and persistent.
-class User(Base, UserMixin): # 继承UserMixin简便地实现用户类,配合flask-login使用
-
-    __tablename__ = 'User'
-
-    id = Column(Integer, primary_key=True)
-    username = Column(String(120))
-    email = Column(String(120))
+class User(Base, UserMixin):  # 继承UserMixin简便地实现用户类,配合flask-login使用
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True, autoincrement=True)  # 自增作为外键 关联其他表
+    uid = Column(String(40))
+    username = Column(String(60))
     password = Column(String(30))
+    is_admin = Column(Boolean, default=False)
+    # create_time = Column(DateTime, unique=True, default=datetime.datetime.utcnow())
+    last_modify_time = Column(DateTime, unique=True, default=datetime.now)
+
+    role_id = Column(Integer, ForeignKey('role.id'))  # 一个用户一种角色
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -21,6 +45,221 @@ class User(Base, UserMixin): # 继承UserMixin简便地实现用户类,配合fla
                 # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
                 value = value[0]
             setattr(self, property, value)
+            ########## 创建用户时，立即分配角色 ###########
+            # if self.is_admin:
+            #     admin_role = Role.query.filter_by(role_name='admin').first()
+            #     if admin_role is None:
+            #         admin_role = Role(1, "admin", "管理员", datetime.utcnow)
+            #     db.session.add(admin_role)
+            #     self.role_id = admin_role.id  # 用户注册时分配管理员角色
+            # else:
+            #     teacher_role = Role.query.filter_by(role_name='teacher').first()
+            #     if teacher_role is None:
+            #         teacher_role = Role(2, "teacher", "教师", datetime.utcnow)
+            #     db.session.commit()
+            #     self.role_id = teacher_role.id # 用户注册时分配教师角色
 
     def __repr__(self):
         return str(self.username)
+
+
+class UserInfo(Base):
+    __tablename__ = 'userinfo'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_name = Column(String(60), unique=True)
+    sex = Column(SmallInteger, default=0)  # 0 未知， 1 男 2 女
+    avatar = Column(String(150))
+    job_number = Column(String(32), unique=True)
+    total_grade = Column(Float)
+    type = Column(Integer)  # 0 表示管理员 1 表示教师 2 表示学生
+    last_modify_time = Column(DateTime, default=datetime.now)
+
+    # 外键
+    class_id = Column(Integer, ForeignKey('classes.id'))  # 定义外键可通过UserInfo实例访问class信息
+    userid = Column(Integer, ForeignKey('user.id'))
+
+    # 关系(1vs1) uselist=False
+    user = relationship('User', backref=backref("userinfo", uselist=False))
+    courses = relationship('Course', secondary=userinfo_course, backref="userinfo")
+
+    def __init__(self, user_name, job_number, type):
+        self.user_name = user_name
+        self.job_number = job_number
+        self.type = type
+
+    # 获取用户所有权限
+    @property
+    def permissions(self):
+        return UserInfo.query.join(role_permission).join(Role).join(UserInfo).filter(UserInfo.id == self.id)
+
+    # 获取用户所有可使用菜单
+    @property
+    def menus(self):
+        return UserInfo.query.join(role_menu).join(Role).join(UserInfo).filter(UserInfo.id == self.id).order_by(
+            Base.order)
+
+    # def __init__(self, **kwargs):
+    #     for property, value in kwargs.items():
+    #         setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.user_name)
+
+
+class Classes(Base):
+    __tablename__ = 'classes'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    class_name = Column(String(32))
+
+    last_modify_time = Column(DateTime, default=datetime.now)
+
+    # 外键
+    profession_id = Column(Integer, ForeignKey(
+        'profession.id'))  # a classes instance refers to one profession,but a profession refers to a list of classes
+
+    # 关系
+    students = relationship("UserInfo", backref="classes", lazy="dynamic")  # 一个班级可以有多个学生
+
+    def __init__(self, class_name):
+        self.class_name = class_name
+
+    def __repr__(self):
+        return str(self.class_name)
+
+
+class Profession(Base):
+    __tablename__ = 'profession'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    prof_name = Column(String(32), unique=True)
+    last_modify_time = Column(DateTime, default=datetime.now)
+
+    # 外键
+    colleague_id = Column(Integer, ForeignKey('colleague.id'))
+
+    # 关系
+    classes = relationship("Classes", backref="profession", lazy="dynamic")  # 一个专业多个班级
+    courses = relationship("Course", backref="profession", lazy="dynamic")  # 一个专业多个课程
+
+    def __init__(self, prof_name):
+        self.prof_name = prof_name
+
+    def __repr__(self):
+        return str(self.prof_name)
+
+
+class Colleague(Base):
+    __tablename__ = 'colleague'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    colea_name = Column(String(32), unique=True)
+    last_modify_time = Column(DateTime, default=datetime.now)
+
+    # 关系
+    professions = relationship("Profession", backref="colleague", lazy="dynamic")  # 一个学院多个专业
+
+    def __init__(self, colea_name):
+        self.colea_name = colea_name
+
+    def __repr__(self):
+        return str(self.colea_name)
+
+
+class Course(Base):
+    __tablename__ = 'course'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    course_name = Column(String(32))
+    course_week_times = Column(Integer)  # 课程所需周次
+    semester = Column(String(32))  # 课程学期
+    course_time = Column(String(32))  # 上课时间
+    position = Column(String(32))  # 课程地点
+    course_numbers = Column(Integer)  # 课程人数
+    last_modify_time = Column(DateTime, default=datetime.now)
+
+    # 外键
+    profession_id = Column(Integer, ForeignKey('profession.id'))
+
+    # 关系
+    callnames = relationship("CallName", backref="course", lazy="dynamic")  # 一门课程多个点名信息
+
+    def __repr__(self):
+        return str(self.course_name)
+
+
+class Role(Base):
+    __tablename__ = 'role'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    role_name = Column(String(32), unique=True)
+    role_desc = Column(String(200))
+    last_modify_time = Column(DateTime, unique=True, default=datetime.utcnow)
+
+    permissions = relationship("Permission", secondary=role_permission, backref="role")  # 角色权限多对多
+    menus = relationship("Menu", secondary=role_menu, backref="role")  # 角色菜单多对多
+    users = relationship("User", backref="role", lazy="dynamic")  # 每一角色有多个用户信息(此处不考虑用户拥有多角色)
+
+    def __init__(self, role_id, role_name, role_desc, last_modify_time):
+        self.id = role_id
+        self.role_name = role_name
+        self.role_desc = role_desc
+        self.last_modify_time = last_modify_time
+
+        ############# 创建角色立即分配权限 ##########
+        # roles = Role.query.all()
+        # if roles is not None:
+        #     permissions = Permission.query.join(role_permission).join(Role).all()
+        #     self.permissions.append(permissions)
+
+    def __repr__(self):
+        return str(self.role_name)
+
+
+class Permission(Base):  ## 手动创建
+    __tablename__ = 'permission'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(32), unique=True)  # func.__doc__作为名字
+    action = Column(String(32), unique=True)  # 由func.__module__ 和 func.__name__组成
+    perm_desc = Column(String(100))  # 具体权限描述
+    last_modify_time = Column(DateTime, default=datetime.now)
+
+    def __repr__(self):
+        return str(self.name)
+
+
+class Menu(Base):  ## 手动创建
+    __tablename__ = 'menu'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(50))
+    icon = Column(String(50))
+    url = Column(String(250))
+    order = Column(SmallInteger, default=0)
+
+    def __repr__(self):
+        return str(self.name)
+
+
+class CallName(Base):
+    __tablename__ = 'callname'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    checkin_time = Column(DateTime, unique=True, default=False)  # 签到时间
+    checkin_type = Column(Integer, default=0)  # 考勤类型 0:缺席 1:请假 2:出席
+    checkin_notes = Column(String(60))  # 备注
+    checkin_grade = Column(Float)  # 考勤得分
+    last_modify_time = Column(DateTime, unique=True, default=datetime.now)
+
+    # 外键
+    course_id = Column(Integer, ForeignKey('course.id'))
+
+    def __repr__(self):
+        return str(self.checkin_grade)
+
+
+class Admin(Base):  # 管理员管理表
+    __tablename__ = 'admin'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    absent_std = Column(Integer, default=0)
+    absent_level_warn = Column(Integer, default=0)  # 缺课达到课程时长的一半
+    late_absent = Column(DateTime)  # 迟到时长达到旷课的标准
+    notice = Column(String(200))  # 公告
+
+    last_modify_time = Column(DateTime, unique=True, default=datetime.now)
+
+    def __repr__(self):
+        return str(self.absent_std)

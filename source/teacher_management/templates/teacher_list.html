@@ -1,0 +1,20 @@
+{% extends "base_site.html" %}
+
+{% block title %} 教师列表 {% endblock title %}
+
+{% block stylesheets %}
+{{ super() }}
+<!-- FullCalendar -->
+<link href="{{ url_for('static', filename='vendors/fullcalendar/dist/fullcalendar.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='vendors/fullcalendar/dist/fullcalendar.print.css') }}" rel="stylesheet"
+      media="print">
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <ol class="breadcrumb">
+        <li><a href="/index">首页</a></li>
+        <li class="active">教师列表</li>
+    </ol>
+</div>
+{% endblock content %}
