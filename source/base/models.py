@@ -3,6 +3,8 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Table, Flo
 from database import Base, db
 from sqlalchemy.orm import relationship, backref
 from datetime import datetime
+from flask import url_for
+import hashlib
 
 # 关联表(多对多)
 # 用户课程关系表
@@ -11,14 +13,14 @@ userinfo_course = Table('userinfo_course', Base.metadata,
                         Column('course_id', Integer, ForeignKey('course.id'), primary_key=True))
 # 角色权限表
 role_permission = Table('role_permission', Base.metadata,
-                        Column('role_id', Integer, ForeignKey('role.id')),
-                        Column('permission_id', Integer, ForeignKey('permission.id')),
+                        Column('role_id', Integer, ForeignKey('role.id'), primary_key=True),
+                        Column('permission_id', Integer, ForeignKey('permission.id'), primary_key=True),
                         Column('created_at', DateTime, default=datetime.now))
 
 # 角色菜单表
 role_menu = Table('role_menu', Base.metadata,
-                  Column('role_id', Integer, ForeignKey('role.id')),
-                  Column('menu_id', Integer, ForeignKey('menu.id')),
+                  Column('role_id', Integer, ForeignKey('role.id'), primary_key=True),
+                  Column('menu_id', Integer, ForeignKey('menu.id'), primary_key=True),
                   Column('created_at', DateTime, default=datetime.now),
                   Column('is_delete', Boolean, default=False))
 
@@ -27,37 +29,41 @@ role_menu = Table('role_menu', Base.metadata,
 class User(Base, UserMixin):  # 继承UserMixin简便地实现用户类,配合flask-login使用
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True, autoincrement=True)  # 自增作为外键 关联其他表
-    uid = Column(String(40))
+    # uid = Column(String(40))
     username = Column(String(60))
-    password = Column(String(30))
-    is_admin = Column(Boolean, default=False)
+    password = Column(String(32))
+    # is_admin = Column(Boolean, default=False)
     # create_time = Column(DateTime, unique=True, default=datetime.datetime.utcnow())
     last_modify_time = Column(DateTime, unique=True, default=datetime.now)
 
     role_id = Column(Integer, ForeignKey('role.id'))  # 一个用户一种角色
 
-    def __init__(self, **kwargs):
-        for property, value in kwargs.items():
-            # depending on whether value is an iterable or not, we must
-            # unpack it's value (when **kwargs is request.form, some values
-            # will be a 1-element list)
-            if hasattr(value, '__iter__') and not isinstance(value, str):
-                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
-                value = value[0]
-            setattr(self, property, value)
-            ########## 创建用户时，立即分配角色 ###########
-            # if self.is_admin:
-            #     admin_role = Role.query.filter_by(role_name='admin').first()
-            #     if admin_role is None:
-            #         admin_role = Role(1, "admin", "管理员", datetime.utcnow)
-            #     db.session.add(admin_role)
-            #     self.role_id = admin_role.id  # 用户注册时分配管理员角色
-            # else:
-            #     teacher_role = Role.query.filter_by(role_name='teacher').first()
-            #     if teacher_role is None:
-            #         teacher_role = Role(2, "teacher", "教师", datetime.utcnow)
-            #     db.session.commit()
-            #     self.role_id = teacher_role.id # 用户注册时分配教师角色
+    def __init__(self, username):
+        self.username = username
+
+
+        # def __init__(self, **kwargs):
+        #     for property, value in kwargs.items():
+        # depending on whether value is an iterable or not, we must
+        # unpack it's value (when **kwargs is request.form, some values
+        # will be a 1-element list)
+        # if hasattr(value, '__iter__') and not isinstance(value, str):
+        #     # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+        #     value = value[0]
+        # setattr(self, property, value)
+        ########## 创建用户时，立即分配角色 ###########
+        # if self.is_admin:
+        #     admin_role = Role.query.filter_by(role_name='admin').first()
+        #     if admin_role is None:
+        #         admin_role = Role(1, "admin", "管理员", datetime.utcnow)
+        #     db.session.add(admin_role)
+        #     self.role_id = admin_role.id  # 用户注册时分配管理员角色
+        # else:
+        #     teacher_role = Role.query.filter_by(role_name='teacher').first()
+        #     if teacher_role is None:
+        #         teacher_role = Role(2, "teacher", "教师", datetime.utcnow)
+        #     db.session.commit()
+        #     self.role_id = teacher_role.id # 用户注册时分配教师角色
 
     def __repr__(self):
         return str(self.username)
@@ -67,6 +73,7 @@ class UserInfo(Base):
     __tablename__ = 'userinfo'
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_name = Column(String(60), unique=True)
+    uid = Column(String(40))
     sex = Column(SmallInteger, default=0)  # 0 未知， 1 男 2 女
     avatar = Column(String(150))
     job_number = Column(String(32), unique=True)
@@ -167,6 +174,7 @@ class Course(Base):
     __tablename__ = 'course'
     id = Column(Integer, primary_key=True, autoincrement=True)
     course_name = Column(String(32))
+    course_number = Column(String(60))
     course_week_times = Column(Integer)  # 课程所需周次
     semester = Column(String(32))  # 课程学期
     course_time = Column(String(32))  # 上课时间
@@ -189,17 +197,15 @@ class Role(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     role_name = Column(String(32), unique=True)
     role_desc = Column(String(200))
-    last_modify_time = Column(DateTime, unique=True, default=datetime.utcnow)
+    last_modify_time = Column(DateTime, default=datetime.utcnow)
 
     permissions = relationship("Permission", secondary=role_permission, backref="role")  # 角色权限多对多
     menus = relationship("Menu", secondary=role_menu, backref="role")  # 角色菜单多对多
     users = relationship("User", backref="role", lazy="dynamic")  # 每一角色有多个用户信息(此处不考虑用户拥有多角色)
 
-    def __init__(self, role_id, role_name, role_desc, last_modify_time):
-        self.id = role_id
+    def __init__(self, role_name, role_desc):
         self.role_name = role_name
         self.role_desc = role_desc
-        self.last_modify_time = last_modify_time
 
         ############# 创建角色立即分配权限 ##########
         # roles = Role.query.all()
@@ -210,17 +216,36 @@ class Role(Base):
     def __repr__(self):
         return str(self.role_name)
 
+    def to_json(self):
+        json_role = {
+            'id': self.id,
+            'role_name': self.role_name,
+            'role_desc': self.role_desc,
+            'last_modify_time': self.last_modify_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'permission': url_for('api.get_permission', action='permission_list'),
+        }
+        return json_role
+
 
 class Permission(Base):  ## 手动创建
     __tablename__ = 'permission'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(32), unique=True)  # func.__doc__作为名字
-    action = Column(String(32), unique=True)  # 由func.__module__ 和 func.__name__组成
+    action = Column(String(60), unique=True)  # 由func.__module__ 和 func.__name__组成
     perm_desc = Column(String(100))  # 具体权限描述
     last_modify_time = Column(DateTime, default=datetime.now)
 
     def __repr__(self):
         return str(self.name)
+
+    def to_json(self):
+        json_permission = {
+            'id': self.id,
+            'name': self.name,
+            'perm_desc': self.perm_desc,
+            'last_modify_time': self.last_modify_time
+        }
+        return json_permission
 
 
 class Menu(Base):  ## 手动创建
@@ -246,6 +271,13 @@ class CallName(Base):
 
     # 外键
     course_id = Column(Integer, ForeignKey('course.id'))
+
+    def __init__(self, checkin_time, checkin_type, checkin_notes, checkin_grade, course_id):
+        self.checkin_time = checkin_time
+        self.checkin_type = checkin_type
+        self.checkin_notes = checkin_notes
+        self.checkin_grade = checkin_grade
+        self.course_id = course_id
 
     def __repr__(self):
         return str(self.checkin_grade)

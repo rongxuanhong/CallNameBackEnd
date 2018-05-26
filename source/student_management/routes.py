@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask_login import login_required
 from database import db
-from sqlalchemy import and_
+from flask_restful import Resource, Api
 
 from base.models import Colleague, Profession, Classes, UserInfo
 
@@ -25,13 +25,23 @@ blueprint = Blueprint(
 def get_student_list(id):
     colleagues = Colleague.query.all()
     colleague = colleagues[id - 1]
-    professions = Profession.query.filter_by(colleague_id=colleague.id)
-    profession = professions[0]
-    classes = Classes.query.filter_by(profession_id=profession.id)
+    professions = Profession.query.filter_by(colleague_id=colleague.id).all()
+    profession = Profession(prof_name='全部')
+    profession.id = 0
+    professions.insert(0, profession)
+    # profession = professions[id - 1]
+    classes = Classes.query.join(
+        Colleague.professions).filter_by(colleague_id=colleague.id).join(Profession.classes).all()
+    cclass = Classes(class_name='全部')
+    cclass.id = 0
+    classes.insert(0, cclass)
+
     students = db.session.query(UserInfo.user_name, UserInfo.job_number,
                                 Classes.class_name, Profession.prof_name, Colleague.colea_name,
-                                UserInfo.last_modify_time,UserInfo.id).join(
-        Colleague.professions).join(Profession.classes).join(Classes.students).filter(
-        UserInfo.class_id == 2).all()
+                                UserInfo.last_modify_time, UserInfo.id).join(
+        Colleague.professions).filter_by(colleague_id=colleague.id).join(Profession.classes).join(
+        Classes.students).all()
+
     return render_template('student_list.html', colleagues=colleagues, professions=professions, classes=classes,
                            students=students)
+

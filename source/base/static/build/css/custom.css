@@ -4252,9 +4252,47 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
     border-radius: 0px !important;
     background-color: #ffff !important;
 }
-/** /bootstrap-datetimepicker **/
-#student_delete:hover {
-    filter: alpha(opacity=100);
-    opacity: 1;
-    color: #666
+
+.student_delete{
+    /** 配合使用 控制透明按钮背景 **/
+   background:transparent;
+   border:0;
 }
+.query-button{
+ margin:5px 0px 5px 20px;
+}
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+.inputfile + label {
+    font-size: 1.25em;
+    color: gray;
+    background-color: white;
+    display: inline-block;
+    border: 1px solid #e5e5e5
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: #e5e5e5;
+    color:black;
+}
+.inputfile + label {
+  cursor: pointer; /* 小手光标*/
+}
+.excel{
+ margin:10px 5px auto;
+}
+// 阿里图标css
+.icon {
+       width: 1em; height: 1em;
+       vertical-align: -0.15em;
+       fill: currentColor;
+       overflow: hidden;
+}
+

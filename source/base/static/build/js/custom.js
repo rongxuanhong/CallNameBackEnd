@@ -5039,7 +5039,7 @@ if (typeof NProgress != 'undefined') {
         var dropdown=$('#colleague');
         dropdown.children().each(function(){
          $(this).click(function(event){
-             var btn1=$('#colleague_btn')
+             var btn1=$('#colleague_btn');
              btn1.text(event.target.innerText);
              btn1.append(' <span class="caret"></span>');
          });
@@ -5050,7 +5050,7 @@ if (typeof NProgress != 'undefined') {
         var dropdown=$('#profession');
         dropdown.children().each(function(){
          $(this).click(function(event){
-             var btn2=$('#profession_btn')
+             var btn2=$('#profession_btn');
              btn2.text(event.target.innerText);
              btn2.append(' <span class="caret"></span>');
          });
@@ -5061,19 +5061,140 @@ if (typeof NProgress != 'undefined') {
         var dropdown=$('#classes');
         dropdown.children().each(function(){
          $(this).click(function(event){
-             var btn3=$('#classes_btn')
+             var btn3=$('#classes_btn');
              btn3.text(event.target.innerText);
              btn3.append(' <span class="caret"></span>');
          });
         });
     });
-    //控制学生记录删除
-    $(document).ready(function(){
-        var student=$('.student_delete');
-        $(this).click(function(event){
-               console.log(event.target.id);
-        });
-    });
+
+//    $(document).ready(function(){
+//        $('#student-query').click(function(){
+//           //请求数据 并改变表格数据
+//            var colleague_name=$('#colleague_btn').text();
+//            colleague_name=colleague_name.trim();
+//            var profession_name=$('#profession_btn').text();
+//            profession_name=profession_name.trim();
+//            var class_name=$('#classes_btn').text();
+//            class_name=class_name.trim();
+//            //ajax:get
+//            $.get('/ajax/api/v1.0/student-query/',
+//            {'colleague_name':colleague_name,'profession_name':profession_name,'class_name':class_name})
+//            .success(function(json) {
+//              //处理请求回来的学生数据
+//             var tbody=$('#student_tbody');
+//             if(json.students.length==0)
+//             {
+//                 tbody.html("");
+//                 tbody.append('<p>未查询到相关结果<p>');
+//                 return;
+//             }
+//              tbody.html("");
+//                $.each(json.students,function(index,student){
+//                tbody.append("<tr>"+
+//                "<td>"+student.user_name+"</td>"+
+//                "<td>"+student.job_number+"</td>"+
+//                "<td>"+student.class_name+"</td>"+
+//                "<td>"+student.profession_name+"</td>"+
+//                "<td>"+student.colleague_name+"</td>"+
+//                "<td>"+student.last_modify_time+"</td>"+
+//                "<td><span id="+student.job_number+"class=student_delete>删除</span></td>"+
+//                "</tr>" )
+//                });
+//
+//             }).fail(function(error) { alert(error); })
+//            .always(function() {});
+//        });
+//    });
+
+//    $(document).ready(function(){
+//       $('.student_delete').click(function(e){
+//
+//        job_number=e.currentTarget.id;
+//        Ewin.confirm({ message: "确认要删除选择的数据吗？" }).on(function (e) {
+//                if(!e)
+//                    return;
+//               $.ajax({
+//                    url:'/ajax/api/v1.0/student-delete/',
+//                    data:{'job_number':job_number,'type':2},
+//                    type:'DELETE',
+//                    done:function(result){
+//                      alert(result);
+//                     },
+//                 });
+//        });
+//       });
+//
+//    });
+
+
+//    //excel 导入
+//    $(document).ready(function(){
+//        //获取本地excel路径
+//        //读取完成的数据
+//        $('.inputfile').change(function(obj){
+//                var wb;//读取完成的数据
+//                var rABS = true; //是否将文件读取为二进制字符串
+//                if(!obj.target.files) {
+//                    return;
+//                }
+//                var f = obj.target.files[0];
+//                if(!f.name.endsWith("xlsx"))
+//                {
+//                    alert('请导入xlsx格式的Excel文件');
+//                    return;
+//                }
+//                //读取文件
+//                var reader = new FileReader();
+//                //当文件读取完成后，回调
+//                reader.onload = function(e) {
+//                    var data = e.target.result;
+//                    if(rABS) {
+//                        wb = XLSX.read(btoa(fixdata(data)), {//手动转化
+//                            type: 'base64'
+//                        });
+//                    } else {
+//                        wb = XLSX.read(data, {
+//                            type: 'binary'
+//                        });
+//                    }
+//                    //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
+//                    //wb.Sheets[Sheet名]获取第一个Sheet的数据
+//                    var data= JSON.stringify(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]));
+//                    $.post('/ajax/api/v1.0/post_students_from_excel/',{'student_data':data},function(data){
+//                        console.log(data);
+//                    var tbody=$('#student_tbody');
+//                    $.each(data.student_list,function(index,student)
+//                    {
+//                            tbody.append("<tr>"+
+//                            "<td>"+student['姓名']+"</td>"+
+//                            "<td>"+student['学号']+"</td>"+
+//                            "<td>"+student['班级']+"</td>"+
+//                            "<td>"+student['专业']+"</td>"+
+//                            "<td>"+student['学院']+"</td>"+
+//                            "<td>"+student['last_modify_time']+"</td>"+
+//                             "<td><span id="+student['学号']+"class=student_delete>删除</span></td>"+
+//                            "</tr>" )
+//                    });
+//
+//                    });
+//                };
+//                if(rABS) {
+//                    reader.readAsArrayBuffer(f);
+//                } else {
+//                    reader.readAsBinaryString(f);
+//                }
+//            function fixdata(data) { //文件流转BinaryString
+//                var o = "",
+//                    l = 0,
+//                    w = 10240;
+//                for(; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+//                o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+//                return o;
+//            }
+//
+//        });
+//    });
 
 	$(document).ready(function() {
 				
@@ -5112,6 +5233,193 @@ if (typeof NProgress != 'undefined') {
 		init_autosize();
 		init_autocomplete();
 	});
+	(function ($) {
+
+    window.Ewin = function () {
+        var html = '<div id="[Id]" class="modal fade" role="dialog" aria-labelledby="modalLabel">' +
+                              '<div class="modal-dialog modal-sm">' +
+                                  '<div class="modal-content">' +
+                                      '<div class="modal-header">' +
+                                          '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+                                          '<h4 class="modal-title" id="modalLabel">[Title]</h4>' +
+                                      '</div>' +
+                                      '<div class="modal-body">' +
+                                      '<p>[Message]</p>' +
+                                      '</div>' +
+                                       '<div class="modal-footer">' +
+        '<button type="button" class="btn btn-default cancel" data-dismiss="modal">[BtnCancel]</button>' +
+        '<button type="button" class="btn btn-primary ok" data-dismiss="modal">[BtnOk]</button>' +
+    '</div>' +
+                                  '</div>' +
+                              '</div>' +
+                          '</div>';
+
+
+        var dialogdHtml = '<div id="[Id]" class="modal fade" role="dialog" aria-labelledby="modalLabel">' +
+                              '<div class="modal-dialog">' +
+                                  '<div class="modal-content">' +
+                                      '<div class="modal-header">' +
+                                          '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+                                          '<h4 class="modal-title" id="modalLabel">[Title]</h4>' +
+                                      '</div>' +
+                                      '<div class="modal-body">' +
+                                      '</div>' +
+                                  '</div>' +
+                              '</div>' +
+                          '</div>';
+        var reg = new RegExp("\\[([^\\[\\]]*?)\\]", 'igm');
+        var generateId = function () {
+            var date = new Date();
+            return 'mdl' + date.valueOf();
+        }
+        var init = function (options) {
+            options = $.extend({}, {
+                title: "操作提示",
+                message: "提示内容",
+                btnok: "确定",
+                btncl: "取消",
+                width: 200,
+                auto: false
+            }, options || {});
+            var modalId = generateId();
+            var content = html.replace(reg, function (node, key) {
+                return {
+                    Id: modalId,
+                    Title: options.title,
+                    Message: options.message,
+                    BtnOk: options.btnok,
+                    BtnCancel: options.btncl
+                }[key];
+            });
+            $('body').append(content);
+            $('#' + modalId).modal({
+                width: options.width,
+                backdrop: 'static'
+            });
+            $('#' + modalId).on('hide.bs.modal', function (e) {
+                $('body').find('#' + modalId).remove();
+            });
+            return modalId;
+        }
+
+        return {
+            alert: function (options) {
+                if (typeof options == 'string') {
+                    options = {
+                        message: options
+                    };
+                }
+                var id = init(options);
+                var modal = $('#' + id);
+                modal.find('.ok').removeClass('btn-success').addClass('btn-primary');
+                modal.find('.cancel').hide();
+
+                return {
+                    id: id,
+                    on: function (callback) {
+                        if (callback && callback instanceof Function) {
+                            modal.find('.ok').click(function () { callback(true); });
+                        }
+                    },
+                    hide: function (callback) {
+                        if (callback && callback instanceof Function) {
+                            modal.on('hide.bs.modal', function (e) {
+                                callback(e);
+                            });
+                        }
+                    }
+                };
+            },
+            confirm: function (options) {
+                var id = init(options);
+                var modal = $('#' + id);
+                modal.find('.ok').removeClass('btn-primary').addClass('btn-success');
+                modal.find('.cancel').show();
+                return {
+                    id: id,
+                    on: function (callback) {
+                        if (callback && callback instanceof Function) {
+                            modal.find('.ok').click(function () { callback(true); });
+                            modal.find('.cancel').click(function () { callback(false); });
+                        }
+                    },
+                    hide: function (callback) {
+                        if (callback && callback instanceof Function) {
+                            modal.on('hide.bs.modal', function (e) {
+                                callback(e);
+                            });
+                        }
+                    }
+                };
+            },
+            dialog: function (options) {
+                options = $.extend({}, {
+                    title: 'title',
+                    url: '',
+                    width: 800,
+                    height: 550,
+                    onReady: function () { },
+                    onShown: function (e) { }
+                }, options || {});
+                var modalId = generateId();
+
+                var content = dialogdHtml.replace(reg, function (node, key) {
+                    return {
+                        Id: modalId,
+                        Title: options.title
+                    }[key];
+                });
+                $('body').append(content);
+                var target = $('#' + modalId);
+                target.find('.modal-body').load(options.url);
+                if (options.onReady())
+                    options.onReady.call(target);
+                target.modal();
+                target.on('shown.bs.modal', function (e) {
+                    if (options.onReady(e))
+                        options.onReady.call(target, e);
+                });
+                target.on('hide.bs.modal', function (e) {
+                    $('body').find(target).remove();
+                });
+            }
+        }
+    }();
+// 自定义put请求
+   $.put = function(url, data, callback, type){
+
+  if ( $.isFunction(data) ){
+    type = type || callback,
+    callback = data,
+    data = {}
+  }
+
+  return $.ajax({
+    url: url,
+    type: 'PUT',
+    success: callback,
+    data: data,
+    contentType: type
+  });
+};
+// 自定义delete请求
+$.delete = function(url, data, callback, type){
+
+  if ( $.isFunction(data) ){
+    type = type || callback,
+        callback = data,
+        data = {}
+  }
+
+  return $.ajax({
+    url: url,
+    type: 'DELETE',
+    success: callback,
+    data: data,
+    contentType: type
+  });
+}
+})(jQuery);
 
 	
 

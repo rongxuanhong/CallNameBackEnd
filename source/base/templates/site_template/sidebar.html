@@ -11,7 +11,7 @@
             <img src="/static/images/img.jpg" alt="..." class="img-circle profile_img">
         </div>
         <div class="profile_info">
-            <span>Welcome,</span>
+            <span>欢迎,</span>
             <h2> {{ current_user.username }} </h2>
         </div>
     </div>
@@ -35,12 +35,18 @@
                 <li><a><i class="fa fa-table"></i> 学生管理 <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/student_management/student_list/1">学生列表</a></li>
-                        <li><a href="/student_management/class_list">班级列表</a></li>
                     </ul>
                 </li>
                 <li><a><i class="fa fa-desktop"></i> 教师管理 <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/teacher_management/teacher_list">教师列表</a></li>
+                    </ul>
+                </li>
+                <li><a><i class="fa fa-desktop"></i> 数据权限管理 <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li><a href="/settings_management/level_management">组织管理</a></li>
+                        <li><a href="/settings_management/permission_management">权限管理</a></li>
+                        <li><a href="/settings_management/role_management">角色管理</a></li>
                     </ul>
                 </li>
                 <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>

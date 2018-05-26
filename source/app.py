@@ -1,10 +1,12 @@
 from config import DebugConfig
-from flask import Flask
+from flask import Flask,url_for,send_from_directory
 from flask_migrate import Migrate, MigrateCommand
 from importlib import import_module
 from logging import basicConfig, DEBUG, getLogger, StreamHandler
 from os.path import abspath, dirname, join, pardir
 import sys
+import os
+from api.restful_api import api
 
 # prevent python from writing *.pyc files / __pycache__ folders
 sys.dont_write_bytecode = True
@@ -31,9 +33,11 @@ def register_blueprints(app):
     :return:
     """
     for module_name in (
-    'student_management', 'teacher_management', 'forms', 'ui', 'home', 'tables', 'data', 'additional', 'base'):
+            'student_management', 'teacher_management', 'forms', 'ui', 'home', 'tables',
+            'data', 'additional', 'base', 'settings_management'):
         module = import_module('{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
+    app.register_blueprint(api)
 
 
 def configure_login_manager(app, User):
@@ -84,5 +88,9 @@ def create_app(selenium=False):
 
 app = create_app()
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, threaded=True, debug=True)

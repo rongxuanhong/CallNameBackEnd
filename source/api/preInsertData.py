@@ -1,5 +1,7 @@
-from base.models import Colleague, Profession, Classes, UserInfo
+from base.models import Colleague, Profession, Classes, UserInfo, User, Role, Permission
 from database import db, Base
+from flask import jsonify
+import uuid
 from sqlalchemy import and_
 
 
@@ -123,12 +125,45 @@ def route_student4():
 
 
 def route_relation():
-    a = db.session.query(Colleague.colea_name, Profession.prof_name, Classes.class_name, UserInfo.user_name,
-                         UserInfo.job_number, UserInfo.last_modify_time).join(
-        Colleague.professions).join(Profession.classes).join(Classes.students).filter(
-        UserInfo.class_id == 2).all()
-    print(a)
+    students = db.session.query(UserInfo.user_name, UserInfo.job_number,
+                                Classes.class_name, Profession.prof_name, Colleague.colea_name,
+                                UserInfo.last_modify_time, UserInfo.id).join(
+        Colleague.professions).filter(Colleague.colea_name == '数计学院').join(
+        Profession.classes).join(
+        Classes.students).filter(Classes.class_name == '17专硕2班').all()
+    studentss = []
+    for student in students:
+        s = {'user_name': student[0],
+             'job_number': student[1],
+             'class_name': student[2],
+             'profession_name': student[3],
+             'colleague_name': student[4],
+             'last_modify_time': student[5],
+             'userinfo_id': student[6], }
+        studentss.append(s)
+    print(jsonify({
+        'students': studentss
+    }))
+
+
+def route_role():
+    role1 = Role('管理员', '管理员角色')
+    role2 = Role('教师', '教师角色')
+    role3 = Role('学生', '学生角色')
+    db.session.add(role1)
+    db.session.add(role2)
+    db.session.add(role3)
+    db.session.commit()
+
+
+def op():
+    permission = Permission()
+    permission.action = '/student_management/'
+    permission.name = '学生管理'
+    permission.perm_desc = '学生管理'
+    db.session.add(permission)
+    db.session.commit()
 
 
 if __name__ == '__main__':
-    route_student4()
+    op()
