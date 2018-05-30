@@ -1,6 +1,6 @@
 {% extends "base_site.html" %}
 
-{% block title %} 权限设置 {% endblock title %}
+{% block title %} 课程列表 {% endblock title %}
 
 {% block stylesheets %}
 {{ super() }}
@@ -11,36 +11,36 @@
 <div class="right_col" role="main">
     <ol class="breadcrumb">
         <li><a href="/index">首页</a></li>
-        <li class="active">角色管理</li>
+        <li class="active">课程管理</li>
     </ol>
-    <table id="role_table" class="table table-hover"></table>
+    <table id="course_table" class="table table-hover"></table>
     <div id="toolbar" class="btn-group pull-right" style="margin-right: 20px;">
         <button id="btn_add_roles" type="button" class="btn btn-default">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
         </button>
     </div>
     <!--  新增角色Modal -->
-    <div class="modal fade" id="addRoleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <form id="addRoleForm" method="post" role="form" class="form-horizontal"
-              action="/ajax/api/v1.0/role">
+    <div class="modal fade" id="addCourseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <form id="addCourseForm" method="post" role="form" class="form-horizontal"
+              action="/ajax/api/v1.0/course">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="addModalLabel">新增角色</h4>
+                        <h4 class="modal-title" id="addModalLabel">新增课程</h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>名称</label>
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程名称</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="role_name" id="add_role_name"/>
+                                <input type="text" class="form-control" name="role_name" id="add_course_name"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>备注</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="role_desc" id="add_role_note"/>
+                                <input type="text" class="form-control" name="role_note" id="add_role_note"/>
                             </div>
                         </div>
                     </div>
@@ -57,13 +57,13 @@
     <!--  修改角色Modal -->
     <div class="modal fade" id="modifyRoleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <form id="modifyRoleForm" method="post" role="form" class="form-horizontal"
-              action="/ajax/api/v1.0/role">
+              action="/ajax/api/v1.0/course">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="modifyModalLabel">修改角色</h4>
+                        <h4 class="modal-title" id="modifyModalLabel">修改课程</h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -89,52 +89,11 @@
             </div>
         </form>
     </div>
-    <!--  分配角色权限Modal -->
-    <div class="modal fade" id="allocPermissionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <form id="allocPermissionForm" method="post" role="form" class="form-horizontal"
-              action="/ajax/api/v1.0/role_menu">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="allocPermissionLabel">修改角色</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>角色名称</label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" name="role_name" id="alloc_role_name"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>备注</label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" name="role_desc" id="alloc_role_note"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>权限</label><br>
-                            <div class="col-sm-6">
-                                <div id="menu_tree"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="from-group">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                            <button id="btn_allocPermission" type="button" class="btn btn-primary">分配</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
 </div>
 {% endblock content %}
 {% block javascripts %}
 {{ super() }}
-<script src="{{ url_for('static', filename='build/js/role_list.js') }}"></script>
+<script src="{{ url_for('static', filename='build/js/course_list.js') }}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/jstree.min.js"></script>
 
 {% endblock javascripts %}

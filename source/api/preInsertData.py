@@ -1,8 +1,8 @@
-from base.models import Colleague, Profession, Classes, UserInfo, User, Role, Permission
+from base.models import Colleague, Profession, Classes, UserInfo, User, Role, Permission, Course, Menu, RoleMenu
 from database import db, Base
 from flask import jsonify
 import uuid
-from sqlalchemy import and_
+from sqlalchemy import and_, text
 
 
 def route_colleague0():
@@ -165,5 +165,195 @@ def op():
     db.session.commit()
 
 
+def course():
+    cours = Course()
+    cours.position = '东二 2#506'
+    cours.course_name = '工程训练'
+    cours.course_week_times = '10'
+    cours.semester = '2017-2018学年第二学期'
+    cours.course_number = 'UCREEUEUEEEE'
+    db.session.add(cours)
+    db.session.commit()
+
+
+def op1():
+    student = db.session.query(UserInfo.user_name, UserInfo.job_number,
+                               Classes.class_name, Profession.prof_name, Colleague.colea_name,
+                               UserInfo.last_modify_time, UserInfo.uid).join(
+        Colleague.professions).join(Profession.classes).join(
+        Classes.students).filter(UserInfo.uid == '1e88f6f8-4cb0-40e5-894a-3c244e191c04').first()
+    return student
+
+
+def addToDb(table):
+    db.session.add(table)
+    db.session.commit()
+
+
+def set_menu():
+    role = Role.query.filter(Role.role_name == '管理员').first()
+
+    rolemenu = RoleMenu(display=1)  ## 创建关联记录
+    menu1 = Menu()  ## 创建菜单
+    menu1.name = '学生管理'
+    menu1.icon = 'fa fa-table'
+    menu1.menu_type = 1
+    menu1.order = 1
+    rolemenu.menu = menu1  ## 关联表存菜单
+    role.menus.append(rolemenu)
+    addToDb(role)
+    rolemenu = RoleMenu(display=1)
+    menu = Menu()
+    menu.name = '学生列表'
+    menu.icon = 'fa fa-table'
+    menu.menu_type = 2
+    menu.order = 11
+    menu.parent_id=menu1.id
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+    rolemenu = RoleMenu(display=1)
+    menu2 = Menu()
+    menu2.name = '教师管理'
+    menu2.icon = 'fa fa-table'
+    menu2.menu_type = 1
+    menu2.order = 2
+    rolemenu.menu = menu2
+    role.menus.append(rolemenu)
+    addToDb(role)
+    rolemenu = RoleMenu(display=1)
+    menu = Menu()
+    menu.name = '教师列表'
+    menu.icon = 'fa fa-table'
+    menu.menu_type = 2
+    menu.order = 21
+    menu.parent_id=menu2.id
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+    rolemenu = RoleMenu(display=1)
+    menu3 = Menu()
+    menu3.name = '课程管理'
+    menu3.icon = 'fa fa-table'
+    menu3.menu_type = 1
+    menu3.order = 3
+    rolemenu.menu = menu3
+    role.menus.append(rolemenu)
+    addToDb(role)
+    rolemenu = RoleMenu(display=1)
+    menu = Menu()
+    menu.name = '课程列表'
+    menu.icon = 'fa fa-table'
+    menu.menu_type = 2
+    menu.order = 31
+    menu.parent_id=menu3.id
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+    rolemenu = RoleMenu(display=1)
+    menu4 = Menu()
+    menu4.name = '数据权限管理'
+    menu4.icon = 'fa fa-table'
+    menu4.menu_type = 1
+    menu4.order = 4
+    rolemenu.menu = menu4
+    role.menus.append(rolemenu)
+    addToDb(role)
+    rolemenu = RoleMenu(display=1)
+    menu = Menu()
+    menu.name = '组织管理'
+    menu.icon = 'fa fa-table'
+    menu.menu_type = 2
+    menu.order = 41
+    menu.parent_id=menu4.id
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+    rolemenu = RoleMenu(display=1)
+    menu = Menu()
+    menu.name = '权限管理'
+    menu.icon = 'fa fa-table'
+    menu.menu_type = 2
+    menu.order = 42
+    menu.parent_id = menu4.id
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+    rolemenu = RoleMenu(display=1)
+    menu = Menu()
+    menu.name = '角色管理'
+    menu.icon = 'fa fa-table'
+    menu.menu_type = 2
+    menu.order = 43
+    menu.parent_id = menu4.id
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+
+def set_menu1():
+    role = Role.query.filter(Role.role_name == '教师').first()
+
+    menu = Menu.query.filter(Menu.name == '学生管理').first()
+    rolemenu = RoleMenu(display=1)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '学生列表').first()
+    rolemenu = RoleMenu(display=1)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '教师管理').first()
+    rolemenu = RoleMenu(display=0)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '教师列表').first()
+    rolemenu = RoleMenu(display=0)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '课程管理').first()
+    rolemenu = RoleMenu(display=1)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '课程列表').first()
+    rolemenu = RoleMenu(display=1)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '数据权限管理').first()
+    rolemenu = RoleMenu(display=0)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '组织管理').first()
+    rolemenu = RoleMenu(display=0)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '权限管理').first()
+    rolemenu = RoleMenu(display=0)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '角色管理').first()
+    rolemenu = RoleMenu(display=0)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+
 if __name__ == '__main__':
-    op()
+    set_menu1()

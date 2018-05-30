@@ -1,6 +1,9 @@
-bind = '0.0.0.0:5000'
+bind = '127.0.0.1:5000'
 workers = 1
 accesslog = '-'
 loglevel = 'debug'
 capture_output = True
+worker_class="gevent" #sync, gevent,meinheld
 enable_stdio_inheritance = True
+proc_name='gunicorn.pid'
+pidfile='/var/log/gunicorn/debug.log'

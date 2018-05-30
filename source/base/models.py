@@ -6,26 +6,42 @@ from datetime import datetime
 from flask import url_for
 import hashlib
 
+
 # 关联表(多对多)
 # 用户课程关系表
-userinfo_course = Table('userinfo_course', Base.metadata,
-                        Column('userinfo_id', Integer, ForeignKey('userinfo.id'), primary_key=True),
-                        Column('course_id', Integer, ForeignKey('course.id'), primary_key=True))
+
+class UserInfoCourse(Base):
+    __tablename__ = 'userinfocourse'
+    userinfo_id = Column(Integer, ForeignKey('userinfo.id'), primary_key=True)
+    course_id = Column(Integer, ForeignKey('course.id'), primary_key=True)
+    course = relationship('Course', backref='userinfo_ucourses')
+
+
 # 角色权限表
-role_permission = Table('role_permission', Base.metadata,
-                        Column('role_id', Integer, ForeignKey('role.id'), primary_key=True),
-                        Column('permission_id', Integer, ForeignKey('permission.id'), primary_key=True),
-                        Column('created_at', DateTime, default=datetime.now))
 
-# 角色菜单表
-role_menu = Table('role_menu', Base.metadata,
-                  Column('role_id', Integer, ForeignKey('role.id'), primary_key=True),
-                  Column('menu_id', Integer, ForeignKey('menu.id'), primary_key=True),
-                  Column('created_at', DateTime, default=datetime.now),
-                  Column('is_delete', Boolean, default=False))
+class RolePermission(Base):
+    __tablename__ = 'rolepermission'
+    role_id = Column(Integer, ForeignKey('role.id'), primary_key=True)
+    permission_id = Column(Integer, ForeignKey('permission.id'), primary_key=True)
+    last_modify_time = Column(DateTime, unique=True, default=datetime.now)
+
+    permission = relationship('Permission', backref='role_rolepermissions')
+
+    # ## 角色菜单关联表 针对多对多中含额外属性
 
 
-#  orm对象经历的状态transient, pending, and persistent.
+class RoleMenu(Base):
+    __tablename__ = 'rolemenu'
+    role_id = Column(Integer, ForeignKey('role.id'), primary_key=True)
+    menu_id = Column(Integer, ForeignKey('menu.id'), primary_key=True)
+    display = Column(Integer, default=1)
+    last_modify_time = Column(DateTime, default=datetime.now)
+
+    menu = relationship("Menu", backref='role_rolemenus')
+
+    # orm对象经历的状态transient, pending, and persistent.
+
+
 class User(Base, UserMixin):  # 继承UserMixin简便地实现用户类,配合flask-login使用
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True, autoincrement=True)  # 自增作为外键 关联其他表
@@ -87,23 +103,23 @@ class UserInfo(Base):
 
     # 关系(1vs1) uselist=False
     user = relationship('User', backref=backref("userinfo", uselist=False))
-    courses = relationship('Course', secondary=userinfo_course, backref="userinfo")
+    courses = relationship('UserInfoCourse', backref='userinfo')
 
     def __init__(self, user_name, job_number, type):
         self.user_name = user_name
         self.job_number = job_number
         self.type = type
 
-    # 获取用户所有权限
-    @property
-    def permissions(self):
-        return UserInfo.query.join(role_permission).join(Role).join(UserInfo).filter(UserInfo.id == self.id)
+    # # 获取用户所有权限
+    # @property
+    # def permissions(self):
+    #     return UserInfo.query.join(role_permission).join(Role).join(UserInfo).filter(UserInfo.id == self.id)
 
     # 获取用户所有可使用菜单
-    @property
-    def menus(self):
-        return UserInfo.query.join(role_menu).join(Role).join(UserInfo).filter(UserInfo.id == self.id).order_by(
-            Base.order)
+    # @property
+    # def menus(self):
+    #     return UserInfo.query.join(role_menu).join(Role).join(UserInfo).filter(UserInfo.id == self.id).order_by(
+    #         Base.order)
 
     # def __init__(self, **kwargs):
     #     for property, value in kwargs.items():
@@ -174,7 +190,7 @@ class Course(Base):
     __tablename__ = 'course'
     id = Column(Integer, primary_key=True, autoincrement=True)
     course_name = Column(String(32))
-    course_number = Column(String(60))
+    course_number = Column(String(60))  ##课程编号
     course_week_times = Column(Integer)  # 课程所需周次
     semester = Column(String(32))  # 课程学期
     course_time = Column(String(32))  # 上课时间
@@ -191,6 +207,19 @@ class Course(Base):
     def __repr__(self):
         return str(self.course_name)
 
+    def to_json(self):
+        json_course = {
+            'id': self.id,
+            'course_name': self.course_name,
+            'course_number': self.course_number,
+            'course_week_times': self.course_week_times,
+            'last_modify_time': self.last_modify_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'semester': self.semester,
+            'position': self.position,
+            'course_time': self.course_time,
+        }
+        return json_course
+
 
 class Role(Base):
     __tablename__ = 'role'
@@ -199,9 +228,10 @@ class Role(Base):
     role_desc = Column(String(200))
     last_modify_time = Column(DateTime, default=datetime.utcnow)
 
-    permissions = relationship("Permission", secondary=role_permission, backref="role")  # 角色权限多对多
-    menus = relationship("Menu", secondary=role_menu, backref="role")  # 角色菜单多对多
+    permissions = relationship("RolePermission", backref='role')  # 角色权限多对多
     users = relationship("User", backref="role", lazy="dynamic")  # 每一角色有多个用户信息(此处不考虑用户拥有多角色)
+
+    menus = relationship("RoleMenu", backref="role")
 
     def __init__(self, role_name, role_desc):
         self.role_name = role_name
@@ -222,7 +252,7 @@ class Role(Base):
             'role_name': self.role_name,
             'role_desc': self.role_desc,
             'last_modify_time': self.last_modify_time.strftime('%Y-%m-%d %H:%M:%S'),
-            'permission': url_for('api.get_permission', action='permission_list'),
+            'permission': url_for('api.get_menu_role'),
         }
         return json_role
 
@@ -243,7 +273,7 @@ class Permission(Base):  ## 手动创建
             'id': self.id,
             'name': self.name,
             'perm_desc': self.perm_desc,
-            'last_modify_time': self.last_modify_time
+            'last_modify_time': self.last_modify_time.strftime('%Y-%m-%d %H:%M:%S'),
         }
         return json_permission
 
@@ -251,13 +281,31 @@ class Permission(Base):  ## 手动创建
 class Menu(Base):  ## 手动创建
     __tablename__ = 'menu'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(50))
+    name = Column(String(50), nullable=False)
     icon = Column(String(50))
-    url = Column(String(250))
+    url = Column(String(100))
     order = Column(SmallInteger, default=0)
+    parent_id = Column(Integer, default=0)
+    menu_type = Column(Integer)
+    # display = Column(Integer)
+    create_time = Column(DateTime, default=datetime.now)
 
     def __repr__(self):
         return str(self.name)
+
+    def to_json(self):
+        if self.url is None:
+            self.url = ''
+        return {
+            'id': self.id,
+            'name': self.name,
+            'icon': self.icon,
+            'url': self.url,
+            'order': self.order,
+            'parent_id': self.parent_id,
+            'menu_type': self.menu_type,
+            'create_time': self.create_time.strftime('%Y-%m-%d %H:%M:%S'),
+        }
 
 
 class CallName(Base):
@@ -281,6 +329,14 @@ class CallName(Base):
 
     def __repr__(self):
         return str(self.checkin_grade)
+
+    def to_json(self):
+        return {
+            'checkin_time': self.checkin_time,
+            'checkin_type': self.checkin_type,
+            'checkin_notes': self.checkin_notes,
+            'checkin_grade': self.checkin_grade
+        }
 
 
 class Admin(Base):  # 管理员管理表

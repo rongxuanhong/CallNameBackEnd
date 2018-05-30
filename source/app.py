@@ -1,14 +1,18 @@
+from BadRequest import CustomFlaskErr
 from config import DebugConfig
-from flask import Flask,url_for,send_from_directory
-from flask_migrate import Migrate, MigrateCommand
+from flask import Flask, send_from_directory, jsonify
+from flask_migrate import Migrate
 from importlib import import_module
 from logging import basicConfig, DEBUG, getLogger, StreamHandler
 from os.path import abspath, dirname, join, pardir
 import sys
 import os
+from werkzeug.contrib.fixers import ProxyFix
+import logging
 from api.restful_api import api
-
 # prevent python from writing *.pyc files / __pycache__ folders
+from utils.ERROR_DEFINE import J_MSG
+
 sys.dont_write_bytecode = True
 
 path_source = dirname(abspath(__file__))
@@ -34,7 +38,7 @@ def register_blueprints(app):
     """
     for module_name in (
             'student_management', 'teacher_management', 'forms', 'ui', 'home', 'tables',
-            'data', 'additional', 'base', 'settings_management'):
+            'data', 'additional', 'base', 'settings_management', 'course_management'):
         module = import_module('{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
     app.register_blueprint(api)
@@ -88,9 +92,36 @@ def create_app(selenium=False):
 
 app = create_app()
 
+
+## 自定义错误处理
+@app.errorhandler(CustomFlaskErr)
+def handle_flask_error(error):
+    # response 的 json 内容为自定义错误代码和错误信息
+    response = jsonify(error.to_dict())
+
+    # response 返回 error 发生时定义的标准错误代码
+    response.status_code = error.status_code
+
+    return response
+
+
+# @app.errorhandler(BadRequest)
+# def handle_bad_request(error):
+#     """捕获 BadRequest 全局异常，序列化为 JSON 并返回 HTTP 400"""
+#     payload = dict(error.payload or ())
+#     payload['status'] = error.status
+#     payload['message'] = error.message
+#     return jsonify(payload), 400
+
+
+app.wsgi_app = ProxyFix(app.wsgi_app)
+
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
 if __name__ == '__main__':
-    app.run(host='localhost', port=8080, threaded=True, debug=True)
+    app.run(host='localhost', port=5000, threaded=True, debug=True)

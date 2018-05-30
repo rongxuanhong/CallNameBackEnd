@@ -20,16 +20,15 @@ blueprint = Blueprint(
 #     return render_template(template + '.html')
 
 
-@blueprint.route('/student_list/<int:id>')
+@blueprint.route('/student_list/')
 @login_required
-def get_student_list(id):
+def get_student_list():
     colleagues = Colleague.query.all()
-    colleague = colleagues[id - 1]
+    colleague = colleagues[0]
     professions = Profession.query.filter_by(colleague_id=colleague.id).all()
     profession = Profession(prof_name='全部')
     profession.id = 0
     professions.insert(0, profession)
-    # profession = professions[id - 1]
     classes = Classes.query.join(
         Colleague.professions).filter_by(colleague_id=colleague.id).join(Profession.classes).all()
     cclass = Classes(class_name='全部')

@@ -5,56 +5,87 @@ var TableInit = function () {
 
          //根据窗口调整表格高度
         $(window).resize(function() {
-            $('#role_table').bootstrapTable('resetView', {
+            $('#course_table').bootstrapTable('resetView', {
                 height: oTableInit.tableHeight
             });
         });
         oTableInit.operateFormatter = function (value, row, index) {//赋予的参数
                 return [
-          '<button class="btn btn_role_modify" type="button"><i class="fa fa-paste"></i>修改</button>',
-          '<button class="btn btn_role_delete" type="button"><i class="fa fa-envelope"></i> 删除</button>',
-          '<button class="btn btn_role_alloc_pms" type="button"><i class="fa fa-envelope"></i>分配权限</button>'
+          '<button class="btn btn_course_modify" type="button"><i class="fa fa-paste"></i>修改</button>',
+          '<button class="btn btn_course_delete" type="button"><i class="fa fa-envelope"></i> 删除</button>',
             ].join('');
          }
 
-        $('#role_table').bootstrapTable({
+        $('#course_table').bootstrapTable({
         method: 'get',
         contentType: "application/json",//必须要有！！！！
-        url:"/ajax/api/v1.0/role",//要请求数据的文件路径
+        url:"/ajax/api/v1.0/course",//要请求数据的文件路径
         height:oTableInit.tableHeight,//高度调整
+//        toolbar: '#toolbar',//指定工具栏
         striped: true, //是否显示行间隔色
         dataField: "result",//bootstrap table 可以前端分页也可以后端分页，这里
-        pagination:false,//是否分页
+        //我们使用的是后端分页，后端分页时需返回含有total：总记录数,这个键值好像是固定的
+        //rows： 记录集合 键值可以修改  dataField 自己定义成自己想要的就好
+        pageNumber: 1, //初始化加载第一页，默认第一页
+        pagination:true,//是否分页
+        queryParamsType:'limit',//查询参数组织方式
+        queryParams:oTableInit.queryParams,//请求服务器时所传的参数
+        sidePagination:'server',//指定服务器端分页
+        pageSize:10,//单页记录数
+        pageList:[5,10,20,30],//分页步进值
         showRefresh:true,//刷新按钮
 //        showColumns:true,
-        queryParams:oTableInit.queryParams,
-
         clickToSelect: true,//是否启用点击选中行
         toolbarAlign:'right',//工具栏对齐方式
         buttonsAlign:'right',//按钮对齐方式
         toolbar:'#toolbar',//指定工作栏
+        sortable: true,      //是否启用排序
+        sortOrder: 'asc',
         showFooter:false,
         columns:[
             {
-                title:'ID',
-                field:'id',
+                title:'全选',
+                field:'select',
+                //复选框
+                checkbox:true,
+                width:25,
+            },
+            {
+                title:'课程编号',
+                field:'course_number',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title:'课程名称',
+                field:'course_name',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title:'课程周次',
+                field:'course_week_times',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title:'所在学期',
+                field:'semester',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title:'课程地点',
+                field:'position',
                 align: 'center',
                 valign: 'middle',
             },
             {
-                title:'名称',
-                field:'role_name',
-                align: 'center',
-                valign: 'middle',
-            },
-            {
-                title:'备注',
-                field:'role_desc',
-                align: 'center',
-                valign: 'middle',
-            },
-            {
-                title:'更新时间',
+                title:'更新日期',
                 field:'last_modify_time',
                 align: 'center',
                 valign: 'middle',
@@ -71,7 +102,7 @@ var TableInit = function () {
         locale:'zh-CN',//中文支持,
         responseHandler:function(res){
             //在ajax获取到数据，渲染表格之前，修改数据源
-            return res.result;
+            return res;
         }
     });
     };
@@ -81,7 +112,13 @@ var TableInit = function () {
     //请求服务数据时所传参数
     oTableInit.queryParams= function (params){
         return{
-            action:'role_list',
+            action:'course_list',
+            //每页多少条数据
+            limit: params.limit,
+            //请求第几页
+            offset:params.offset,
+            sort:params.sort,
+            sortOrder:params.order,
         };
     };
         return oTableInit;
@@ -129,9 +166,9 @@ function addRoleValidatorForm(){
                     data:$form.serialize(),
                     type:'POST',
                     success:function(result){
-                     $('#addRoleModal').modal('toggle');
-                      if(result.success){
+                      if(result=='1'){
                     // 提示添加成功
+                        $('#addRoleModal').modal('toggle');
                         refreshRoleTable();
                         toastr.success('新增角色成功');
 
@@ -146,8 +183,6 @@ function addRoleValidatorForm(){
 }
 
 function tableOperationEvent(){
- $(".btn_role_modify").off("click");
- $(".btn_role_alloc_pms").off("click");
    window.operateEvents = {
       'click .btn_role_modify': function (e, value, row, index) {
           $('#modify_role_name').val(row.role_name);
@@ -177,26 +212,28 @@ function tableOperationEvent(){
                     }
                     },
                 },
-        }).on('success.form.bv', function(e) { // 为啥多次进入。。。。。
-            // Prevent form submission
-            e.preventDefault();
-            // Get the form instance
-            var $form = $(e.target);
+        })
+//        .on('success.form.bv', function(e) { // 为啥多次进入。。。。。
+//            // Prevent form submission
+//            e.preventDefault();
+//            // Get the form instance
+//            var $form = $(e.target);
 
             // Get the BootstrapValidator instance
-            $('#btn_role_modify_sb').off('click').on('click',function(e){
-//            var $form=$('#modifyRoleForm');
-//            var bv = $form.data('bootstrapValidator');
-//            bv.validate();
-//            if(bv.isValid()){
+            $('#btn_role_modify_sb').off('click').on('click',function(){
+             var $form=$('#modifyRoleForm');
+            var bv = $form.data('bootstrapValidator');
+            bv.validate();
+            if(bv.isValid()){
+                console.log('11');
             $.ajax({
                     url:$form.attr('action'),
                     data:$form.serialize()+'&role_id='+row.id,
                     type:'PUT',
                     success:function(result){
-                     $('#modifyRoleModal').modal('toggle');
-                      if(result.success){
+                      if(result=='1'){
                     // 提示添加成功
+                        $('#modifyRoleModal').modal('toggle');
                         refreshRoleTable();
                         toastr.success('修改角色成功');
 
@@ -206,8 +243,8 @@ function tableOperationEvent(){
                         }
                      },
                  });
+            }
             });
-           });
        },
         'click .btn_role_delete': function (e, value, row, index) {
 
@@ -215,11 +252,11 @@ function tableOperationEvent(){
                     if(!e)
                         return;
                    $.ajax({
-                        url:'/ajax/api/v1.0/role?role_id='+row.id,
+                        url:'/ajax/api/v1.0/role-delete/?role_id='+row.id,
                         type:'DELETE',
                         success:function(result){
                             console.log(result);
-                            if(result.success){
+                            if(result=='1'){
                                 refreshRoleTable();
                                 toastr.success('删除角色成功');
                             }else{
@@ -231,87 +268,18 @@ function tableOperationEvent(){
        },
        'click .btn_role_alloc_pms': function (e, value, row, index) {
             $('#allocPermissionModal').modal('toggle');
-            $('#alloc_role_name').val(row.role_name);
-            $('#alloc_role_note').val(row.role_desc);
+            $('#permission_tree').jstree({
 
-            $('#menu_tree').jstree("destroy"); //单页面多次显示jstree，需要销毁实例确定更新
-            $.ajax({
-                 url:"/ajax/api/v1.0/role_menu?role_name="+row.role_name,
-                 type:'GET',
-                 success:function(result){
-                     if(!result)
-                        return;
-                     menus=result.result;
-                     var data={};
-                     for(j = 0,len=menus.length; j < len; j++) {
-                        menu=menus[j];
-                        if(!menu.parent_id){
-                            data[menu.id]={"id":menu.id,"text":menu.name,"icon":menu.icon,
-                            "state" : {"opened" : true,'selected':changeState(menu.display) },"children":[]};
-                        }
-                     };
-                        for(j = 0,len=menus.length; j < len; j++) {
-                        menu=menus[j];
-                        if(menu.parent_id){
-                            data[menu.parent_id]["children"].push({"id":menu.id,"text":menu.name,"icon":menu.icon,
-                            "state" : {"opened" : true ,'selected':changeState(menu.display)},"children":null});
-                        }
-                      };
-                      result=[];
-                      for(var key in data)
-                      {
-                        result.push(data[key]);
-                      }
-                      $('#menu_tree').jstree({
-                        'core':{
-                            'data':result,
-                        },
-                        "checkbox" : {
-                            "keep_selected_style" : false
-                         },
-                        "plugins" : [ "checkbox" ]
-                        });
-                        //监听jstree 选项改变
-
-                        $('#menu_tree').on('changed.jstree',function(e,data){
-                            var str='';
-                            selected=data.selected;
-                            for(i=0,len=selected.length;i<len;++i)
-                            {
-                                str+=selected[i];
-                                if(i!=len-1){
-                                    str+=',';
-                                }
-                            };
-                            $('#btn_allocPermission').off('click').click(function(){
-                           var $form=$('#allocPermissionForm');
-                            $.ajax({
-                                  url:$form.attr('action'),
-                                  data:'selected='+str+'&role_name='+row.role_name,
-                                  type:'POST',
-                                  success:function(result){
-                                   $('#allocPermissionModal').modal('toggle');
-                                       if(result.success){
-                                            toastr.success('权限修改成功');
-                                       }else{
-                                            toastr.error('权限修改失败');
-                                       }
-                                   },
-                                 });
-                    });
-                        });
-                     },
-                 });
+                "checkbox" : {
+                    "keep_selected_style" : false
+                 },
+                "plugins" : [ "checkbox" ]
+            });
        },
     };
 }
 function refreshRoleTable(){
-    $('#role_table').bootstrapTable('refresh', {url: '/ajax/api/v1.0/role'});
-}
-
-function changeState(display)
-{
-    return display==1? true:false
+    $('#role_table').bootstrapTable('refresh', {url: '/ajax/api/v1.0/get_role_list/'});
 }
 
 $(document).ready(function(){

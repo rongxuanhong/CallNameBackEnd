@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, render_template, redirect, request, url_for, g, flash,send_from_directory
+from flask import Blueprint, render_template, redirect, request, url_for, g, flash, send_from_directory, jsonify
 import uuid
 import hashlib
 from flask_login import (
@@ -9,6 +9,7 @@ from flask_login import (
     login_user,
     logout_user
 )
+
 from .forms import LoginForm, CreateAccountForm
 
 # start the login system 登录管理类
@@ -54,6 +55,7 @@ def route_fixed_template(template):
 @blueprint.route('/page_<error>')
 def route_errors(error):
     return render_template('errors/page_{}.html'.format(error))
+
 
 ## Login & Registration process
 
@@ -177,3 +179,4 @@ def not_found_error(error):
 @blueprint.errorhandler(500)
 def internal_error(error):
     return render_template('errors/page_500.html'), 500
+

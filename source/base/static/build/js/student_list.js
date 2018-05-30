@@ -14,11 +14,11 @@ var TableInit = function () {
         $('#student_tab').bootstrapTable({
         method: 'get',
         contentType: "application/json",//必须要有！！！！
-        url:"/ajax/api/v1.0/student-query/",//要请求数据的文件路径
+        url:"/ajax/api/v1.0/student",//要请求数据的文件路径
         height:oTableInit.tableHeight,//高度调整
 //        toolbar: '#toolbar',//指定工具栏
         striped: true, //是否显示行间隔色
-        dataField: "students",//bootstrap table 可以前端分页也可以后端分页，这里
+        dataField: "result",//bootstrap table 可以前端分页也可以后端分页，这里
         //我们使用的是后端分页，后端分页时需返回含有total：总记录数,这个键值好像是固定的
         //rows： 记录集合 键值可以修改  dataField 自己定义成自己想要的就好
         pageNumber: 1, //初始化加载第一页，默认第一页
@@ -29,7 +29,7 @@ var TableInit = function () {
         pageSize:10,//单页记录数
         pageList:[5,10,20,30],//分页步进值
         showRefresh:true,//刷新按钮
-        showColumns:true,
+//        showColumns:true,
         clickToSelect: true,//是否启用点击选中行
         toolbarAlign:'right',//工具栏对齐方式
         buttonsAlign:'right',//按钮对齐方式
@@ -120,8 +120,8 @@ var ButtonInit = function () {
     oInit.Init = function () {
         //初始化页面上面的按钮事件
             //查询按钮事件
-        $('#student-query').click(function(){
-            $('#student_tab').bootstrapTable('refresh', {url: '/ajax/api/v1.0/student-query/'});
+        $('#student-query').off('click').on('click',function(){
+            refreshStudentTable();
         });
 
         //必须导入当前学院当前专业当前班级的学生信息
@@ -154,11 +154,11 @@ var ButtonInit = function () {
                     //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
                     //wb.Sheets[Sheet名]获取第一个Sheet的数据
                     var data= JSON.stringify(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]));
-                    $.post('/ajax/api/v1.0/post_students_from_excel/',{'student_data':data},function(result){
-                            if(result=='1')
+                    $.post('/ajax/api/v1.0/post_students_from_excel',{'student_data':data},function(result){
+                            if(result.success)
                             {
                              //刷新表格
-                             $('#student_tab').bootstrapTable('refresh', {url: '/ajax/api/v1.0/student-query/'});
+                                refreshStudentTable();
                                 toastr.success('导入学生信息成功');
                             }else{
                                 toastr.error('导入学生信息失败');
@@ -187,7 +187,7 @@ var ButtonInit = function () {
 
    function addStudentValidatorForm()
    {
-        $('#btn_add_student').click(function(){
+        $('#btn_add_student').off('click').on('click',function(){
              var class_name=$('#classes_btn').text();
              class_name=class_name.trim();
              if(class_name=='全部'){
@@ -240,7 +240,7 @@ var ButtonInit = function () {
             params=$form.serialize()+'&class_name='+class_name
             $.post($form.attr('action'), params, function(result) {
                 console.log(result);
-                if(result=='1'){
+                if(result.success){
                     //提示添加成功
                     $('#addStudentModal').modal('toggle');
                     toastr.success('提交数据成功');
@@ -274,7 +274,7 @@ var ButtonInit = function () {
    }
 
   function modifyStudentValidatorForm(){
-        $('#btn_student_edit').click(function(){
+        $('#btn_student_edit').off('click').on('click',function(){
             $('#modifyStudentModal').modal('toggle'); //打开修改学生模态窗
             var dataArr=$('#student_tab').bootstrapTable('getSelections');
             $('#modify_UserName').val(dataArr[0].user_name);
@@ -328,7 +328,7 @@ var ButtonInit = function () {
                     data:params,
                     type:'PUT',
                     success:function(result){
-                      if(result=='1'){
+                      if(result.success){
                     // 提示添加成功
                         $('#modifyStudentModal').modal('toggle');
                         refreshStudentTable();
@@ -347,7 +347,7 @@ var ButtonInit = function () {
 
     var dropdown=$('#modify_classes');
         dropdown.children().each(function(){
-         $(this).click(function(event){
+         $(this).off('click').on('click',function(event){
              var btn3=$('#modify_classes_btn');
              btn3.text(event.target.innerText);
              btn3.append(' <span class="caret"></span>');
@@ -356,7 +356,7 @@ var ButtonInit = function () {
  }
  function deleteStudent(){
 
-    $('#btn_student_delete').click(function(){
+    $('#btn_student_delete').off('click').on('click',function(){
 
        var uids='';
        var dataArr=$('#student_tab').bootstrapTable('getSelections');
@@ -368,11 +368,11 @@ var ButtonInit = function () {
                     if(!e)
                         return;
                    $.ajax({
-                        url:'/ajax/api/v1.0/student-delete/?uids='+uids,
+                        url:'/ajax/api/v1.0/student?uids='+uids,
                         type:'DELETE',
                         success:function(result){
                             console.log(result);
-                            if(result=='1'){
+                            if(result.success){
                                 refreshStudentTable();
                                 toastr.success('删除学生成功');
                             }else{
@@ -385,7 +385,7 @@ var ButtonInit = function () {
  }
  //刷新学生表
  function refreshStudentTable(){
-    $('#student_tab').bootstrapTable('refresh', {url: '/ajax/api/v1.0/student-query/'});
+    $('#student_tab').bootstrapTable('refresh', {url: '/ajax/api/v1.0/student'});
  }
 
 $(document).ready(function(){
