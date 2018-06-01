@@ -8,3 +8,11 @@
 .needed{
     color:red;
 }
+.level_left{
+    float:left;
+    display:inline-block;
+}
+.level_right{
+    float:right;
+    display:inline-block;
+}

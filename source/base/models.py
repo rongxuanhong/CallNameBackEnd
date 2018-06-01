@@ -149,6 +149,12 @@ class Classes(Base):
     def __repr__(self):
         return str(self.class_name)
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'class_name': self.class_name,
+        }
+
 
 class Profession(Base):
     __tablename__ = 'profession'
@@ -169,6 +175,13 @@ class Profession(Base):
     def __repr__(self):
         return str(self.prof_name)
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'prof_name': self.prof_name,
+            'classess': [classes.to_json() for classes in self.classess]
+        }
+
 
 class Colleague(Base):
     __tablename__ = 'colleague'
@@ -185,6 +198,14 @@ class Colleague(Base):
     def __repr__(self):
         return str(self.colea_name)
 
+    def to_json(self):
+        professions=self.professions
+        return {
+            'id': self.id,
+            'colea_name': self.colea_name,
+            'professions': [profession.to_json for profession in professions]
+        }
+
 
 class Course(Base):
     __tablename__ = 'course'
@@ -195,7 +216,7 @@ class Course(Base):
     semester = Column(String(32))  # 课程学期
     course_time = Column(String(32))  # 上课时间
     position = Column(String(32))  # 课程地点
-    course_numbers = Column(Integer)  # 课程人数
+    course_members = Column(Integer)  # 课程人数
     last_modify_time = Column(DateTime, default=datetime.now)
 
     # 外键
@@ -217,6 +238,7 @@ class Course(Base):
             'semester': self.semester,
             'position': self.position,
             'course_time': self.course_time,
+            'course_members': self.course_members,
         }
         return json_course
 

@@ -5067,140 +5067,49 @@ if (typeof NProgress != 'undefined') {
          });
         });
     });
+function init_user_menu(){
 
-//    $(document).ready(function(){
-//        $('#student-query').click(function(){
-//           //请求数据 并改变表格数据
-//            var colleague_name=$('#colleague_btn').text();
-//            colleague_name=colleague_name.trim();
-//            var profession_name=$('#profession_btn').text();
-//            profession_name=profession_name.trim();
-//            var class_name=$('#classes_btn').text();
-//            class_name=class_name.trim();
-//            //ajax:get
-//            $.get('/ajax/api/v1.0/student-query/',
-//            {'colleague_name':colleague_name,'profession_name':profession_name,'class_name':class_name})
-//            .success(function(json) {
-//              //处理请求回来的学生数据
-//             var tbody=$('#student_tbody');
-//             if(json.students.length==0)
-//             {
-//                 tbody.html("");
-//                 tbody.append('<p>未查询到相关结果<p>');
-//                 return;
-//             }
-//              tbody.html("");
-//                $.each(json.students,function(index,student){
-//                tbody.append("<tr>"+
-//                "<td>"+student.user_name+"</td>"+
-//                "<td>"+student.job_number+"</td>"+
-//                "<td>"+student.class_name+"</td>"+
-//                "<td>"+student.profession_name+"</td>"+
-//                "<td>"+student.colleague_name+"</td>"+
-//                "<td>"+student.last_modify_time+"</td>"+
-//                "<td><span id="+student.job_number+"class=student_delete>删除</span></td>"+
-//                "</tr>" )
-//                });
-//
-//             }).fail(function(error) { alert(error); })
-//            .always(function() {});
-//        });
-//    });
+    current_username=$('.current_username').text().trim();
+    role_name=(current_username.startsWith('A')?'管理员':'教师');
 
-//    $(document).ready(function(){
-//       $('.student_delete').click(function(e){
-//
-//        job_number=e.currentTarget.id;
-//        Ewin.confirm({ message: "确认要删除选择的数据吗？" }).on(function (e) {
-//                if(!e)
-//                    return;
-//               $.ajax({
-//                    url:'/ajax/api/v1.0/student-delete/',
-//                    data:{'job_number':job_number,'type':2},
-//                    type:'DELETE',
-//                    done:function(result){
-//                      alert(result);
-//                     },
-//                 });
-//        });
-//       });
-//
-//    });
+    $.ajax({
+        url:'/ajax/api/v1.0/user_menu',
+        data:'role_name='+role_name,
+        success:function(result){
+
+         if(result.success)
+         {
+           var side_menu=$('.side-menu');
+                //加载菜单
+                menus=result.result;
+                for(i=0,len1=menus.length;i<len1;++i)
+                {
+                    pmenu=menus[i];
+                    var children=pmenu.children;
+                    var str='<li><a><i class="'+pmenu.icon+'"></i> '+pmenu.name+' <span class="fa fa-chevron-down"></span></a>'+
+                    '<ul class="nav child_menu">';
+                    side_menu.append(str);
+                    for(j=0, len2=children.length;j<len2;++j)
+                    {
+                      cmenu=children[j];
+                      var str='<li><a href="'+cmenu.url+'">'+cmenu.name+'</a></li>';
+                      side_menu.append(str);
+                    }
+                    side_menu.append('</ul></li>');
+                }
+                  init_sidebar();
+         }
+        },
+    })
 
 
-//    //excel 导入
-//    $(document).ready(function(){
-//        //获取本地excel路径
-//        //读取完成的数据
-//        $('.inputfile').change(function(obj){
-//                var wb;//读取完成的数据
-//                var rABS = true; //是否将文件读取为二进制字符串
-//                if(!obj.target.files) {
-//                    return;
-//                }
-//                var f = obj.target.files[0];
-//                if(!f.name.endsWith("xlsx"))
-//                {
-//                    alert('请导入xlsx格式的Excel文件');
-//                    return;
-//                }
-//                //读取文件
-//                var reader = new FileReader();
-//                //当文件读取完成后，回调
-//                reader.onload = function(e) {
-//                    var data = e.target.result;
-//                    if(rABS) {
-//                        wb = XLSX.read(btoa(fixdata(data)), {//手动转化
-//                            type: 'base64'
-//                        });
-//                    } else {
-//                        wb = XLSX.read(data, {
-//                            type: 'binary'
-//                        });
-//                    }
-//                    //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
-//                    //wb.Sheets[Sheet名]获取第一个Sheet的数据
-//                    var data= JSON.stringify(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]));
-//                    $.post('/ajax/api/v1.0/post_students_from_excel/',{'student_data':data},function(data){
-//                        console.log(data);
-//                    var tbody=$('#student_tbody');
-//                    $.each(data.student_list,function(index,student)
-//                    {
-//                            tbody.append("<tr>"+
-//                            "<td>"+student['姓名']+"</td>"+
-//                            "<td>"+student['学号']+"</td>"+
-//                            "<td>"+student['班级']+"</td>"+
-//                            "<td>"+student['专业']+"</td>"+
-//                            "<td>"+student['学院']+"</td>"+
-//                            "<td>"+student['last_modify_time']+"</td>"+
-//                             "<td><span id="+student['学号']+"class=student_delete>删除</span></td>"+
-//                            "</tr>" )
-//                    });
-//
-//                    });
-//                };
-//                if(rABS) {
-//                    reader.readAsArrayBuffer(f);
-//                } else {
-//                    reader.readAsBinaryString(f);
-//                }
-//            function fixdata(data) { //文件流转BinaryString
-//                var o = "",
-//                    l = 0,
-//                    w = 10240;
-//                for(; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
-//                o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
-//                return o;
-//            }
-//
-//        });
-//    });
+}
 
 	$(document).ready(function() {
-				
 		init_sparklines();
 		init_flot_chart();
-		init_sidebar();
+		init_user_menu();
+//		init_sidebar();
 		init_wysiwyg();
 		init_InputMask();
 		init_JQVmap();

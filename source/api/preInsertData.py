@@ -41,6 +41,46 @@ def route_profession2():
     db.session.commit()
 
 
+def route_profession4():
+    professions = ['建筑学', '城乡规划', '风景园林']
+    colleague = Colleague.query.filter_by(colea_name='建筑学院').first()
+    for item in list(professions):
+        profession = Profession(item)
+        profession.colleague_id = colleague.id
+        db.session.add(profession)
+    db.session.commit()
+
+
+def route_profession5():
+    professions = ['电气工程', '电力工程', '应用电子', '自动化']
+    colleague = Colleague.query.filter_by(colea_name='电气学院').first()
+    for item in list(professions):
+        profession = Profession(item)
+        profession.colleague_id = colleague.id
+        db.session.add(profession)
+    db.session.commit()
+
+
+def route_profession6():
+    professions = ['建筑工程', '道路与桥梁工程', '市政工程', '交通运输工程']
+    colleague = Colleague.query.filter_by(colea_name='土木学院').first()
+    for item in list(professions):
+        profession = Profession(item)
+        profession.colleague_id = colleague.id
+        db.session.add(profession)
+    db.session.commit()
+
+
+def route_profession7():
+    professions = ['英语', '日语', '德语', ]
+    colleague = Colleague.query.filter_by(colea_name='外国语学院').first()
+    for item in list(professions):
+        profession = Profession(item)
+        profession.colleague_id = colleague.id
+        db.session.add(profession)
+    db.session.commit()
+
+
 def route_profession3():
     professions = ['管理科学与工程', '工商管理', '信息管理与信息系统', '物流管理', '金融工程', '会计学', '旅游管理', '经济与产业系统管理']
     colleague = Colleague.query.filter_by(colea_name='经管学院').first()
@@ -51,7 +91,7 @@ def route_profession3():
     db.session.commit()
 
 
-def route_profession4():
+def route_profession10():
     professions = ['科技与教育管理']
     colleague = Colleague.query.filter_by(colea_name='经管学院').first()
     for item in list(professions):
@@ -73,6 +113,19 @@ def route_class():
 
 
 def route_class2():
+    profesion1 = Profession.query.filter_by(prof_name='英语').first()
+    profesion2 = Profession.query.filter_by(prof_name='德语').first()
+    profesion3 = Profession.query.filter_by(prof_name='日语').first()
+    data = [('17英语1班', profesion1), ('17德语1班', profesion2), ('17英语2班', profesion1), ('17德语2班', profesion2),
+            ('17日语1班', profesion3), ('17日语2班', profesion3), ]
+    for item1, item2 in list(data):
+        cla = Classes(item1)
+        cla.profession_id = item2.id
+        db.session.add(cla)
+    db.session.commit()
+
+
+def route_class3():
     profesion1 = Profession.query.filter_by(prof_name='电子科学与技术').first()
     profesion2 = Profession.query.filter_by(prof_name='光电信息工程').first()
     data = [('17电子1班', profesion1), ('17光电1班', profesion2), ('17电子2班', profesion1), ('17光电2班', profesion2)]
@@ -172,6 +225,8 @@ def course():
     cours.course_week_times = '10'
     cours.semester = '2017-2018学年第二学期'
     cours.course_number = 'UCREEUEUEEEE'
+    cours.course_time = '周一'
+    cours.profession_id = 5
     db.session.add(cours)
     db.session.commit()
 
@@ -208,7 +263,7 @@ def set_menu():
     menu.icon = 'fa fa-table'
     menu.menu_type = 2
     menu.order = 11
-    menu.parent_id=menu1.id
+    menu.parent_id = menu1.id
     rolemenu.menu = menu
     role.menus.append(rolemenu)
     addToDb(role)
@@ -227,7 +282,7 @@ def set_menu():
     menu.icon = 'fa fa-table'
     menu.menu_type = 2
     menu.order = 21
-    menu.parent_id=menu2.id
+    menu.parent_id = menu2.id
     rolemenu.menu = menu
     role.menus.append(rolemenu)
     addToDb(role)
@@ -246,7 +301,7 @@ def set_menu():
     menu.icon = 'fa fa-table'
     menu.menu_type = 2
     menu.order = 31
-    menu.parent_id=menu3.id
+    menu.parent_id = menu3.id
     rolemenu.menu = menu
     role.menus.append(rolemenu)
     addToDb(role)
@@ -265,7 +320,7 @@ def set_menu():
     menu.icon = 'fa fa-table'
     menu.menu_type = 2
     menu.order = 41
-    menu.parent_id=menu4.id
+    menu.parent_id = menu4.id
     rolemenu.menu = menu
     role.menus.append(rolemenu)
     addToDb(role)
@@ -355,5 +410,46 @@ def set_menu1():
     addToDb(role)
 
 
+def route_class5():
+    profesion1 = Profession.query.filter_by(prof_name='离散中心').first()
+    profesion2 = Profession.query.filter_by(prof_name='应用数学').first()
+    profesion3 = Profession.query.filter_by(prof_name='通信工程').first()
+    profesion4 = Profession.query.filter_by(prof_name='电子信息工程').first()
+    profesion5 = Profession.query.filter_by(prof_name='管理科学与工程').first()
+    profesion6 = Profession.query.filter_by(prof_name='工商管理').first()
+    profesion7 = Profession.query.filter_by(prof_name='会计学').first()
+    profesion8 = Profession.query.filter_by(prof_name='建筑学').first()
+    profesion9 = Profession.query.filter_by(prof_name='城乡规划').first()
+    profesion10 = Profession.query.filter_by(prof_name='风景园林').first()
+    profesion11= Profession.query.filter_by(prof_name='电力工程').first()
+    profesion12 = Profession.query.filter_by(prof_name='应用电子').first()
+    profesion13= Profession.query.filter_by(prof_name='自动化').first()
+    profesion14= Profession.query.filter_by(prof_name='建筑工程').first()
+    profesion15= Profession.query.filter_by(prof_name='道路与桥梁工程').first()
+    profesion16 = Profession.query.filter_by(prof_name='市政工程').first()
+    profesion17 = Profession.query.filter_by(prof_name='交通运输工程').first()
+    data = [('17离散1班', profesion1), ('17应数1班', profesion2), ('17离散2班', profesion1), ('17应数2班', profesion2),
+            ('17通信1班', profesion3), ('17通信2班', profesion3),
+            ('17电信1班', profesion4), ('17电信2班', profesion4),
+            ('17管科1班', profesion5), ('17管科2班', profesion5),
+            ('17工管1班', profesion6), ('17工管2班', profesion6),
+            ('17会计1班', profesion7), ('17会计2班', profesion7),
+            ('17建筑1班', profesion8), ('17建筑2班', profesion8),
+            ('17城规1班', profesion9), ('17城规2班', profesion9),
+            ('17风圆1班', profesion10), ('17风圆2班', profesion10),
+            ('17电工1班', profesion11), ('17电工2班', profesion11),
+            ('17应电1班', profesion12), ('17应电2班', profesion12),
+            ('17自动1班', profesion13), ('17自动2班', profesion13),
+            ('17建工1班', profesion14), ('17建工2班', profesion14),
+            ('17道桥1班', profesion15), ('17道桥2班', profesion15),
+            ('17市政1班', profesion16), ('17市政2班', profesion16),
+            ('17交通1班', profesion17), ('17交通2班', profesion17),]
+    for item1, item2 in list(data):
+        cla = Classes(item1)
+        cla.profession_id = item2.id
+        db.session.add(cla)
+    db.session.commit()
+
+
 if __name__ == '__main__':
-    set_menu1()
+    route_class5()

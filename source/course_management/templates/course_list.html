@@ -15,11 +15,11 @@
     </ol>
     <table id="course_table" class="table table-hover"></table>
     <div id="toolbar" class="btn-group pull-right" style="margin-right: 20px;">
-        <button id="btn_add_roles" type="button" class="btn btn-default">
+        <button id="btn_add_course" type="button" class="btn btn-default">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
         </button>
     </div>
-    <!--  新增角色Modal -->
+    <!--  新增课程Modal -->
     <div class="modal fade" id="addCourseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <form id="addCourseForm" method="post" role="form" class="form-horizontal"
               action="/ajax/api/v1.0/course">
@@ -32,31 +32,65 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程名称</label>
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程编号</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="role_name" id="add_course_name"/>
+                                <input type="text" class="form-control" name="course_number" id="add_course_number"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>备注</label>
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程名称</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="role_note" id="add_role_note"/>
+                                <input type="text" class="form-control" name="course_name" id="add_course_name"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>上课时间</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="course_time"
+                                       id="add_course_time"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程人数</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="course_members"
+                                       id="add_course_members"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程周次</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="course_weeks" id="add_course_weeks"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>所在学期</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="course_semester"
+                                       id="add_course_semester"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程地点</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="course_position"
+                                       id="add_course_position"/>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="from-group">
                             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                            <button id="role_add_btn" type="submit" class="btn btn-primary">新增</button>
+                            <button id="course_add_btn" type="submit" class="btn btn-primary">新增</button>
                         </div>
                     </div>
                 </div>
             </div>
         </form>
     </div>
-    <!--  修改角色Modal -->
-    <div class="modal fade" id="modifyRoleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <form id="modifyRoleForm" method="post" role="form" class="form-horizontal"
+    <!--  修改课程Modal -->
+    <div class="modal fade" id="modifyCourseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <form id="modifyCourseForm" method="post" role="form" class="form-horizontal"
               action="/ajax/api/v1.0/course">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -67,22 +101,56 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>名称</label>
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程编号</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="role_name" id="modify_role_name"/>
+                                <input type="text" class="form-control" name="course_number" id="modify_course_number"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>备注</label>
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程名称</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="role_desc" id="modify_role_note"/>
+                                <input type="text" class="form-control" name="course_name" id="modify_course_name"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程人数</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="course_members"
+                                       id="modify_course_members"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程周次</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="course_weeks" id="modify_course_weeks"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>所在学期</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="course_semester"
+                                       id="modify_course_semester"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>上课时间</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="course_time"
+                                       id="modify_course_time"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程地点</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="course_position"
+                                       id="modify_course_position"/>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="from-group">
                             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                            <button id="btn_role_modify_sb" type="submit" class="btn btn-primary">修改</button>
+                            <button id="course_modify_btn" type="submit" class="btn btn-primary">修改</button>
                         </div>
                     </div>
                 </div>

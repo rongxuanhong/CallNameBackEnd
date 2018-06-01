@@ -1,6 +1,6 @@
 {% extends "base_site.html" %}
 
-{% block title %} 权限设置 {% endblock title %}
+{% block title %} 组织管理 {% endblock title %}
 
 {% block stylesheets %}
 {{ super() }}
@@ -14,17 +14,17 @@
 <div class="right_col" role="main">
     <ol class="breadcrumb">
         <li><a href="/index">首页</a></li>
-        <li class="active">权限设置</li>
+        <li class="active">组织管理</li>
     </ol>
-</div>
-<div>
-    <table>
-        <thead>
-        <tr>
-            <th>角色</th>
-            <th>拥有权限</th>
-        </tr>
-        </thead>
-    </table>
+    <div class="panel panel-default well">
+        <div class="panel-body">
+            <div id="organization_tree" class="level_left">
+
+            </div>
+            <div class="level_right">
+
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}

@@ -43,13 +43,13 @@ var TableInit = function () {
         sortOrder: 'asc',
         showFooter:false,
         columns:[
-            {
-                title:'全选',
-                field:'select',
-                //复选框
-                checkbox:true,
-                width:25,
-            },
+//            {
+//                title:'全选',
+//                field:'select',
+//                //复选框
+//                checkbox:true,
+//                width:25,
+//            },
             {
                 title:'课程编号',
                 field:'course_number',
@@ -60,6 +60,20 @@ var TableInit = function () {
             {
                 title:'课程名称',
                 field:'course_name',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+             {
+                title:'上课时间',
+                field:'course_time',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title:'课程人数',
+                field:'course_members',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
@@ -123,12 +137,12 @@ var TableInit = function () {
     };
         return oTableInit;
 };
-function addRoleValidatorForm(){
+function addCourseValidatorForm(){
 
-   $('#btn_add_roles').off('click').on('click',function(){
-        $('#addRoleModal').modal('toggle');
+   $('#btn_add_course').off('click').on('click',function(){
+        $('#addCourseModal').modal('toggle');
 
-        $('#addRoleForm').bootstrapValidator({
+        $('#addCourseForm').bootstrapValidator({
             message:'',
              feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
@@ -136,60 +150,92 @@ function addRoleValidatorForm(){
                 validating: 'glyphicon glyphicon-refresh'
             },
             fields:{
-                role_name:{
+                course_number:{
                     validators:{
                         notEmpty: {
-                            message: '名称不空'
+                            message: '课程编号不空'
                         },
                     }
                 },
-                role_note:{
+                course_name:{
                     validators:{
                         notEmpty: {
-                            message: '备注不空'
+                            message: '课程名称不空'
                         },
                     }
                     },
+                course_weeks:{
+                    validators:{
+                        notEmpty: {
+                            message: '课程周次不空'
+                        },
+                    }
+                    },
+                  course_members:{
+                    validators:{
+                        notEmpty: {
+                            message: '课程人数不空'
+                        },
+                    }
+                    },
+                course_semester:{
+                    validators:{
+                        notEmpty: {
+                            message: '课程学期不空'
+                        },
+                    }
+                    },
+                course_position:{
+                    validators:{
+                        notEmpty: {
+                            message: '课程位置不空'
+                        },
+                    }
                 },
-        }).on('success.form.bv', function(e) {
-            // Prevent form submission
-            e.preventDefault();
-
-            // Get the form instance
-            var $form = $(e.target);
-
-            // Get the BootstrapValidator instance
-//            var bv = $form.data('bootstrapValidator');
-
-            $.ajax({
-                    url:$form.attr('action'),
-                    data:$form.serialize(),
-                    type:'POST',
-                    success:function(result){
-                      if(result=='1'){
-                    // 提示添加成功
-                        $('#addRoleModal').modal('toggle');
-                        refreshRoleTable();
-                        toastr.success('新增角色成功');
-
-                        ///待做 更新表格那行的数据
-                        }else{
-                            toastr.error('新增角色失败');
-                        }
-                     },
-                 });
+                },
         });
+
+            $('#course_add_btn').off('click').on('click',function(){
+                var $form=$('#addCourseForm');
+                var bv = $form.data('bootstrapValidator');
+                bv.validate();
+                if(bv.isValid()){
+                $.ajax({
+                        url:$form.attr('action'),
+                        data:$form.serialize(),
+                        type:'POST',
+                        success:function(result){
+                          if(result.success){
+                            // 提示添加成功
+                            $('#addCourseModal').modal('toggle');
+                            refreshRoleTable();
+                            toastr.success('新增课程成功');
+
+                            }else{
+                                toastr.error('新增课程失败');
+                            }
+                         },
+                     });
+                 };
+            });
    });
 }
 
 function tableOperationEvent(){
+    $(".btn_course_modify").off("click");
+     $(".btn_course_delete").off("click");
    window.operateEvents = {
-      'click .btn_role_modify': function (e, value, row, index) {
-          $('#modify_role_name').val(row.role_name);
-         $('#modify_role_note').val(row.role_desc);
-         $('#modifyRoleModal').modal('toggle');
+      'click .btn_course_modify': function (e, value, row, index) {
+          $('#modify_course_number').val(row.course_number);
+         $('#modify_course_name').val(row.course_name);
+         $('#modify_course_weeks').val(row.course_week_times);
+         $('#modify_course_semester').val(row.semester);
+         $('#modify_course_time').val(row.course_time);
+         $('#modify_course_position').val(row.position);
+         $('#modify_course_members').val(row.course_members);
+         $('#modifyCourseModal').modal('toggle');
 
-        $('#modifyRoleForm').bootstrapValidator({
+        $('#modifycourseForm').bootstrapValidator({
             message:'',
              feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
@@ -197,89 +243,96 @@ function tableOperationEvent(){
                 validating: 'glyphicon glyphicon-refresh'
             },
             fields:{
-                role_name:{
+                 course_number:{
                     validators:{
                         notEmpty: {
-                            message: '名称不空'
+                            message: '课程编号不空'
                         },
                     }
                 },
-                role_desc:{
+                course_name:{
                     validators:{
                         notEmpty: {
-                            message: '备注不空'
+                            message: '课程名称不空'
                         },
                     }
                     },
+                course_weeks:{
+                    validators:{
+                        notEmpty: {
+                            message: '课程周次不空'
+                        },
+                    }
+                    },
+                  course_members:{
+                    validators:{
+                        notEmpty: {
+                            message: '课程人数不空'
+                        },
+                    }
+                    },
+                course_semester:{
+                    validators:{
+                        notEmpty: {
+                            message: '课程学期不空'
+                        },
+                    }
+                    },
+                course_position:{
+                    validators:{
+                        notEmpty: {
+                            message: '课程位置不空'
+                        },
+                    }
                 },
-        })
-//        .on('success.form.bv', function(e) { // 为啥多次进入。。。。。
-//            // Prevent form submission
-//            e.preventDefault();
-//            // Get the form instance
-//            var $form = $(e.target);
+                },
+        });
 
-            // Get the BootstrapValidator instance
-            $('#btn_role_modify_sb').off('click').on('click',function(){
-             var $form=$('#modifyRoleForm');
-            var bv = $form.data('bootstrapValidator');
-            bv.validate();
-            if(bv.isValid()){
-                console.log('11');
-            $.ajax({
+          $('#course_modify_btn').off('click').on('click',function(){
+                var $form=$('#modifyCourseForm');
+                var bv = $form.data('bootstrapValidator');
+                bv.validate();
+                if(bv.isValid()){
+                $.ajax({
                     url:$form.attr('action'),
-                    data:$form.serialize()+'&role_id='+row.id,
+                    data:$form.serialize(),
                     type:'PUT',
                     success:function(result){
-                      if(result=='1'){
-                    // 提示添加成功
-                        $('#modifyRoleModal').modal('toggle');
-                        refreshRoleTable();
-                        toastr.success('修改角色成功');
-
-                        ///待做 更新表格那行的数据
+                      if(result.success){
+                        $('#modifyCourseModal').modal('toggle');
+                            refreshRoleTable();
+                            toastr.success('修改课程成功');
                         }else{
-                            toastr.error('修改角色失败');
+                            toastr.error('修改课程失败');
                         }
                      },
                  });
             }
             });
        },
-        'click .btn_role_delete': function (e, value, row, index) {
+        'click .btn_course_delete': function (e, value, row, index) {
 
-                Ewin.confirm({ message: "确认要删除选中的角色吗？" }).on(function (e) {
+                Ewin.confirm({ message: "确认要删除选中的课程吗？" }).on(function (e) {
                     if(!e)
                         return;
                    $.ajax({
-                        url:'/ajax/api/v1.0/role-delete/?role_id='+row.id,
+                        url:'/ajax/api/v1.0/course?course_number='+row.course_number,
                         type:'DELETE',
                         success:function(result){
-                            console.log(result);
-                            if(result=='1'){
+                            if(result.success){
                                 refreshRoleTable();
-                                toastr.success('删除角色成功');
+                                toastr.success('删除课程成功');
                             }else{
-                                toastr.error('删除角色失败');
+                                toastr.error('删除课程失败');
                             }
                          },
                      });
             });
        },
-       'click .btn_role_alloc_pms': function (e, value, row, index) {
-            $('#allocPermissionModal').modal('toggle');
-            $('#permission_tree').jstree({
-
-                "checkbox" : {
-                    "keep_selected_style" : false
-                 },
-                "plugins" : [ "checkbox" ]
-            });
-       },
     };
 }
 function refreshRoleTable(){
-    $('#role_table').bootstrapTable('refresh', {url: '/ajax/api/v1.0/get_role_list/'});
+    $('#course_table').bootstrapTable('refresh', {url: '/ajax/api/v1.0/course'});
 }
 
 $(document).ready(function(){
@@ -288,5 +341,5 @@ $(document).ready(function(){
    var tableInit=new TableInit();
    tableInit.Init();
 
-   addRoleValidatorForm();
+   addCourseValidatorForm();
 });

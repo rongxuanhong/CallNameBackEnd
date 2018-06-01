@@ -395,6 +395,10 @@ def get_menu_role():
 
 @api.route('/ajax/api/v1.0/role_menu', methods=['POST'])
 def modify_role_menu_display():
+    """
+    修改角色的菜单权限
+    :return:
+    """
     selected = requestParameter('selected')
     role_name = requestParameter('role_name')
     try:
@@ -414,6 +418,44 @@ def modify_role_menu_display():
     except Exception as error:
         return jsonify({'error_msg': str(error),
                         'success': False, })
+
+
+@api.route('/ajax/api/v1.0/user_menu')
+def get_role_menu():
+    """
+    获取角色的可显示菜单
+    :return:
+    """
+    try:
+        role_name = requestParameter('role_name')
+        role = Role.query.filter(Role.role_name == role_name).first()
+        if role:
+            role_ids = [menu.menu_id for menu in role.menus if menu.display]
+            menus = Menu.query.filter(Menu.id.in_(role_ids)).all()
+            data = dict()
+            result = list()
+            for menu in menus:
+                if menu.parent_id == 0:
+                    menu.url = ''
+                    data[menu.id] = {'id': menu.id, 'name': menu.name, 'icon': menu.icon, 'url': menu.url,
+                                     'children': []}
+                else:
+                    data[menu.parent_id]['children'].append(
+                        {'id': menu.id, 'name': menu.name, 'icon': menu.icon, 'url': menu.url,
+                         'children': []})
+
+            for item in data.values():
+                result.append(item)
+            return jsonify({
+                'result': result,
+                'success': True
+            })
+
+    except Exception as error:
+        return jsonify({
+            'error_msg': str(error),
+            'success': False,
+        })
 
 
 @api.route('/ajax/api/v1.0/role', methods=['GET'])
@@ -540,10 +582,11 @@ def addCourse():
     """
     course_number = requestParameter('course_number')  ## 课程编号
     course_name = requestParameter('course_name')
-    course_week_times = requestParameter('course_week_times')
-    position = requestParameter('position')
-    semester = requestParameter('semester')
+    course_week_times = requestParameter('course_weeks')
+    position = requestParameter('course_position')
+    semester = requestParameter('course_semester')
     course_time = requestParameter('course_time')
+    course_members = requestParameter('course_members')
     try:
         course = Course()
         course.course_name = course_name
@@ -552,7 +595,8 @@ def addCourse():
         course.position = position
         course.course_week_times = course_week_times
         course.course_time = course_time
-
+        course.course_members = course_members
+        addToDb(course)
         return jsonify({
             'result': course.to_json(),
             'success': True
@@ -570,12 +614,13 @@ def modifyCourse():
     """
     course_number = requestParameter('course_number')  ## 课程编号
     course_name = requestParameter('course_name')
-    course_week_times = requestParameter('course_week_times')
-    position = requestParameter('position')
-    semester = requestParameter('semester')
+    course_week_times = requestParameter('course_weeks')
+    position = requestParameter('course_position')
+    semester = requestParameter('course_semester')
     course_time = requestParameter('course_time')
+    course_members = requestParameter('course_members')
     try:
-        course = Course.query.filter(Course.course_number == course_number).first
+        course = Course.query.filter(Course.course_number == course_number).first()
         if course:
             course.course_name = course_name
             course.course_number = course_number
@@ -583,6 +628,8 @@ def modifyCourse():
             course.position = position
             course.course_week_times = course_week_times
             course.course_time = course_time
+            course.course_members = course_members
+            addToDb(course)
         else:
             raise CustomFlaskErr(COURSE_ALREADY_EXISTS, 400)
 
@@ -597,17 +644,35 @@ def modifyCourse():
 
 @api.route('/ajax/api/v1.0/course', methods=['DELETE'])
 def deleteCourse():
-    course_numbers = requestParameter('course_number')
-    split = course_numbers.split(',')
+    course_number = requestParameter('course_number')
     try:
-        for course_number in split:
-            if course_number == '':
-                continue
-            course = Course.query.filter(Course.course_number == course_number)
-            if course is None:
-                continue
+        course = Course.query.filter(Course.course_number == course_number).first()
+        if course:
             delete_table_or_record(course)
-        return jsonify({'success': True, })
+            return jsonify({'success': True, })
+        else:
+            raise CustomFlaskErr(COURSE_ALREADY_EXISTS, 400)
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/organization_data')
+def get_organization_data():
+    """
+    获取所有组织关系数据
+    :return:
+    """
+    try:
+        colleagues = Colleague.query.all()
+        result = list()
+        for colleague in colleagues:
+            result.append(colleague.to_json())
+
+        return jsonify({
+            'result': result,
+            'success': True,
+        })
     except Exception as error:
         return jsonify({'error_msg': str(error),
                         'success': False, })
