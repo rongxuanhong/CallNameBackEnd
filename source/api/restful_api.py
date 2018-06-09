@@ -10,7 +10,7 @@ from decorator import allow_cross_domain
 from BadRequest import CustomFlaskErr
 ####   restful 接口       ######
 from utils.ERROR_DEFINE import ACTION_INCORRECT, ROLE_ALREADY_EXISTS, ROLE_ALREADY_DELETE, ROLE_ALREADY_NOT_EXISTS, \
-    COURSE_ALREADY_EXISTS
+    COURSE_ALREADY_EXISTS, ORGANIZATION_TYPE_NOT_EXISTS, PARENT_ORGANIZATION_NAME_NOT_EXITS, ORGANIZATION_NAME_EXITS
 
 api = Blueprint(
     'api',
@@ -261,7 +261,7 @@ def get_user_profile():
     获取用户个人中心资料
     :return:
     """
-    uid = requestParameter('user_uid')
+    uid = requestParameter('uid')
     try:
         list = db.session.query(UserInfo, Classes.class_name, Profession.prof_name, Colleague.colea_name).join(
             Colleague.professions).join(
@@ -393,7 +393,7 @@ def get_menu_role():
                         'success': False, })
 
 
-@api.route('/ajax/api/v1.0/role_menu', methods=['POST'])
+@api.route('/ajax/api/v1.0/role_menu', methods=['PUT'])
 def modify_role_menu_display():
     """
     修改角色的菜单权限
@@ -482,7 +482,7 @@ def get_role_list():
 @api.route('/ajax/api/v1.0/role', methods=['POST'])
 def add_role():
     """
-    添加学生
+    添加角色
     :return:
     """
     role_name = requestParameter('role_name')
@@ -551,6 +551,7 @@ def delete_Role():
 
 @api.route('/ajax/api/v1.0/course')
 def getCourse():
+    course_name = request.values.get('course_name', '')
     action = request.values.get('action')
     sort_name = request.values.get('sort', 'course_number')
     sort_order = request.values.get('sortOrder', 'asc')
@@ -561,7 +562,11 @@ def getCourse():
         raise CustomFlaskErr(ACTION_INCORRECT, 400)
 
     try:
-        courses_query = Course.query.order_by(sort_name + " " + sort_order)
+        if course_name == '':
+            courses_query = Course.query.order_by(sort_name + " " + sort_order)
+        else:  ## 配合搜索框的模糊查询
+            courses_query = Course.query.filter(Course.course_name.like('%' + course_name + '%')).order_by(
+                sort_name + " " + sort_order)
         courses = courses_query.limit(limit).offset((pageIndex - 1) * limit).all()
         total = courses_query.count()
         return jsonify({
@@ -580,6 +585,7 @@ def addCourse():
     添加课程
     :return:
     """
+
     course_number = requestParameter('course_number')  ## 课程编号
     course_name = requestParameter('course_name')
     course_week_times = requestParameter('course_weeks')
@@ -657,7 +663,21 @@ def deleteCourse():
                         'success': False, })
 
 
-@api.route('/ajax/api/v1.0/organization_data')
+@api.route('/ajax/api/v1.0/course-query')
+def query_course_by_course_name():
+    try:
+        course_name = requestParameter('course_name')
+        courses = Course.query.filter(Course.course_name.like('%' + course_name + '%')).all()
+        return jsonify({
+            'result': [course.to_json() for course in courses],
+            'success': True
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/organization')
 def get_organization_data():
     """
     获取所有组织关系数据
@@ -666,13 +686,222 @@ def get_organization_data():
     try:
         colleagues = Colleague.query.all()
         result = list()
-        for colleague in colleagues:
-            result.append(colleague.to_json())
+        for index1, colleague in enumerate(colleagues):
+            profession_list = list()
+            for index2, profession in enumerate(colleague.professions):
+                class_list = list()
+                for index3, classes in enumerate(profession.classes):
+                    class_list.append({
+                        'id': classes.uuid + ',class',
+                        'text': classes.class_name,
+                        'icon': 'glyphicon glyphicon-ice-lolly-tasted',
+                        'children': []
+                    })
+                profession_list.append({
+                    'id': profession.uuid + ',profession',
+                    'text': profession.prof_name,
+                    'icon': 'glyphicon glyphicon-scale',
+                    'children': class_list,
+                })
+            result.append({
+                'id': colleague.uuid + ',colleague',
+                'text': colleague.colea_name,
+                'icon': 'glyphicon glyphicon-education',
+                'children': profession_list
+            })
 
         return jsonify({
             'result': result,
             'success': True,
         })
     except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/colleague', methods=['PUT'])
+def modifyColleague():
+    """
+    修改学院名
+    :return:
+    """
+    uid = requestParameter('uuid')
+    colea_name = requestParameter('colea_name')
+    try:
+        colleague = Colleague.query.filter(Colleague.uuid == uid).first()
+        if colleague:
+            colleague.colea_name = colea_name
+            addToDb(colleague)
+            return jsonify({
+                'result': colleague.to_json(),
+                'success': True,
+            })
+
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/colleague', methods=['DELETE'])
+def deleteColleague():
+    """
+    删除学院名
+    :return:
+    """
+    uid = requestParameter('uuid')
+    try:
+        colleague = Colleague.query.filter(Colleague.uuid == uid).first()
+        if colleague:
+            delete_table_or_record(colleague)
+            return jsonify({
+                'success': True,
+            })
+
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/profession', methods=['PUT'])
+def modifyProfession():
+    """
+    修改专业名
+    :return:
+    """
+    uid = requestParameter('uuid')
+    prob_name = requestParameter('prob_name')
+    try:
+        profession = Profession.query.filter(Profession.uuid == uid).first()
+        if profession:
+            profession.prof_name = prob_name
+            addToDb(profession)
+            return jsonify({
+                'result': profession.to_json(),
+                'success': True,
+            })
+
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/profession', methods=['DELETE'])
+def deleteProfession():
+    """
+    删除专业名
+    :return:
+    """
+    uid = requestParameter('uuid')
+    try:
+        profession = Profession.query.filter(Profession.uuid == uid).first()
+        if profession:
+            delete_table_or_record(profession)
+            return jsonify({
+                'success': True,
+            })
+
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/class', methods=['PUT'])
+def modifyClass():
+    """
+    修改班级名
+    :return:
+    """
+    uid = requestParameter('uuid')
+    class_name = requestParameter('class_name')
+    try:
+        classes = Classes.query.filter(Classes.uuid == uid).first()
+        if classes:
+            classes.class_name = class_name
+            addToDb(classes)
+            return jsonify({
+                'result': classes.to_json(),
+                'success': True,
+            })
+
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/class', methods=['DELETE'])
+def deleteClass():
+    """
+    删除班级名
+    :return:
+    """
+    uid = requestParameter('uuid')
+    try:
+        classes = Classes.query.filter(Classes.uuid == uid).first()
+        if classes:
+            delete_table_or_record(classes)
+            return jsonify({
+                'success': True,
+            })
+
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/organization', methods=['POST'])
+def organization_add():
+    organization_name = requestParameter('organization_names')
+    organization_type = requestParameter('organization_types')
+    parents_organization_names = requestParameter('parent_organization_names')
+    if organization_type not in ['学院', '专业', '班级']:
+        raise CustomFlaskErr(ORGANIZATION_TYPE_NOT_EXISTS, 400)
+    result = list()
+    try:
+        if organization_type == '学院':
+            colleague = Colleague.query.filter(Colleague.colea_name == organization_name).first()
+            if colleague is None:
+                colleague = Colleague(organization_name)
+                colleague.uuid = str(uuid.uuid4())
+                addToDb(colleague)
+                result.append(colleague)
+            else:
+                raise CustomFlaskErr(ORGANIZATION_NAME_EXITS, 400)
+        elif organization_type == '专业':
+            colleague = Colleague.query.filter(Colleague.colea_name == parents_organization_names).first()
+            if colleague:
+                profession = Profession.query.filter(Profession.prof_name == organization_name).first()
+                if profession is None:
+                    profession = Profession(organization_name)
+                    profession.uuid = str(uuid.uuid4())
+                    profession.colleague_id = colleague.id
+                    addToDb(profession)
+                    result.append(profession)
+                else:
+                    raise CustomFlaskErr(ORGANIZATION_NAME_EXITS, 400)
+            else:
+                raise CustomFlaskErr(PARENT_ORGANIZATION_NAME_NOT_EXITS, 400)
+        else:
+            profession = Profession.query.filter(Profession.prof_name == parents_organization_names).first()
+            if profession:
+                classes = Classes.query.filter(Classes.class_name == organization_name).first()
+                if classes is None:
+                    classes = Classes(organization_name)
+                    classes.uuid = str(uuid.uuid4())
+                    classes.profession_id = profession.id
+                    addToDb(classes)
+                    result.append(classes)
+                else:
+                    raise CustomFlaskErr(ORGANIZATION_NAME_EXITS, 400)
+            else:
+                raise CustomFlaskErr(PARENT_ORGANIZATION_NAME_NOT_EXITS, 400)
+
+        return jsonify({
+            'result': [re.to_json() for re in result],
+            'success': True,
+        })
+    except Exception as error:
+        if isinstance(error, CustomFlaskErr):
+            return jsonify({'error_msg': str(error.return_code),
+                            'success': False, })
         return jsonify({'error_msg': str(error),
                         'success': False, })

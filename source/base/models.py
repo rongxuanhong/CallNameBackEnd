@@ -14,6 +14,7 @@ class UserInfoCourse(Base):
     __tablename__ = 'userinfocourse'
     userinfo_id = Column(Integer, ForeignKey('userinfo.id'), primary_key=True)
     course_id = Column(Integer, ForeignKey('course.id'), primary_key=True)
+
     course = relationship('Course', backref='userinfo_ucourses')
 
 
@@ -23,9 +24,10 @@ class RolePermission(Base):
     __tablename__ = 'rolepermission'
     role_id = Column(Integer, ForeignKey('role.id'), primary_key=True)
     permission_id = Column(Integer, ForeignKey('permission.id'), primary_key=True)
-    last_modify_time = Column(DateTime, unique=True, default=datetime.now)
+    alloc = Column(Integer, default=1)
+    last_modify_time = Column(DateTime, default=datetime.now)
 
-    permission = relationship('Permission', backref='role_rolepermissions')
+    permission = relationship('Permission', backref='role_permissions')
 
     # ## 角色菜单关联表 针对多对多中含额外属性
 
@@ -133,7 +135,7 @@ class Classes(Base):
     __tablename__ = 'classes'
     id = Column(Integer, primary_key=True, autoincrement=True)
     class_name = Column(String(32))
-
+    uuid = Column(String(40))
     last_modify_time = Column(DateTime, default=datetime.now)
 
     # 外键
@@ -161,12 +163,12 @@ class Profession(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     prof_name = Column(String(32), unique=True)
     last_modify_time = Column(DateTime, default=datetime.now)
-
+    uuid = Column(String(40))
     # 外键
     colleague_id = Column(Integer, ForeignKey('colleague.id'))
 
     # 关系
-    classes = relationship("Classes", backref="profession", lazy="dynamic")  # 一个专业多个班级
+    classes = relationship("Classes", backref="profession", lazy="joined")  # 一个专业多个班级
     courses = relationship("Course", backref="profession", lazy="dynamic")  # 一个专业多个课程
 
     def __init__(self, prof_name):
@@ -179,7 +181,6 @@ class Profession(Base):
         return {
             'id': self.id,
             'prof_name': self.prof_name,
-            'classess': [classes.to_json() for classes in self.classess]
         }
 
 
@@ -188,9 +189,9 @@ class Colleague(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     colea_name = Column(String(32), unique=True)
     last_modify_time = Column(DateTime, default=datetime.now)
-
+    uuid = Column(String(40))
     # 关系
-    professions = relationship("Profession", backref="colleague", lazy="dynamic")  # 一个学院多个专业
+    professions = relationship("Profession", backref="colleague", lazy="joined")  # 一个学院多个专业
 
     def __init__(self, colea_name):
         self.colea_name = colea_name
@@ -199,11 +200,10 @@ class Colleague(Base):
         return str(self.colea_name)
 
     def to_json(self):
-        professions=self.professions
+        professions = self.professions
         return {
             'id': self.id,
             'colea_name': self.colea_name,
-            'professions': [profession.to_json for profession in professions]
         }
 
 
@@ -282,8 +282,8 @@ class Role(Base):
 class Permission(Base):  ## 手动创建
     __tablename__ = 'permission'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(32), unique=True)  # func.__doc__作为名字
-    action = Column(String(60), unique=True)  # 由func.__module__ 和 func.__name__组成
+    name = Column(String(32), )  # func.__doc__作为名字
+    action = Column(String(60))  # 由func.__module__ 和 func.__name__组成
     perm_desc = Column(String(100))  # 具体权限描述
     last_modify_time = Column(DateTime, default=datetime.now)
 

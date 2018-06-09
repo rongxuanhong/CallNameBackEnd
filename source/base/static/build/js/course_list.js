@@ -125,6 +125,8 @@ var TableInit = function () {
      }
     //请求服务数据时所传参数
     oTableInit.queryParams= function (params){
+        var input=$('#course_query_input').val();
+        course_name=(input==''?'':input);
         return{
             action:'course_list',
             //每页多少条数据
@@ -133,6 +135,7 @@ var TableInit = function () {
             offset:params.offset,
             sort:params.sort,
             sortOrder:params.order,
+            course_name:course_name,
         };
     };
         return oTableInit;
@@ -208,7 +211,7 @@ function addCourseValidatorForm(){
                           if(result.success){
                             // 提示添加成功
                             $('#addCourseModal').modal('toggle');
-                            refreshRoleTable();
+                            refreshCourseTable();
                             toastr.success('新增课程成功');
 
                             }else{
@@ -300,7 +303,7 @@ function tableOperationEvent(){
                     success:function(result){
                       if(result.success){
                         $('#modifyCourseModal').modal('toggle');
-                            refreshRoleTable();
+                            refreshCourseTable();
                             toastr.success('修改课程成功');
                         }else{
                             toastr.error('修改课程失败');
@@ -320,7 +323,7 @@ function tableOperationEvent(){
                         type:'DELETE',
                         success:function(result){
                             if(result.success){
-                                refreshRoleTable();
+                                refreshCourseTable();
                                 toastr.success('删除课程成功');
                             }else{
                                 toastr.error('删除课程失败');
@@ -331,8 +334,16 @@ function tableOperationEvent(){
        },
     };
 }
-function refreshRoleTable(){
+function refreshCourseTable(){
     $('#course_table').bootstrapTable('refresh', {url: '/ajax/api/v1.0/course'});
+}
+
+function search()
+{
+    $('#course_query_input').bind('input propertychange',function(){
+        console.log('change');
+        refreshCourseTable()
+    });
 }
 
 $(document).ready(function(){
@@ -342,4 +353,5 @@ $(document).ready(function(){
    tableInit.Init();
 
    addCourseValidatorForm();
+   search();
 });

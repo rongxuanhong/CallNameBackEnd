@@ -4,7 +4,8 @@
 
 {% block stylesheets %}
 {{ super() }}
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/themes/default/style.min.css"/>
+<!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/themes/default/style.min.css"/>-->
+<link rel="stylesheet" href="{{ url_for('static', filename='vendors/jstree/dist/themes/default/style.min.css') }}" />
 {% endblock stylesheets %}
 
 {% block content %}
@@ -135,6 +136,7 @@
 {% block javascripts %}
 {{ super() }}
 <script src="{{ url_for('static', filename='build/js/role_list.js') }}"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/jstree.min.js"></script>
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/jstree.min.js"></script>-->
+<script src="{{ url_for('static', filename='vendors/jstree/dist/jstree.min.js') }}"></script>
 
 {% endblock javascripts %}

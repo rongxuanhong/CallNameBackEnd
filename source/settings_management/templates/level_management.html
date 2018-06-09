@@ -8,6 +8,7 @@
 <link href="{{ url_for('static', filename='vendors/fullcalendar/dist/fullcalendar.min.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='vendors/fullcalendar/dist/fullcalendar.print.css') }}" rel="stylesheet"
       media="print">
+<link rel="stylesheet" href="{{ url_for('static', filename='vendors/jstree/dist/themes/default/style.min.css') }}"/>
 {% endblock stylesheets %}
 
 {% block content %}
@@ -16,15 +17,47 @@
         <li><a href="/index">首页</a></li>
         <li class="active">组织管理</li>
     </ol>
-    <div class="panel panel-default well">
-        <div class="panel-body">
-            <div id="organization_tree" class="level_left">
+    <div class="organization_tree">
+        <div class="level_header">组织管理树</div>
+        <!--<div class="panel-body">-->
+        <div id="organization_tree">
 
-            </div>
-            <div class="level_right">
-
-            </div>
         </div>
+        <!--</div>-->
+    </div>
+    <div class="organization_operation">
+        <div class="level_header">组织管理</div>
+        <form id="organization_form" method="post" role="form" class="form-horizontal" action="">
+            <div class="col-sm-8">
+                <label class="control-label"><span class="needed">*&nbsp;</span>组织名称</label>
+                <div>
+                    <input type="text" class="form-control" name="organization_name" id="organization_names"/>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <label class="control-label"><span class="needed"></span>组织类型</label>
+                <div>
+                    <input type="text" class="form-control" name="organization_type" id="organization_types"/>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <label class="control-label"><span class="needed"></span>父级组织名称</label>
+                <div>
+                    <input type="text" class="form-control" name="parent_organization_name" id="parent_organization_names"/>
+                </div>
+            </div>
+            <div class="level_btn col-sm-12">
+                <button id="btn_add_organization" type="button" class="btn btn-primary">新增</button>
+                <button id="btn_modify_organization" type="button" class="btn btn-primary">修改</button>
+                <button id="btn_delete_organization" type="button" class="btn btn-primary">删除</button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock content %}
+{% block javascripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='build/js/level_management.js') }}"></script>
+<script src="{{ url_for('static', filename='vendors/jstree/dist/jstree.min.js') }}"></script>
+
+{% endblock javascripts %}

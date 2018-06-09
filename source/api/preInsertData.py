@@ -1,4 +1,5 @@
-from base.models import Colleague, Profession, Classes, UserInfo, User, Role, Permission, Course, Menu, RoleMenu
+from base.models import Colleague, Profession, Classes, UserInfo, User, Role, Permission, Course, Menu, RoleMenu, \
+    RolePermission
 from database import db, Base
 from flask import jsonify
 import uuid
@@ -421,11 +422,11 @@ def route_class5():
     profesion8 = Profession.query.filter_by(prof_name='建筑学').first()
     profesion9 = Profession.query.filter_by(prof_name='城乡规划').first()
     profesion10 = Profession.query.filter_by(prof_name='风景园林').first()
-    profesion11= Profession.query.filter_by(prof_name='电力工程').first()
+    profesion11 = Profession.query.filter_by(prof_name='电力工程').first()
     profesion12 = Profession.query.filter_by(prof_name='应用电子').first()
-    profesion13= Profession.query.filter_by(prof_name='自动化').first()
-    profesion14= Profession.query.filter_by(prof_name='建筑工程').first()
-    profesion15= Profession.query.filter_by(prof_name='道路与桥梁工程').first()
+    profesion13 = Profession.query.filter_by(prof_name='自动化').first()
+    profesion14 = Profession.query.filter_by(prof_name='建筑工程').first()
+    profesion15 = Profession.query.filter_by(prof_name='道路与桥梁工程').first()
     profesion16 = Profession.query.filter_by(prof_name='市政工程').first()
     profesion17 = Profession.query.filter_by(prof_name='交通运输工程').first()
     data = [('17离散1班', profesion1), ('17应数1班', profesion2), ('17离散2班', profesion1), ('17应数2班', profesion2),
@@ -443,7 +444,7 @@ def route_class5():
             ('17建工1班', profesion14), ('17建工2班', profesion14),
             ('17道桥1班', profesion15), ('17道桥2班', profesion15),
             ('17市政1班', profesion16), ('17市政2班', profesion16),
-            ('17交通1班', profesion17), ('17交通2班', profesion17),]
+            ('17交通1班', profesion17), ('17交通2班', profesion17), ]
     for item1, item2 in list(data):
         cla = Classes(item1)
         cla.profession_id = item2.id
@@ -451,5 +452,43 @@ def route_class5():
     db.session.commit()
 
 
+def addUUID():
+    colleagues = Colleague.query.all()
+    for colleague in colleagues:
+        colleague.uuid = str(uuid.uuid4())
+        db.session.add(colleague)
+    professions = Profession.query.all()
+    for profession in professions:
+        profession.uuid = str(uuid.uuid4())
+        db.session.add(profession)
+    classes = Classes.query.all()
+    for cla in classes:
+        cla.uuid = str(uuid.uuid4())
+        db.session.add(cla)
+    db.session.commit()
+
+
+def addPermission():
+    role = Role.query.filter(Role.role_name == '教师').first()
+    permission = Permission()
+    permission.name = '注册'
+    permission.perm_desc = '注册权限'
+
+    role_permission = RolePermission()
+    role_permission.permission = permission
+    role_permission.alloc = 0
+    role.permissions.append(role_permission)
+    addToDb(permission)
+    addToDb(role_permission)
+
+
+def add_menu():
+    menu = Menu()
+    menu.name = '授课安排'
+    menu.icon = 'fa fa-table'
+    menu.menu_type = 2
+    menu.order = 32
+
+
 if __name__ == '__main__':
-    route_class5()
+    addPermission()

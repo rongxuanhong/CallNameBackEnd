@@ -16,3 +16,27 @@
     float:right;
     display:inline-block;
 }
+.organization_tree ,.organization_operation{
+    border:2px solid #2E9AFE;
+    width:48%;
+}
+.organization_operation{
+ float:right;
+ width:48%;
+}
+.organization_tree{
+ float:left;
+}
+.level_header{
+    background:#2E9AFE;
+    color:white;
+    padding:10px 20px
+}
+#organization_tree{
+ margin-top:10px;
+}
+.level_btn{
+    background:#D8D8D8;
+    padding:10px 20px;
+
+}

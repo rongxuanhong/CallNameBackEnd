@@ -288,7 +288,7 @@ function tableOperationEvent(){
                             $.ajax({
                                   url:$form.attr('action'),
                                   data:'selected='+str+'&role_name='+row.role_name,
-                                  type:'POST',
+                                  type:'PUT',
                                   success:function(result){
                                    $('#allocPermissionModal').modal('toggle');
                                        if(result.success){
