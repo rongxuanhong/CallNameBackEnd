@@ -483,12 +483,22 @@ def addPermission():
 
 
 def add_menu():
-    menu = Menu()
-    menu.name = '授课安排'
-    menu.icon = 'fa fa-table'
-    menu.menu_type = 2
-    menu.order = 32
+    role = Role.query.filter(Role.role_name == '管理员').first()
+
+    menu = Menu.query.filter(Menu.name == '授课安排').first()
+    rolemenu = RoleMenu(display=1)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '课表查询').first()
+    rolemenu = RoleMenu(display=1)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+
 
 
 if __name__ == '__main__':
-    addPermission()
+    add_menu()

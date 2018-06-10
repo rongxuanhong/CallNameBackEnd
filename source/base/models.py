@@ -373,3 +373,5 @@ class Admin(Base):  # 管理员管理表
 
     def __repr__(self):
         return str(self.absent_std)
+
+

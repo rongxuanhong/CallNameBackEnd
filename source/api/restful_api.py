@@ -99,6 +99,7 @@ def delete_table_or_record(table_or_record):
 
 
 @api.route('/ajax/api/v1.0/student', methods=['POST'])
+@allow_cross_domain
 def add_student():
     """
     添加学生
@@ -137,6 +138,7 @@ def add_student():
 
 
 @api.route('/ajax/api/v1.0/student', methods=['PUT'])
+@allow_cross_domain
 def modify_student():
     """
     修改学生信息
@@ -177,6 +179,7 @@ def modify_student():
 
 
 @api.route('/ajax/api/v1.0/student', methods=['DELETE'])
+@allow_cross_domain
 def delete_student():
     """
     删除学生信息
@@ -199,6 +202,7 @@ def delete_student():
 
 
 @api.route('/ajax/api/login', methods=['POST'])
+@allow_cross_domain
 def login():
     """
     判断是否学生是否能够登录，检查用户名和密码是否匹配
@@ -256,6 +260,7 @@ def login():
 
 
 @api.route('/ajax/api/user_profile')
+@allow_cross_domain
 def get_user_profile():
     """
     获取用户个人中心资料
@@ -291,6 +296,7 @@ def addToDb(table):
 
 
 @api.route('/ajax/api/call_roll_submit', methods=['POST'])
+@allow_cross_domain
 def post_call_roll():
     """
     提交学生的点名信息
@@ -313,6 +319,7 @@ def post_call_roll():
 
 
 @api.route('/ajax/api/v1.0/post_students_from_excel', methods=['POST'])
+@allow_cross_domain
 def post_students_from_excel():
     """
     从excel导入学生数据
@@ -364,6 +371,7 @@ def post_students_from_excel():
 
 
 @api.route('/ajax/api/v1.0/role_menu')
+@allow_cross_domain
 def get_menu_role():
     """
     获取角色菜单列表
@@ -394,6 +402,7 @@ def get_menu_role():
 
 
 @api.route('/ajax/api/v1.0/role_menu', methods=['PUT'])
+@allow_cross_domain
 def modify_role_menu_display():
     """
     修改角色的菜单权限
@@ -421,6 +430,7 @@ def modify_role_menu_display():
 
 
 @api.route('/ajax/api/v1.0/user_menu')
+@allow_cross_domain
 def get_role_menu():
     """
     获取角色的可显示菜单
@@ -457,29 +467,8 @@ def get_role_menu():
             'success': False,
         })
 
-
-@api.route('/ajax/api/v1.0/role', methods=['GET'])
-def get_role_list():
-    """
-    获取角色列表
-    :return:
-    """
-    action = request.values.get('action')
-    if action != 'role_list':
-        raise CustomFlaskErr(ACTION_INCORRECT, 400)
-    try:
-        roles = Role.query.all()
-        if len(roles):
-            return jsonify({
-                'result': [role.to_json() for role in roles],
-                'success': True,
-            })
-    except Exception as error:
-        return jsonify({'error_msg': str(error),
-                        'success': False, })
-
-
 @api.route('/ajax/api/v1.0/role', methods=['POST'])
+@allow_cross_domain
 def add_role():
     """
     添加角色
@@ -503,7 +492,30 @@ def add_role():
         return str(error)
 
 
+@api.route('/ajax/api/v1.0/role', methods=['GET'])
+@allow_cross_domain
+def get_role_list():
+    """
+    获取角色列表
+    :return:
+    """
+    action = request.values.get('action')
+    if action != 'role_list':
+        raise CustomFlaskErr(ACTION_INCORRECT, 400)
+    try:
+        roles = Role.query.all()
+        if len(roles):
+            return jsonify({
+                'result': [role.to_json() for role in roles],
+                'success': True,
+            })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
 @api.route('/ajax/api/v1.0/role', methods=['PUT'])
+@allow_cross_domain
 def modify_role():
     """
     修改学生
@@ -530,6 +542,7 @@ def modify_role():
 
 
 @api.route('/ajax/api/v1.0/role', methods=['DELETE'])
+@allow_cross_domain
 def delete_Role():
     """
     修改角色信息
@@ -550,6 +563,7 @@ def delete_Role():
 
 
 @api.route('/ajax/api/v1.0/course')
+@allow_cross_domain
 def getCourse():
     course_name = request.values.get('course_name', '')
     action = request.values.get('action')
@@ -580,6 +594,7 @@ def getCourse():
 
 
 @api.route('/ajax/api/v1.0/course', methods=['POST'])
+@allow_cross_domain
 def addCourse():
     """
     添加课程
@@ -613,6 +628,7 @@ def addCourse():
 
 
 @api.route('/ajax/api/v1.0/course', methods=['PUT'])
+@allow_cross_domain
 def modifyCourse():
     """
     添加课程
@@ -649,6 +665,7 @@ def modifyCourse():
 
 
 @api.route('/ajax/api/v1.0/course', methods=['DELETE'])
+@allow_cross_domain
 def deleteCourse():
     course_number = requestParameter('course_number')
     try:
@@ -664,6 +681,7 @@ def deleteCourse():
 
 
 @api.route('/ajax/api/v1.0/course-query')
+@allow_cross_domain
 def query_course_by_course_name():
     try:
         course_name = requestParameter('course_name')
@@ -678,6 +696,7 @@ def query_course_by_course_name():
 
 
 @api.route('/ajax/api/v1.0/organization')
+@allow_cross_domain
 def get_organization_data():
     """
     获取所有组织关系数据
@@ -720,6 +739,7 @@ def get_organization_data():
 
 
 @api.route('/ajax/api/v1.0/colleague', methods=['PUT'])
+@allow_cross_domain
 def modifyColleague():
     """
     修改学院名
@@ -743,6 +763,7 @@ def modifyColleague():
 
 
 @api.route('/ajax/api/v1.0/colleague', methods=['DELETE'])
+@allow_cross_domain
 def deleteColleague():
     """
     删除学院名
@@ -763,6 +784,7 @@ def deleteColleague():
 
 
 @api.route('/ajax/api/v1.0/profession', methods=['PUT'])
+@allow_cross_domain
 def modifyProfession():
     """
     修改专业名
@@ -786,6 +808,7 @@ def modifyProfession():
 
 
 @api.route('/ajax/api/v1.0/profession', methods=['DELETE'])
+@allow_cross_domain
 def deleteProfession():
     """
     删除专业名
@@ -806,6 +829,7 @@ def deleteProfession():
 
 
 @api.route('/ajax/api/v1.0/class', methods=['PUT'])
+@allow_cross_domain
 def modifyClass():
     """
     修改班级名
@@ -829,6 +853,7 @@ def modifyClass():
 
 
 @api.route('/ajax/api/v1.0/class', methods=['DELETE'])
+@allow_cross_domain
 def deleteClass():
     """
     删除班级名
@@ -849,6 +874,7 @@ def deleteClass():
 
 
 @api.route('/ajax/api/v1.0/organization', methods=['POST'])
+@allow_cross_domain
 def organization_add():
     organization_name = requestParameter('organization_names')
     organization_type = requestParameter('organization_types')
