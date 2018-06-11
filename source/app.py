@@ -78,8 +78,8 @@ def configure_logs(app):
 
 def create_app(selenium=False):
     app = Flask(__name__, static_folder='base/static')
-    from flask_cors import CORS
-    CORS(app,resources={r"/ajax/api/*": {"origins": "*"}})
+    # from flask_cors import CORS
+    # CORS(app,resources={r"/ajax/api/*": {"origins": "*"}})
     app.config.from_object(DebugConfig)
     if selenium:
         app.config['LOGIN_DISABLED'] = True

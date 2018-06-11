@@ -11,15 +11,15 @@ var TableInit = function () {
         });
         oTableInit.operateFormatter = function (value, row, index) {//赋予的参数
                 return [
-          '<button class="btn btn_course_modify" type="button"><i class="fa fa-paste"></i>授课安排</button>',
-          '<button class="btn btn_course_delete" type="button"><i class="fa fa-envelope"></i> 删除</button>',
+          '<button class="btn btn_course_arrange" type="button"><i class="fa fa-paste"></i>授课安排</button>',
+//          '<button class="btn btn_course_delete" type="button"><i class="fa fa-envelope"></i> 删除</button>',
             ].join('');
          }
 
-        $('#course_table').bootstrapTable({
+        $('#course_arrange_table').bootstrapTable({
         method: 'get',
-        contentType: "application/json",//必须要有！！！！
-        url:"/ajax/api/v1.0/course",//要请求数据的文件路径
+        contentType: "application/json",//必须要有！！
+        url:"/ajax/api/v1.0/course_arrange",//要请求数据的文件路径
         height:oTableInit.tableHeight,//高度调整
 //        toolbar: '#toolbar',//指定工具栏
         striped: true, //是否显示行间隔色
@@ -38,63 +38,20 @@ var TableInit = function () {
         clickToSelect: true,//是否启用点击选中行
         toolbarAlign:'right',//工具栏对齐方式
         buttonsAlign:'right',//按钮对齐方式
-        toolbar:'#toolbar',//指定工作栏
-        sortable: true,      //是否启用排序
-        sortOrder: 'asc',
+//        toolbar:'#toolbar',//指定工作栏
+//        sortable: true,      //是否启用排序
+//        sortOrder: 'asc',
         showFooter:false,
         columns:[
-//            {
-//                title:'全选',
-//                field:'select',
-//                //复选框
-//                checkbox:true,
-//                width:25,
-//            },
             {
-                title:'课程编号',
-                field:'course_number',
+                title:'授课班级',
+                field:'course_arrange_class',
                 align: 'center',
                 valign: 'middle',
-                sortable:true,
             },
             {
-                title:'课程名称',
-                field:'course_name',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-             {
-                title:'上课时间',
-                field:'course_time',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-            {
-                title:'课程人数',
-                field:'course_members',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-            {
-                title:'课程周次',
-                field:'course_week_times',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-            {
-                title:'所在学期',
-                field:'semester',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-            {
-                title:'课程地点',
-                field:'position',
+                title:'已授课课程数',
+                field:'course_arrange_number',
                 align: 'center',
                 valign: 'middle',
             },
@@ -125,25 +82,89 @@ var TableInit = function () {
      }
     //请求服务数据时所传参数
     oTableInit.queryParams= function (params){
-        var input=$('#course_query_input').val();
-        course_name=(input==''?'':input);
         return{
-            action:'course_list',
             //每页多少条数据
             limit: params.limit,
             //请求第几页
             offset:params.offset,
-            sort:params.sort,
-            sortOrder:params.order,
-            course_name:course_name,
         };
     };
         return oTableInit;
 };
+function tableOperationEvent(){
+     $(".btn_course_arrange").off("click");
+      window.operateEvents = {
+      'click .btn_course_arrange': function (e, value, row, index) {
+            $('#courseArrangeModal').modal('toggle');
 
+             $('#course_arrange_btn').off('click').on('click',function(){
+            var course_name=$('#course_arrange_name').val();
+            var week=$('#course_arrange_weeks').val();
+            var time=$('#course_arrange_times').val();
+            var location=$('#course_arrange_sites').val();
+            var class_id=row.class_id;
+//             var params={'course_name':course_name,'week':week,'time':time,'location':location,'class_id':class_id};
+            var form=$('#courseArrangeForm');
+            $.ajax({
+                url:'/ajax/api/v1.0/course_arrange',
+                data:form.serialize()+'&class_id='+class_id,
+                type:'POST',
+                success:function(result){
+                    if(result.success){
+                        toastr.success('授课安排一门课程成功');
+                         $('#courseArrangeModal').modal('toggle');
+                         refreshCourseArrangeTable();
+                    }else if(result.error_msg=='20009'){
+                          toastr.error('授课时间重复');
+                    }else if(result.error_msg=='200010'){
+                          toastr.error('课程已经安排');
+                    }else{
+                          toastr.error('授课失败');
+                    }
+                },
+            });
+        });
+      },
+      };
+}
+function drop_menu_item_change(){
+
+    var dropdown=$('#course_arrange_site');
+        dropdown.children().each(function(){
+         $(this).off('click').on('click',function(event){
+             var input3=$('#course_arrange_sites');
+             input3.val(event.target.innerText);
+//             btn3.append(' <span class="caret"></span>');
+         });
+        });
+
+     var dropdown=$('#course_arrange_time');
+        dropdown.children().each(function(){
+         $(this).off('click').on('click',function(event){
+             var input3=$('#course_arrange_times');
+             input3.val(event.target.innerText);
+//             btn3.append(' <span class="caret"></span>');
+         });
+        });
+        var dropdown=$('#course_arrange_week');
+        dropdown.children().each(function(){
+         $(this).off('click').on('click',function(event){
+             var input3=$('#course_arrange_weeks');
+             input3.val(event.target.innerText);
+//             input3.append(' <span class="caret"></span>');
+         });
+        });
+}
+function refreshCourseArrangeTable(){
+  $('#course_arrange_table').bootstrapTable('refresh', {url: '/ajax/api/v1.0/course_arrange'});
+}
 $(document).ready(function(){
 
    tableOperationEvent();
    var tableInit=new TableInit();
    tableInit.Init();
+
+//   addCourseArrange();
+   tableOperationEvent();
+   drop_menu_item_change();
 });

@@ -1,5 +1,5 @@
 from base.models import Colleague, Profession, Classes, UserInfo, User, Role, Permission, Course, Menu, RoleMenu, \
-    RolePermission
+    RolePermission, Timetable, ClassTimeTable, TeachLocation, CourseArrange
 from database import db, Base
 from flask import jsonify
 import uuid
@@ -498,7 +498,75 @@ def add_menu():
     addToDb(role)
 
 
+def createClassTimeTable(item, str, weeks):
+    timetable = Timetable.query.filter(Timetable.period == str).first()
+    for week in weeks:
+        classtime = ClassTimeTable()
+        classtime.week = week
+        classtime.timetable = timetable
+        item.timetables.append(classtime)
+        addToDb(item)
 
+
+def addTimeTable():
+    classes = Classes.query.all()
+    weeks = ['周一', '周二', '周三', '周四', '周五']
+    for item in classes[:10]:
+        createClassTimeTable(item, '第一节', weeks)
+        createClassTimeTable(item, '第二节', weeks)
+        createClassTimeTable(item, '第三节', weeks)
+        createClassTimeTable(item, '第四节', weeks)
+        createClassTimeTable(item, '第五节', weeks)
+        createClassTimeTable(item, '第六节', weeks)
+        createClassTimeTable(item, '第七节', weeks)
+        createClassTimeTable(item, '第八节', weeks)
+        createClassTimeTable(item, '第九节', weeks)
+        createClassTimeTable(item, '第十节', weeks)
+        createClassTimeTable(item, '第十一节', weeks)
+        createClassTimeTable(item, '第十二节', weeks)
+
+
+def addTimeTable2():
+    timetable = Timetable('第一节', '8:20', '9:05')
+    addToDb(timetable)
+    timetable = Timetable('第二节', '9:15', '10:00')
+    addToDb(timetable)
+    timetable = Timetable('第三节', '10:20', '11:05')
+    addToDb(timetable)
+    timetable = Timetable('第四节', '11:15', '12:00')
+    addToDb(timetable)
+    timetable = Timetable('第五节', '14:00', '14:45')
+    addToDb(timetable)
+    timetable = Timetable('第六节', '14:55', '15:40')
+    addToDb(timetable)
+    timetable = Timetable('第七节', '15:50', '16:35')
+    addToDb(timetable)
+    timetable = Timetable('第八节', '16:45', '17:30')
+    addToDb(timetable)
+    timetable = Timetable('第九节', '18:00', '18:45')
+    addToDb(timetable)
+    timetable = Timetable('第十节', '18:55', '19:40')
+    addToDb(timetable)
+    timetable = Timetable('第十一节', '19:50', '20:35')
+    addToDb(timetable)
+    timetable = Timetable('第十二节', '20:45', '21:30')
+    addToDb(timetable)
+
+
+def addTeachLocation():
+    locations = ['东三202', '东三102', '东二505', '东二203']
+
+    for location in locations:
+        a = TeachLocation()
+        a.location = location
+        addToDb(a)
+
+
+def course_arrange():
+    class_timetable = ClassTimeTable.query.filter(ClassTimeTable.classes_id == 1).filter(
+        ClassTimeTable.time_table_id == 1).filter(ClassTimeTable.week == '周一').first()
+
+    print(class_timetable.id)
 
 if __name__ == '__main__':
-    add_menu()
+    course_arrange()

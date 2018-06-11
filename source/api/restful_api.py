@@ -4,13 +4,15 @@ from datetime import datetime
 from flask import Blueprint
 from flask import request, jsonify
 
-from base.models import UserInfo, Classes, Colleague, Profession, User, CallName, Role, Permission, Course, Menu
+from base.models import UserInfo, Classes, Colleague, Profession, User, CallName, Role, Permission, Course, Menu, \
+    CourseArrange, TeachLocation, Timetable, ClassTimeTable
 from database import db
 from decorator import allow_cross_domain
 from BadRequest import CustomFlaskErr
 ####   restful 接口       ######
 from utils.ERROR_DEFINE import ACTION_INCORRECT, ROLE_ALREADY_EXISTS, ROLE_ALREADY_DELETE, ROLE_ALREADY_NOT_EXISTS, \
-    COURSE_ALREADY_EXISTS, ORGANIZATION_TYPE_NOT_EXISTS, PARENT_ORGANIZATION_NAME_NOT_EXITS, ORGANIZATION_NAME_EXITS
+    COURSE_ALREADY_EXISTS, ORGANIZATION_TYPE_NOT_EXISTS, PARENT_ORGANIZATION_NAME_NOT_EXITS, ORGANIZATION_NAME_EXITS, \
+    TEACH_TIME_DUPLICATION, COURSE_ALREADY_ARRANGE
 
 api = Blueprint(
     'api',
@@ -467,6 +469,7 @@ def get_role_menu():
             'success': False,
         })
 
+
 @api.route('/ajax/api/v1.0/role', methods=['POST'])
 @allow_cross_domain
 def add_role():
@@ -604,18 +607,18 @@ def addCourse():
     course_number = requestParameter('course_number')  ## 课程编号
     course_name = requestParameter('course_name')
     course_week_times = requestParameter('course_weeks')
-    position = requestParameter('course_position')
+    # position = requestParameter('course_position')
     semester = requestParameter('course_semester')
-    course_time = requestParameter('course_time')
+    # course_time = requestParameter('course_time')
     course_members = requestParameter('course_members')
     try:
         course = Course()
         course.course_name = course_name
         course.course_number = course_number
         course.semester = semester
-        course.position = position
+        # course.position = position
         course.course_week_times = course_week_times
-        course.course_time = course_time
+        # course.course_time = course_time
         course.course_members = course_members
         addToDb(course)
         return jsonify({
@@ -637,9 +640,9 @@ def modifyCourse():
     course_number = requestParameter('course_number')  ## 课程编号
     course_name = requestParameter('course_name')
     course_week_times = requestParameter('course_weeks')
-    position = requestParameter('course_position')
+    # position = requestParameter('course_position')
     semester = requestParameter('course_semester')
-    course_time = requestParameter('course_time')
+    # course_time = requestParameter('course_time')
     course_members = requestParameter('course_members')
     try:
         course = Course.query.filter(Course.course_number == course_number).first()
@@ -647,9 +650,9 @@ def modifyCourse():
             course.course_name = course_name
             course.course_number = course_number
             course.semester = semester
-            course.position = position
+            # course.position = position
             course.course_week_times = course_week_times
-            course.course_time = course_time
+            # course.course_time = course_time
             course.course_members = course_members
             addToDb(course)
         else:
@@ -931,3 +934,127 @@ def organization_add():
                             'success': False, })
         return jsonify({'error_msg': str(error),
                         'success': False, })
+
+
+@api.route('/ajax/api/v1.0/course_arrange')
+@allow_cross_domain
+def get_course_arrange():
+    limit = request.args.get('limit', 10, type=int)  ## 一页大小
+    offset = request.args.get('offset', 1, type=int)  ## 页码
+    pageIndex = (offset / limit) + 1
+    class_query = Classes.query
+    classes = class_query.limit(limit).offset(
+        (pageIndex - 1) * limit).all()
+    number = list()
+    time = list()
+    for cla in classes:
+        query = CourseArrange.query.filter(CourseArrange.classes_id == cla.id).filter(
+            CourseArrange.class_timetable_id != None)
+        course_arrange = query.all()
+        size = len(course_arrange)
+        if size > 0:
+            time.append(course_arrange[size - 1].last_modify_time.strftime('%Y-%m-%d %H:%M:%S'))
+        else:
+            time.append('尚未更新')
+        number.append(query.count())
+
+    result = list()
+    for cla, num, t in zip(classes, number, time):
+        json = {
+            'course_arrange_class': cla.class_name,
+            'course_arrange_number': num,
+            'last_modify_time': t,
+            'class_id': cla.id,
+        }
+        result.append(json)
+
+    return jsonify({
+        'result': result,
+        'success': True,
+        'total': class_query.count()
+    })
+
+
+@api.route('/ajax/api/v1.0/teach_location')
+@allow_cross_domain
+def get_teach_location():
+    try:
+        teach_locations = TeachLocation.query.all()
+        return jsonify({
+            'result': [teach_location.to_json() for teach_location in teach_locations],
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/course_arrange', methods=['POST'])
+@allow_cross_domain
+def post_course_arrange():
+    course_name = requestParameter('course_name')  # 添加课程名
+    week = requestParameter('course_arrange_week')  # 周次
+    time = requestParameter('course_arrange_time')  # 第几节
+    location = requestParameter('course_arrange_site')  # 教学场所
+    class_id = requestParameter('class_id')
+    try:
+        timetable = Timetable.query.filter(Timetable.period == time).first()
+        course = Course.query.filter(Course.course_name == course_name).first()
+        teach_location = TeachLocation.query.filter(TeachLocation.location == location).first()
+        class_timetable = ClassTimeTable.query.filter(ClassTimeTable.classes_id == class_id).filter(
+            ClassTimeTable.time_table_id == timetable.id).filter(ClassTimeTable.week == week).first()
+        course_arrange = CourseArrange.query.filter(CourseArrange.classes_id == class_id).all()
+        for item in course_arrange:
+            if item.course_id == course.id:
+                raise CustomFlaskErr(COURSE_ALREADY_ARRANGE, 400)
+        if class_timetable.check == 0:  # 未排课的时段
+            class_timetable.check = 1
+            addToDb(class_timetable)
+            # 已排课的课程加入班级
+            course_arrange = CourseArrange()
+            course_arrange.classes_id = class_id
+            course_arrange.class_timetable_id = class_timetable.id
+            course_arrange.course_id = course.id
+            course_arrange.course_location_id = teach_location.id
+            addToDb(course_arrange)
+            return jsonify({
+                'success': True,
+            })
+        else:
+            raise CustomFlaskErr(TEACH_TIME_DUPLICATION, 400)
+    except Exception as error:
+        if isinstance(error, CustomFlaskErr):
+            return jsonify({'error_msg': str(error.return_code),
+                            'success': False, })
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/course_time_table')
+@allow_cross_domain
+def get_class_course_arrange():
+    class_name = requestParameter('class_name')
+    classes = Classes.query.filter(Classes.class_name == class_name).first()
+    course_arranges = CourseArrange.query.filter(CourseArrange.classes_id == classes.id).all()
+    result = list()
+    for course_arrange in course_arranges:
+        course = Course.query.filter(Course.id == course_arrange.course_id).first()
+        course_location = TeachLocation.query.filter(TeachLocation.id == course_arrange.course_location_id).first()
+        class_timetable = ClassTimeTable.query.filter(ClassTimeTable.id == course_arrange.class_timetable_id).first()
+        section = Timetable.query.filter(Timetable.id == class_timetable.time_table_id).first()
+        result.append({
+            'course': course.to_json(),
+            'course_location': course_location.to_json(),
+            'course_week': class_timetable.week,
+            'course_section': section.to_json(),
+        })
+    return jsonify({
+        'result': result,
+        'success': True
+    })
+# @api.route('/ajax/api/v1.0/course_time_table')
+# @allow_cross_domain
+# def get_Colleague():
+#     Colleague.quer
+
+

@@ -64,13 +64,13 @@ var TableInit = function () {
                 valign: 'middle',
                 sortable:true,
             },
-             {
-                title:'上课时间',
-                field:'course_time',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
+//             {
+//                title:'上课时间',
+//                field:'course_time',
+//                align: 'center',
+//                valign: 'middle',
+//                sortable:true,
+//            },
             {
                 title:'课程人数',
                 field:'course_members',
@@ -92,12 +92,12 @@ var TableInit = function () {
                 valign: 'middle',
                 sortable:true,
             },
-            {
-                title:'课程地点',
-                field:'position',
-                align: 'center',
-                valign: 'middle',
-            },
+//            {
+//                title:'课程地点',
+//                field:'position',
+//                align: 'center',
+//                valign: 'middle',
+//            },
             {
                 title:'更新日期',
                 field:'last_modify_time',
@@ -188,13 +188,13 @@ function addCourseValidatorForm(){
                         },
                     }
                     },
-                course_position:{
-                    validators:{
-                        notEmpty: {
-                            message: '课程位置不空'
-                        },
-                    }
-                },
+//                course_position:{
+//                    validators:{
+//                        notEmpty: {
+//                            message: '课程位置不空'
+//                        },
+//                    }
+//                },
                 },
         });
 
@@ -233,8 +233,8 @@ function tableOperationEvent(){
          $('#modify_course_name').val(row.course_name);
          $('#modify_course_weeks').val(row.course_week_times);
          $('#modify_course_semester').val(row.semester);
-         $('#modify_course_time').val(row.course_time);
-         $('#modify_course_position').val(row.position);
+//         $('#modify_course_time').val(row.course_time);
+//         $('#modify_course_position').val(row.position);
          $('#modify_course_members').val(row.course_members);
          $('#modifyCourseModal').modal('toggle');
 
@@ -281,13 +281,6 @@ function tableOperationEvent(){
                         },
                     }
                     },
-                course_position:{
-                    validators:{
-                        notEmpty: {
-                            message: '课程位置不空'
-                        },
-                    }
-                },
                 },
         });
 

@@ -1,0 +1,1 @@
+1.ajax和表单提交按钮使用时，按钮的type为submit会重复提交，改为button即可。

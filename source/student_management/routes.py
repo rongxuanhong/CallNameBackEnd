@@ -13,7 +13,6 @@ blueprint = Blueprint(
     static_folder='static'
 )
 
-
 # @blueprint.route('/<template>')
 # @login_required
 # def route_template(template):
@@ -43,4 +42,3 @@ def get_student_list():
 
     return render_template('student_list.html', colleagues=colleagues, professions=professions, classes=classes,
                            students=students)
-

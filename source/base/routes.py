@@ -139,8 +139,7 @@ def login():
             login_form=login_form,
             create_account_form=create_account_form
         )
-    return redirect(url_for('home_blueprint.index'))
-
+    return redirect(url_for('student_blueprint.get_student_list'))
 
 @blueprint.route('/logout')
 @login_required
