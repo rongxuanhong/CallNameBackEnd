@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50719
 File Encoding         : 65001
 
-Date: 2018-06-10 10:28:37
+Date: 2018-06-12 17:39:58
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -26,8 +26,7 @@ CREATE TABLE `admin` (
   `late_absent` datetime DEFAULT NULL,
   `notice` varchar(200) DEFAULT NULL,
   `last_modify_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `last_modify_time` (`last_modify_time`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -121,7 +120,627 @@ INSERT INTO `classes` VALUES ('43', '17市政1班', '2018-06-01 10:34:21', '36',
 INSERT INTO `classes` VALUES ('44', '17市政2班', '2018-06-01 10:34:21', '36', '897e60b9-c9e8-4e18-bc90-09ddbc9a17f0');
 INSERT INTO `classes` VALUES ('45', '17交通1班', '2018-06-01 10:34:21', '37', '08dbaaab-8cd7-4c7d-87ef-d11597dca531');
 INSERT INTO `classes` VALUES ('46', '17交通2班', '2018-06-01 10:34:21', '37', 'cb06511b-5a76-4370-ab86-7254c844f0b9');
-INSERT INTO `classes` VALUES ('51', 'sss', '2018-06-08 11:27:10', '6', '71902659-fb88-4dce-86ce-b5f2fa4847cf');
+
+-- ----------------------------
+-- Table structure for `class_timetable`
+-- ----------------------------
+DROP TABLE IF EXISTS `class_timetable`;
+CREATE TABLE `class_timetable` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `classes_id` int(11) NOT NULL,
+  `time_table_id` int(11) NOT NULL,
+  `week` varchar(10) NOT NULL,
+  `check` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`,`classes_id`,`time_table_id`,`week`),
+  KEY `classes_id` (`classes_id`),
+  KEY `time_table_id` (`time_table_id`),
+  CONSTRAINT `class_timetable_ibfk_1` FOREIGN KEY (`classes_id`) REFERENCES `classes` (`id`),
+  CONSTRAINT `class_timetable_ibfk_2` FOREIGN KEY (`time_table_id`) REFERENCES `timetable` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=601 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of class_timetable
+-- ----------------------------
+INSERT INTO `class_timetable` VALUES ('1', '1', '1', '周一', '1');
+INSERT INTO `class_timetable` VALUES ('2', '1', '1', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('3', '1', '1', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('4', '1', '1', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('5', '1', '1', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('6', '1', '2', '周一', '1');
+INSERT INTO `class_timetable` VALUES ('7', '1', '2', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('8', '1', '2', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('9', '1', '2', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('10', '1', '2', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('11', '1', '3', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('12', '1', '3', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('13', '1', '3', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('14', '1', '3', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('15', '1', '3', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('16', '1', '4', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('17', '1', '4', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('18', '1', '4', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('19', '1', '4', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('20', '1', '4', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('21', '1', '5', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('22', '1', '5', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('23', '1', '5', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('24', '1', '5', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('25', '1', '5', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('26', '1', '6', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('27', '1', '6', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('28', '1', '6', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('29', '1', '6', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('30', '1', '6', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('31', '1', '7', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('32', '1', '7', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('33', '1', '7', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('34', '1', '7', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('35', '1', '7', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('36', '1', '8', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('37', '1', '8', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('38', '1', '8', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('39', '1', '8', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('40', '1', '8', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('41', '1', '9', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('42', '1', '9', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('43', '1', '9', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('44', '1', '9', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('45', '1', '9', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('46', '1', '10', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('47', '1', '10', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('48', '1', '10', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('49', '1', '10', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('50', '1', '10', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('51', '1', '11', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('52', '1', '11', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('53', '1', '11', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('54', '1', '11', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('55', '1', '11', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('56', '1', '12', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('57', '1', '12', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('58', '1', '12', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('59', '1', '12', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('60', '1', '12', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('61', '2', '1', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('62', '2', '1', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('63', '2', '1', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('64', '2', '1', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('65', '2', '1', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('66', '2', '2', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('67', '2', '2', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('68', '2', '2', '周三', '1');
+INSERT INTO `class_timetable` VALUES ('69', '2', '2', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('70', '2', '2', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('71', '2', '3', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('72', '2', '3', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('73', '2', '3', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('74', '2', '3', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('75', '2', '3', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('76', '2', '4', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('77', '2', '4', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('78', '2', '4', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('79', '2', '4', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('80', '2', '4', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('81', '2', '5', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('82', '2', '5', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('83', '2', '5', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('84', '2', '5', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('85', '2', '5', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('86', '2', '6', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('87', '2', '6', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('88', '2', '6', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('89', '2', '6', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('90', '2', '6', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('91', '2', '7', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('92', '2', '7', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('93', '2', '7', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('94', '2', '7', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('95', '2', '7', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('96', '2', '8', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('97', '2', '8', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('98', '2', '8', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('99', '2', '8', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('100', '2', '8', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('101', '2', '9', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('102', '2', '9', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('103', '2', '9', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('104', '2', '9', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('105', '2', '9', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('106', '2', '10', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('107', '2', '10', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('108', '2', '10', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('109', '2', '10', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('110', '2', '10', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('111', '2', '11', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('112', '2', '11', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('113', '2', '11', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('114', '2', '11', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('115', '2', '11', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('116', '2', '12', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('117', '2', '12', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('118', '2', '12', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('119', '2', '12', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('120', '2', '12', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('121', '3', '1', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('122', '3', '1', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('123', '3', '1', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('124', '3', '1', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('125', '3', '1', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('126', '3', '2', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('127', '3', '2', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('128', '3', '2', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('129', '3', '2', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('130', '3', '2', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('131', '3', '3', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('132', '3', '3', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('133', '3', '3', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('134', '3', '3', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('135', '3', '3', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('136', '3', '4', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('137', '3', '4', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('138', '3', '4', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('139', '3', '4', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('140', '3', '4', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('141', '3', '5', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('142', '3', '5', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('143', '3', '5', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('144', '3', '5', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('145', '3', '5', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('146', '3', '6', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('147', '3', '6', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('148', '3', '6', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('149', '3', '6', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('150', '3', '6', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('151', '3', '7', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('152', '3', '7', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('153', '3', '7', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('154', '3', '7', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('155', '3', '7', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('156', '3', '8', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('157', '3', '8', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('158', '3', '8', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('159', '3', '8', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('160', '3', '8', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('161', '3', '9', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('162', '3', '9', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('163', '3', '9', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('164', '3', '9', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('165', '3', '9', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('166', '3', '10', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('167', '3', '10', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('168', '3', '10', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('169', '3', '10', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('170', '3', '10', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('171', '3', '11', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('172', '3', '11', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('173', '3', '11', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('174', '3', '11', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('175', '3', '11', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('176', '3', '12', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('177', '3', '12', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('178', '3', '12', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('179', '3', '12', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('180', '3', '12', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('181', '4', '1', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('182', '4', '1', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('183', '4', '1', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('184', '4', '1', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('185', '4', '1', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('186', '4', '2', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('187', '4', '2', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('188', '4', '2', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('189', '4', '2', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('190', '4', '2', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('191', '4', '3', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('192', '4', '3', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('193', '4', '3', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('194', '4', '3', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('195', '4', '3', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('196', '4', '4', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('197', '4', '4', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('198', '4', '4', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('199', '4', '4', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('200', '4', '4', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('201', '4', '5', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('202', '4', '5', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('203', '4', '5', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('204', '4', '5', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('205', '4', '5', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('206', '4', '6', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('207', '4', '6', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('208', '4', '6', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('209', '4', '6', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('210', '4', '6', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('211', '4', '7', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('212', '4', '7', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('213', '4', '7', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('214', '4', '7', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('215', '4', '7', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('216', '4', '8', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('217', '4', '8', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('218', '4', '8', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('219', '4', '8', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('220', '4', '8', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('221', '4', '9', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('222', '4', '9', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('223', '4', '9', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('224', '4', '9', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('225', '4', '9', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('226', '4', '10', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('227', '4', '10', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('228', '4', '10', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('229', '4', '10', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('230', '4', '10', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('231', '4', '11', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('232', '4', '11', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('233', '4', '11', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('234', '4', '11', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('235', '4', '11', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('236', '4', '12', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('237', '4', '12', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('238', '4', '12', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('239', '4', '12', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('240', '4', '12', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('241', '5', '1', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('242', '5', '1', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('243', '5', '1', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('244', '5', '1', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('245', '5', '1', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('246', '5', '2', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('247', '5', '2', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('248', '5', '2', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('249', '5', '2', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('250', '5', '2', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('251', '5', '3', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('252', '5', '3', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('253', '5', '3', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('254', '5', '3', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('255', '5', '3', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('256', '5', '4', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('257', '5', '4', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('258', '5', '4', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('259', '5', '4', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('260', '5', '4', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('261', '5', '5', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('262', '5', '5', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('263', '5', '5', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('264', '5', '5', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('265', '5', '5', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('266', '5', '6', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('267', '5', '6', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('268', '5', '6', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('269', '5', '6', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('270', '5', '6', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('271', '5', '7', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('272', '5', '7', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('273', '5', '7', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('274', '5', '7', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('275', '5', '7', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('276', '5', '8', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('277', '5', '8', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('278', '5', '8', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('279', '5', '8', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('280', '5', '8', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('281', '5', '9', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('282', '5', '9', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('283', '5', '9', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('284', '5', '9', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('285', '5', '9', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('286', '5', '10', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('287', '5', '10', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('288', '5', '10', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('289', '5', '10', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('290', '5', '10', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('291', '5', '11', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('292', '5', '11', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('293', '5', '11', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('294', '5', '11', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('295', '5', '11', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('296', '5', '12', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('297', '5', '12', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('298', '5', '12', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('299', '5', '12', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('300', '5', '12', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('301', '6', '1', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('302', '6', '1', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('303', '6', '1', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('304', '6', '1', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('305', '6', '1', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('306', '6', '2', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('307', '6', '2', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('308', '6', '2', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('309', '6', '2', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('310', '6', '2', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('311', '6', '3', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('312', '6', '3', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('313', '6', '3', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('314', '6', '3', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('315', '6', '3', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('316', '6', '4', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('317', '6', '4', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('318', '6', '4', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('319', '6', '4', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('320', '6', '4', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('321', '6', '5', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('322', '6', '5', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('323', '6', '5', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('324', '6', '5', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('325', '6', '5', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('326', '6', '6', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('327', '6', '6', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('328', '6', '6', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('329', '6', '6', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('330', '6', '6', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('331', '6', '7', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('332', '6', '7', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('333', '6', '7', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('334', '6', '7', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('335', '6', '7', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('336', '6', '8', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('337', '6', '8', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('338', '6', '8', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('339', '6', '8', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('340', '6', '8', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('341', '6', '9', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('342', '6', '9', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('343', '6', '9', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('344', '6', '9', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('345', '6', '9', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('346', '6', '10', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('347', '6', '10', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('348', '6', '10', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('349', '6', '10', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('350', '6', '10', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('351', '6', '11', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('352', '6', '11', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('353', '6', '11', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('354', '6', '11', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('355', '6', '11', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('356', '6', '12', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('357', '6', '12', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('358', '6', '12', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('359', '6', '12', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('360', '6', '12', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('361', '7', '1', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('362', '7', '1', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('363', '7', '1', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('364', '7', '1', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('365', '7', '1', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('366', '7', '2', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('367', '7', '2', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('368', '7', '2', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('369', '7', '2', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('370', '7', '2', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('371', '7', '3', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('372', '7', '3', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('373', '7', '3', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('374', '7', '3', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('375', '7', '3', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('376', '7', '4', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('377', '7', '4', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('378', '7', '4', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('379', '7', '4', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('380', '7', '4', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('381', '7', '5', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('382', '7', '5', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('383', '7', '5', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('384', '7', '5', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('385', '7', '5', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('386', '7', '6', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('387', '7', '6', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('388', '7', '6', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('389', '7', '6', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('390', '7', '6', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('391', '7', '7', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('392', '7', '7', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('393', '7', '7', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('394', '7', '7', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('395', '7', '7', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('396', '7', '8', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('397', '7', '8', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('398', '7', '8', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('399', '7', '8', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('400', '7', '8', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('401', '7', '9', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('402', '7', '9', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('403', '7', '9', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('404', '7', '9', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('405', '7', '9', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('406', '7', '10', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('407', '7', '10', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('408', '7', '10', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('409', '7', '10', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('410', '7', '10', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('411', '7', '11', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('412', '7', '11', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('413', '7', '11', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('414', '7', '11', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('415', '7', '11', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('416', '7', '12', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('417', '7', '12', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('418', '7', '12', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('419', '7', '12', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('420', '7', '12', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('421', '8', '1', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('422', '8', '1', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('423', '8', '1', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('424', '8', '1', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('425', '8', '1', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('426', '8', '2', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('427', '8', '2', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('428', '8', '2', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('429', '8', '2', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('430', '8', '2', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('431', '8', '3', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('432', '8', '3', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('433', '8', '3', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('434', '8', '3', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('435', '8', '3', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('436', '8', '4', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('437', '8', '4', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('438', '8', '4', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('439', '8', '4', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('440', '8', '4', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('441', '8', '5', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('442', '8', '5', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('443', '8', '5', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('444', '8', '5', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('445', '8', '5', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('446', '8', '6', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('447', '8', '6', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('448', '8', '6', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('449', '8', '6', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('450', '8', '6', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('451', '8', '7', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('452', '8', '7', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('453', '8', '7', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('454', '8', '7', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('455', '8', '7', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('456', '8', '8', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('457', '8', '8', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('458', '8', '8', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('459', '8', '8', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('460', '8', '8', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('461', '8', '9', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('462', '8', '9', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('463', '8', '9', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('464', '8', '9', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('465', '8', '9', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('466', '8', '10', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('467', '8', '10', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('468', '8', '10', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('469', '8', '10', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('470', '8', '10', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('471', '8', '11', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('472', '8', '11', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('473', '8', '11', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('474', '8', '11', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('475', '8', '11', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('476', '8', '12', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('477', '8', '12', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('478', '8', '12', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('479', '8', '12', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('480', '8', '12', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('481', '9', '1', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('482', '9', '1', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('483', '9', '1', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('484', '9', '1', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('485', '9', '1', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('486', '9', '2', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('487', '9', '2', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('488', '9', '2', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('489', '9', '2', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('490', '9', '2', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('491', '9', '3', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('492', '9', '3', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('493', '9', '3', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('494', '9', '3', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('495', '9', '3', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('496', '9', '4', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('497', '9', '4', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('498', '9', '4', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('499', '9', '4', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('500', '9', '4', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('501', '9', '5', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('502', '9', '5', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('503', '9', '5', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('504', '9', '5', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('505', '9', '5', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('506', '9', '6', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('507', '9', '6', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('508', '9', '6', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('509', '9', '6', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('510', '9', '6', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('511', '9', '7', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('512', '9', '7', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('513', '9', '7', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('514', '9', '7', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('515', '9', '7', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('516', '9', '8', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('517', '9', '8', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('518', '9', '8', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('519', '9', '8', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('520', '9', '8', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('521', '9', '9', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('522', '9', '9', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('523', '9', '9', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('524', '9', '9', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('525', '9', '9', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('526', '9', '10', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('527', '9', '10', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('528', '9', '10', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('529', '9', '10', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('530', '9', '10', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('531', '9', '11', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('532', '9', '11', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('533', '9', '11', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('534', '9', '11', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('535', '9', '11', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('536', '9', '12', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('537', '9', '12', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('538', '9', '12', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('539', '9', '12', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('540', '9', '12', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('541', '10', '1', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('542', '10', '1', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('543', '10', '1', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('544', '10', '1', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('545', '10', '1', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('546', '10', '2', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('547', '10', '2', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('548', '10', '2', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('549', '10', '2', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('550', '10', '2', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('551', '10', '3', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('552', '10', '3', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('553', '10', '3', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('554', '10', '3', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('555', '10', '3', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('556', '10', '4', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('557', '10', '4', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('558', '10', '4', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('559', '10', '4', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('560', '10', '4', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('561', '10', '5', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('562', '10', '5', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('563', '10', '5', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('564', '10', '5', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('565', '10', '5', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('566', '10', '6', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('567', '10', '6', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('568', '10', '6', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('569', '10', '6', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('570', '10', '6', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('571', '10', '7', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('572', '10', '7', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('573', '10', '7', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('574', '10', '7', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('575', '10', '7', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('576', '10', '8', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('577', '10', '8', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('578', '10', '8', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('579', '10', '8', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('580', '10', '8', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('581', '10', '9', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('582', '10', '9', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('583', '10', '9', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('584', '10', '9', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('585', '10', '9', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('586', '10', '10', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('587', '10', '10', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('588', '10', '10', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('589', '10', '10', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('590', '10', '10', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('591', '10', '11', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('592', '10', '11', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('593', '10', '11', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('594', '10', '11', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('595', '10', '11', '周五', '0');
+INSERT INTO `class_timetable` VALUES ('596', '10', '12', '周一', '0');
+INSERT INTO `class_timetable` VALUES ('597', '10', '12', '周二', '0');
+INSERT INTO `class_timetable` VALUES ('598', '10', '12', '周三', '0');
+INSERT INTO `class_timetable` VALUES ('599', '10', '12', '周四', '0');
+INSERT INTO `class_timetable` VALUES ('600', '10', '12', '周五', '0');
 
 -- ----------------------------
 -- Table structure for `colleague`
@@ -157,8 +776,6 @@ CREATE TABLE `course` (
   `course_name` varchar(32) DEFAULT NULL,
   `course_week_times` int(11) DEFAULT NULL,
   `semester` varchar(32) DEFAULT NULL,
-  `course_time` varchar(32) DEFAULT NULL,
-  `position` varchar(32) DEFAULT NULL,
   `course_members` int(11) DEFAULT NULL,
   `last_modify_time` datetime DEFAULT NULL,
   `profession_id` int(11) DEFAULT NULL,
@@ -171,19 +788,46 @@ CREATE TABLE `course` (
 -- ----------------------------
 -- Records of course
 -- ----------------------------
-INSERT INTO `course` VALUES ('UDREEUEUEEED', '1', '工程训练', '11', '2017-2018学年第二学期', '周一', '东二 2#506', '56', '2018-05-26 16:16:18', '5');
-INSERT INTO `course` VALUES ('UCREEUEUEEEF', '2', '算法设计', '10', '2017-2018学年第二学期', '周一', '东二 2#507', '78', '2018-05-26 16:16:45', '5');
-INSERT INTO `course` VALUES ('UEREEUEUEEET', '3', '专业英语', '10', '2017-2018学年第二学期', '周一', '东二 2#506', '23', '2018-05-26 16:17:27', '5');
-INSERT INTO `course` VALUES ('UCREEUEUEEEJ', '4', '数值计算', '10', '2017-2018学年第二学期', '周一', '东二 3#506', '45', '2018-05-26 16:17:27', '5');
-INSERT INTO `course` VALUES ('UPREEUEUEEEB', '5', '软件体系结构', '10', '2017-2018学年第二学期', '周一', '东二 2#506', '67', '2018-05-26 16:17:27', '5');
-INSERT INTO `course` VALUES ('URREEUEUEEEF', '6', '软件工程', '10', '2017-2018学年第二学期', '周一', '东二 2#506', '89', '2018-05-26 16:17:27', '5');
-INSERT INTO `course` VALUES ('UMREEUEUEEEK', '7', '自然辨证法', '10', '2017-2018学年第二学期', '周一', '东二 5#506', '56', '2018-05-26 16:17:27', '5');
-INSERT INTO `course` VALUES ('UDREEUEUEEED', '9', '智能技术', '10', '2017-2018学年第二学期', '周一', '东二 2#506', '12', '2018-05-26 16:17:28', '5');
-INSERT INTO `course` VALUES ('UVREEUEUEEEW', '10', '知识产权', '10', '2017-2018学年第二学期', '周一', '东二 2#506', '23', '2018-05-26 16:17:28', '5');
-INSERT INTO `course` VALUES ('UWREEUEUEEEQ', '11', '信息检索', '10', '2017-2018学年第二学期', '周一', '东二 2#506', '34', '2018-05-26 16:17:28', '5');
-INSERT INTO `course` VALUES ('UZREEUEUEEEX', '12', '数学', '10', '2017-2018学年第二学期', '周一', '东二 2#506', '56', '2018-05-26 16:17:28', '5');
-INSERT INTO `course` VALUES ('UCREEUEUEEEF', '25', '算法设计', '11', '2017-2018学年第二学期', '周一', '东二 2#507', '78', '2018-05-31 20:24:00', '5');
-INSERT INTO `course` VALUES ('UQREEUEUEEEL', '27', '英语', '19', '2017-2018学年第二学期', '周一', '东二 2#506', '50', '2018-05-31 20:26:05', '5');
+INSERT INTO `course` VALUES ('UDREEUEUEEED', '1', '工程训练', '11', '2017-2018学年第二学期', '56', '2018-05-26 16:16:18', '5');
+INSERT INTO `course` VALUES ('UCREEUEUEEEF', '2', '算法设计', '10', '2017-2018学年第二学期', '78', '2018-05-26 16:16:45', '5');
+INSERT INTO `course` VALUES ('UEREEUEUEEET', '3', '专业英语', '10', '2017-2018学年第二学期', '23', '2018-05-26 16:17:27', '5');
+INSERT INTO `course` VALUES ('UCREEUEUEEEJ', '4', '数值计算', '10', '2017-2018学年第二学期', '45', '2018-05-26 16:17:27', '5');
+INSERT INTO `course` VALUES ('UPREEUEUEEEB', '5', '软件体系结构', '10', '2017-2018学年第二学期', '67', '2018-05-26 16:17:27', '5');
+INSERT INTO `course` VALUES ('URREEUEUEEEF', '6', '软件工程', '10', '2017-2018学年第二学期', '89', '2018-05-26 16:17:27', '5');
+INSERT INTO `course` VALUES ('UMREEUEUEEEK', '7', '自然辨证法', '10', '2017-2018学年第二学期', '56', '2018-05-26 16:17:27', '5');
+INSERT INTO `course` VALUES ('UDREEUEUEEED', '9', '智能技术', '10', '2017-2018学年第二学期', '12', '2018-05-26 16:17:28', '5');
+INSERT INTO `course` VALUES ('UVREEUEUEEEW', '10', '知识产权', '10', '2017-2018学年第二学期', '23', '2018-05-26 16:17:28', '5');
+INSERT INTO `course` VALUES ('UWREEUEUEEEQ', '11', '信息检索', '10', '2017-2018学年第二学期', '34', '2018-05-26 16:17:28', '5');
+INSERT INTO `course` VALUES ('UZREEUEUEEEX', '12', '数学', '10', '2017-2018学年第二学期', '56', '2018-05-26 16:17:28', '5');
+INSERT INTO `course` VALUES ('UCREEUEUEEEF', '25', '算法设计', '11', '2017-2018学年第二学期', '78', '2018-05-31 20:24:00', '5');
+INSERT INTO `course` VALUES ('UQREEUEUEEEL', '27', '英语', '19', '2017-2018学年第二学期', '50', '2018-05-31 20:26:05', '5');
+
+-- ----------------------------
+-- Table structure for `course_arrange`
+-- ----------------------------
+DROP TABLE IF EXISTS `course_arrange`;
+CREATE TABLE `course_arrange` (
+  `classes_id` int(11) NOT NULL,
+  `course_id` int(11) NOT NULL,
+  `class_timetable_id` int(11) NOT NULL,
+  `course_location_id` int(11) NOT NULL,
+  `last_modify_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`classes_id`,`course_id`,`class_timetable_id`,`course_location_id`),
+  KEY `course_id` (`course_id`),
+  KEY `class_timetable_id` (`class_timetable_id`),
+  KEY `course_location_id` (`course_location_id`),
+  CONSTRAINT `course_arrange_ibfk_1` FOREIGN KEY (`classes_id`) REFERENCES `classes` (`id`),
+  CONSTRAINT `course_arrange_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
+  CONSTRAINT `course_arrange_ibfk_3` FOREIGN KEY (`class_timetable_id`) REFERENCES `class_timetable` (`id`),
+  CONSTRAINT `course_arrange_ibfk_4` FOREIGN KEY (`course_location_id`) REFERENCES `teach_location` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of course_arrange
+-- ----------------------------
+INSERT INTO `course_arrange` VALUES ('1', '6', '6', '2', '2018-06-11 19:00:46');
+INSERT INTO `course_arrange` VALUES ('1', '27', '1', '1', '2018-06-11 19:00:07');
+INSERT INTO `course_arrange` VALUES ('2', '6', '68', '2', '2018-06-11 19:01:22');
 
 -- ----------------------------
 -- Table structure for `menu`
@@ -215,7 +859,7 @@ INSERT INTO `menu` VALUES ('8', '组织管理', 'fa fa-table', '/settings_manage
 INSERT INTO `menu` VALUES ('9', '权限管理', 'fa fa-table', '/settings_management/permission_management', '42', '7', '2', '2018-05-30 21:06:40');
 INSERT INTO `menu` VALUES ('10', '角色管理', 'fa fa-table', '/settings_management/role_management', '43', '7', '2', '2018-05-30 21:06:40');
 INSERT INTO `menu` VALUES ('15', '授课安排', 'fa fa-table', '/course_management/course_arrange', '32', '5', '2', '2018-06-09 21:34:05');
-INSERT INTO `menu` VALUES ('16', '课表查询', 'fa fa-table', '/course_management/course_query', '33', '5', '2', '2018-06-09 21:34:05');
+INSERT INTO `menu` VALUES ('16', '课表查询', 'fa fa-table', '/course_timetable_query', '33', '5', '2', '2018-06-09 21:34:05');
 
 -- ----------------------------
 -- Table structure for `permission`
@@ -364,6 +1008,53 @@ CREATE TABLE `rolepermission` (
 -- ----------------------------
 INSERT INTO `rolepermission` VALUES ('1', '2', '1', '2018-06-08 17:00:01');
 INSERT INTO `rolepermission` VALUES ('2', '5', '0', '2018-06-08 17:02:30');
+
+-- ----------------------------
+-- Table structure for `teach_location`
+-- ----------------------------
+DROP TABLE IF EXISTS `teach_location`;
+CREATE TABLE `teach_location` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `location` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of teach_location
+-- ----------------------------
+INSERT INTO `teach_location` VALUES ('1', '东三202');
+INSERT INTO `teach_location` VALUES ('2', '东三102');
+INSERT INTO `teach_location` VALUES ('3', '东二505');
+INSERT INTO `teach_location` VALUES ('4', '东二203');
+
+-- ----------------------------
+-- Table structure for `timetable`
+-- ----------------------------
+DROP TABLE IF EXISTS `timetable`;
+CREATE TABLE `timetable` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `period` varchar(10) DEFAULT NULL,
+  `start` varchar(40) DEFAULT NULL,
+  `end` varchar(40) DEFAULT NULL,
+  `last_modify_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of timetable
+-- ----------------------------
+INSERT INTO `timetable` VALUES ('1', '第一节', '8:20', '9:05', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('2', '第二节', '9:15', '10:00', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('3', '第三节', '10:20', '11:05', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('4', '第四节', '11:15', '12:00', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('5', '第五节', '14:00', '14:45', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('6', '第六节', '14:55', '15:40', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('7', '第七节', '15:50', '16:35', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('8', '第八节', '16:45', '17:30', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('9', '第九节', '18:00', '18:45', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('10', '第十节', '18:55', '19:40', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('11', '第十一节', '19:50', '20:35', '2018-06-10 14:29:05');
+INSERT INTO `timetable` VALUES ('12', '第十二节', '20:45', '21:30', '2018-06-10 14:29:05');
 
 -- ----------------------------
 -- Table structure for `user`
