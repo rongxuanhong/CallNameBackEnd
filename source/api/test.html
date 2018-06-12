@@ -6,13 +6,17 @@
 <a href="#" onclick="test()">asdasdasd</a>
 <script>
     function test() {
-        $.ajax({
-            url:'http://111.230.252.141/ajax/api/login?username=Admin&pwd=123456',
-            type:'post',
-            success:function(data){
-                alert(data);
-            }
-        });
+    $.post('http://111.230.252.141/ajax/api/login?username=Admin&pwd=123456',function(){
+
+            alert(data);
+    });
+        <!--$.ajax({-->
+            <!--url:'http://111.230.252.141/ajax/api/login?username=Admin&pwd=123456',-->
+            <!--type:'post',-->
+            <!--success:function(data){-->
+                <!--alert(data);-->
+            <!--}-->
+        <!--});-->
     }
 
 

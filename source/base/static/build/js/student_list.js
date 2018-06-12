@@ -387,24 +387,139 @@ var ButtonInit = function () {
  function refreshStudentTable(){
     $('#student_tab').bootstrapTable('refresh', {url: '/ajax/api/v1.0/student'});
  }
+function get_colleague(){
 
+ $.ajax({
+        url:'/ajax/api/v1.0/get_colleague',
+        type:'GET',
+//        async: false,
+        success:function(data){
+             if(data.success){
+                 var colleague_btn=$('#colleague_btn');
+                 var collea_menu=$('#colleague');
+                 var data=data.result;
+                 for(var i=0,len=data.length;i<len;i++){
+                   if(i==0){
+                    colleague_btn.text(data[i].colea_name);
+                    colleague_btn.append('  <span class="caret"></span>');
+                   }
+                    collea_menu.append('<li><a class='+data[i].id+' href="#">'+data[i].colea_name+'</a></li>')
+                 }
+                 change_colleague_menu();
+                 var collea_id=data[0].id;
+                 get_profession(collea_id);
+            }
+         },
+       });
+}
+function get_profession(collea_id){
+    $.ajax({
+        url:'/ajax/api/v1.0/get_profession?collea_id='+collea_id,
+        type:'GET',
+//        async: false,
+        success:function(data){
+             if(data.success){
+                   var profession_btn=$('#profession_btn');
+                   var prof_menu=$('#profession');
+                   prof_menu.empty();
+                   var data=data.result;
+                   prof_menu.append('<li><a href="#">全部</a></li>');
+                   profession_btn.text('全部');
+                    profession_btn.append('  <span class="caret"></span>');
+                    for(var i=0,len=data.length;i<len;i++){
+//                       if(i==0){
+//                        profession_btn.text(data[i].prof_name);
+//                        profession_btn.append('  <span class="caret"></span>');
+//                       }
+                       prof_menu.append('<li><a href="#" class='+data[i].id+'>'+data[i].prof_name+'</a></li>')
+                     }
+                     var prof_id=data[0].id;
+                     change_profession_menu();
+                     get_class(prof_id);
+                 }
+        },
+    });
+}
+function get_class(prof_id){
+       $.ajax({
+        url:'/ajax/api/v1.0/get_class?prof_id='+prof_id,
+        type:'GET',
+//        async: false,
+        success:function(data){
+             if(data.success){
+              var class_btn=$('#classes_btn');
+               var class_menu=$('#classes');
+                class_menu.empty();
+                var data=data.result;
+                 class_menu.append('<li><a href="#">全部</a></li>');
+                 class_btn.text('全部');
+                 class_btn.append('  <span class="caret"></span>');
+                 for(var i=0,len=data.length;i<len;i++){
+//
+                   class_menu.append('<li><a href="#">'+data[i].class_name+'</a></li>')
+                   change_class_menu();
+                   //1.初始化Table
+                    var oTable = new TableInit();
+                    oTable.Init();
+                    var oButtonInit = new ButtonInit();
+                    oButtonInit.Init();
+
+                    addStudentValidatorForm();
+                    //配置toast的展示位置
+                    toastr.options.positionClass = 'toast-bottom-right';
+
+                    changeStudentModifyOrDeleteStatus();//切换修改和删除按钮
+
+                    modifyStudentValidatorForm();//修改学生的表单验证
+
+                    // controlModifyModalClass();//控制修改学生班级的切换
+
+                    deleteStudent();
+                  }
+              }
+        },
+    });
+}
+function change_colleague_menu(){
+       var dropdown=$('#colleague');
+        dropdown.children().each(function(){
+         $(this).off('click').on('click',function(event){
+             var btn3=$('#colleague_btn');
+             btn3.text(event.target.innerText);
+             btn3.append(' <span class="caret"></span>');
+
+           get_profession(event.target.className);
+         });
+        });
+}
+function change_profession_menu(){
+     var dropdown=$('#profession');
+        dropdown.children().each(function(){
+         $(this).off('click').on('click',function(event){
+             var btn3=$('#profession_btn');
+             btn3.text(event.target.innerText);
+             btn3.append(' <span class="caret"></span>');
+
+             get_class(event.target.className);
+         });
+        });
+}
+function change_class_menu(){
+     var dropdown=$('#classes');
+        dropdown.children().each(function(){
+         $(this).off('click').on('click',function(event){
+             var btn3=$('#classes_btn');
+             btn3.text(event.target.innerText);
+             btn3.append(' <span class="caret"></span>');
+         });
+        });
+}
+//$( document ).ajaxSuccess(function( event, request, settings ) {
+//if ( settings.url === "ajax/test.html" ) {
+// console.log('11111');
+//}
+//});
 $(document).ready(function(){
 
-    //1.初始化Table
-    var oTable = new TableInit();
-    oTable.Init();
-    var oButtonInit = new ButtonInit();
-    oButtonInit.Init();
-
-    addStudentValidatorForm();
-    //配置toast的展示位置
-    toastr.options.positionClass = 'toast-bottom-right';
-
-    changeStudentModifyOrDeleteStatus();//切换修改和删除按钮
-
-    modifyStudentValidatorForm();//修改学生的表单验证
-
-    controlModifyModalClass();//控制修改学生班级的切换
-
-    deleteStudent();
+    get_colleague();
 });
