@@ -1034,27 +1034,72 @@ def post_course_arrange():
 @allow_cross_domain
 def get_class_course_arrange():
     class_name = requestParameter('class_name')
-    classes = Classes.query.filter(Classes.class_name == class_name).first()
-    course_arranges = CourseArrange.query.filter(CourseArrange.classes_id == classes.id).all()
-    result = list()
-    for course_arrange in course_arranges:
-        course = Course.query.filter(Course.id == course_arrange.course_id).first()
-        course_location = TeachLocation.query.filter(TeachLocation.id == course_arrange.course_location_id).first()
-        class_timetable = ClassTimeTable.query.filter(ClassTimeTable.id == course_arrange.class_timetable_id).first()
-        section = Timetable.query.filter(Timetable.id == class_timetable.time_table_id).first()
-        result.append({
-            'course': course.to_json(),
-            'course_location': course_location.to_json(),
-            'course_week': class_timetable.week,
-            'course_section': section.to_json(),
+    try:
+        classes = Classes.query.filter(Classes.class_name == class_name).first()
+        course_arranges = CourseArrange.query.filter(CourseArrange.classes_id == classes.id).all()
+        result = list()
+        for course_arrange in course_arranges:
+            course = Course.query.filter(Course.id == course_arrange.course_id).first()
+            course_location = TeachLocation.query.filter(TeachLocation.id == course_arrange.course_location_id).first()
+            class_timetable = ClassTimeTable.query.filter(
+                ClassTimeTable.id == course_arrange.class_timetable_id).first()
+            section = Timetable.query.filter(Timetable.id == class_timetable.time_table_id).first()
+            result.append({
+                'semester': course.semester,
+                'course_number': course.course_number,
+                'course_name': course.course_name,
+                'time_site': class_timetable.week + ' ' + section.period + ' ' + course_location.location,
+                'last_modify_time': course_arrange.last_modify_time.strftime('%Y-%m-%d %H:%M:%S'),
+            })
+        return jsonify({
+            'result': result,
+            'success': True,
+            'total': len(course_arranges),
         })
-    return jsonify({
-        'result': result,
-        'success': True
-    })
-# @api.route('/ajax/api/v1.0/course_time_table')
-# @allow_cross_domain
-# def get_Colleague():
-#     Colleague.quer
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
 
 
+@api.route('/ajax/api/v1.0/get_colleague')
+@allow_cross_domain
+def get_Colleague():
+    try:
+        colleagues = Colleague.query.all()
+        return jsonify({
+            'result': [colleague.to_json() for colleague in colleagues],
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/get_profession')
+@allow_cross_domain
+def get_profession():
+    collea_id = requestParameter('collea_id')
+    try:
+        professions = Profession.query.filter(Profession.colleague_id == collea_id).all()
+        return jsonify({
+            'result': [profession.to_json() for profession in professions],
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/get_class')
+@allow_cross_domain
+def get_class():
+    prof_id = requestParameter('prof_id')
+    try:
+        classess = Classes.query.filter(Classes.profession_id == prof_id).all()
+        return jsonify({
+            'result': [classes.to_json() for classes in classess],
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
