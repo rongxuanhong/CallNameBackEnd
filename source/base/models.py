@@ -52,7 +52,7 @@ class User(Base, UserMixin):  # 继承UserMixin简便地实现用户类,配合fl
     password = Column(String(32))
     # is_admin = Column(Boolean, default=False)
     # create_time = Column(DateTime, unique=True, default=datetime.datetime.utcnow())
-    last_modify_time = Column(DateTime, unique=True, default=datetime.now)
+    last_modify_time = Column(DateTime, default=datetime.now)
 
     role_id = Column(Integer, ForeignKey('role.id'))  # 一个用户一种角色
 
@@ -88,17 +88,6 @@ class UserInfo(Base):
         self.job_number = job_number
         self.type = type
 
-    # # 获取用户所有权限
-    # @property
-    # def permissions(self):
-    #     return UserInfo.query.join(role_permission).join(Role).join(UserInfo).filter(UserInfo.id == self.id)
-
-    # 获取用户所有可使用菜单
-    # @property
-    # def menus(self):
-    #     return UserInfo.query.join(role_menu).join(Role).join(UserInfo).filter(UserInfo.id == self.id).order_by(
-    #         Base.order)
-
     def __repr__(self):
         return str(self.user_name)
 
@@ -108,12 +97,14 @@ class UserInfo(Base):
         if self.total_grade is None:
             self.total_grade = 0
         return {
+            'user_id':self.userid,
             'user_name': self.user_name,
             'user_uid': self.uid,
             'sex': self.sex,
             'job_number': self.job_number,
             'total_grade': self.total_grade,
             'type': self.type,
+            'last_modify_time': self.last_modify_time.strftime('%Y-%m-%d %H:%M:%S'),
         }
 
 

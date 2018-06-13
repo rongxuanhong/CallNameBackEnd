@@ -570,15 +570,20 @@ def course_arrange():
 
 
 def user():
-    user = User('student')
-    user.password = '123456'
-    addToDb(user)
+    user = User.query.filter(User.username == 'student').first()
+    userinfo = UserInfo(user.username, 'N140327098', 2)
+    userinfo.uid = str(uuid.uuid4())
+    userinfo.userid = user.id
+    userinfo.class_id = 1
+    addToDb(userinfo)
+
+
 def addDataDict():
-    data=DataDictTable()
-    data.dict_item='签到范围'
-    data.dict_value='10m'
+    data = DataDictTable()
+    data.dict_item = '签到范围'
+    data.dict_value = '10m'
     addToDb(data)
 
-if __name__ == '__main__':
-    addDataDict()
 
+if __name__ == '__main__':
+    user()

@@ -1137,3 +1137,59 @@ def get_students_by_class():
     except Exception as error:
         return jsonify({'error_msg': str(error),
                         'success': False, })
+
+
+@api.route('/ajax/api/v1.0/teachers')
+def get_teacher_list():
+    limit = request.args.get('limit', 10, type=int)  ## 一页大小
+    offset = request.args.get('offset', 1, type=int)  ## 页码
+    pageIndex = (offset / limit) + 1
+    try:
+        userinfo_query = UserInfo.query.filter(UserInfo.type == 1)
+        userinfos = userinfo_query.limit(limit).offset(
+            (pageIndex - 1) * limit).all()
+        return jsonify({
+            'result': [userinfo.to_json() for userinfo in userinfos],
+            'success': True,
+            'total': userinfo_query.count(),
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/teachers', methods=['DELETE'])
+def delete_teacher():
+    user_uid = requestParameter('user_uid')
+    try:
+        userinfo = UserInfo.query.filter(UserInfo.uid == user_uid).first()
+        user = User.query.filter(User.id == userinfo.userid).first()
+        delete_table_or_record(user)
+        delete_table_or_record(userinfo)
+        return jsonify({
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/teachers', methods=['PUT'])
+def modify_teacher():
+    user_name = requestParameter('teacher_name')
+    job_number = requestParameter('teacher_jobnumber')
+    uid=requestParameter('teacher_uid')
+    try:
+        userinfo = UserInfo.query.filter(UserInfo.uid == uid).first()
+        userinfo.user_name = user_name
+        userinfo.job_number = job_number
+        addToDb(userinfo)
+        user = User.query.filter(User.id == userinfo.userid).first()
+        user.username = user_name
+        addToDb(user)
+        return jsonify({
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
