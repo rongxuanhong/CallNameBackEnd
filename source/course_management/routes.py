@@ -23,5 +23,5 @@ def route_template(template):
 def get_course_arrange():
     teach_locations = TeachLocation.query.all()
     weeks = ['周一', '周二', '周三', '周四', '周五']
-    times = ['第一节', '第二节', '第三节', '第四节', '第五节', '第六节', '第七节', '第八节', '第九节', '第十节', '第十一节', '第十二节', ]
+    times = ['第1节', '第2节', '第3节', '第4节', '第5节', '第6节', '第7节', '第8节', '第9节', '第10节', '第11节', '第12节', ]
     return render_template('course_arrange.html', teach_locations=teach_locations, weeks=weeks, times=times)

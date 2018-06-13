@@ -5,14 +5,14 @@ from flask import Blueprint
 from flask import request, jsonify
 
 from base.models import UserInfo, Classes, Colleague, Profession, User, CallName, Role, Permission, Course, Menu, \
-    CourseArrange, TeachLocation, Timetable, ClassTimeTable
+    CourseArrange, TeachLocation, Timetable, ClassTimeTable, DataDictTable
 from database import db
 from decorator import allow_cross_domain
 from BadRequest import CustomFlaskErr
 ####   restful 接口       ######
 from utils.ERROR_DEFINE import ACTION_INCORRECT, ROLE_ALREADY_EXISTS, ROLE_ALREADY_DELETE, ROLE_ALREADY_NOT_EXISTS, \
     COURSE_ALREADY_EXISTS, ORGANIZATION_TYPE_NOT_EXISTS, PARENT_ORGANIZATION_NAME_NOT_EXITS, ORGANIZATION_NAME_EXITS, \
-    TEACH_TIME_DUPLICATION, COURSE_ALREADY_ARRANGE
+    TEACH_TIME_DUPLICATION, COURSE_ALREADY_ARRANGE, NOT_CALL_ROLL_INFO
 
 api = Blueprint(
     'api',
@@ -47,28 +47,31 @@ def query_student_list():
                                               Classes.class_name, Profession.prof_name, Colleague.colea_name,
                                               UserInfo.last_modify_time, UserInfo.uid).join(
                 Colleague.professions).filter(Colleague.colea_name == colleague_name).join(
-                Profession.classes).join(Classes.students).order_by(sort_name + " " + sort_order)
+                Profession.classes).join(Classes.students).filter(UserInfo.type == 2).order_by(
+                sort_name + " " + sort_order)
         elif profession_name == '全部':
             students_query = db.session.query(UserInfo.user_name, UserInfo.job_number,
                                               Classes.class_name, Profession.prof_name, Colleague.colea_name,
                                               UserInfo.last_modify_time, UserInfo.uid).join(
                 Colleague.professions).filter(Colleague.colea_name == colleague_name).join(
                 Profession.classes).join(
-                Classes.students).filter(Classes.class_name == class_name).order_by(sort_name + " " + sort_order)
+                Classes.students).filter(Classes.class_name == class_name).filter(UserInfo.type == 2).order_by(
+                sort_name + " " + sort_order)
         elif class_name == '全部':
             students_query = db.session.query(UserInfo.user_name, UserInfo.job_number,
                                               Classes.class_name, Profession.prof_name, Colleague.colea_name,
                                               UserInfo.last_modify_time, UserInfo.uid).join(
                 Colleague.professions).filter(Colleague.colea_name == colleague_name).join(Profession.classes) \
                 .filter(Profession.prof_name == profession_name).join(
-                Classes.students).order_by(sort_name + " " + sort_order)
+                Classes.students).filter(UserInfo.type == 2).order_by(sort_name + " " + sort_order)
         else:
             students_query = db.session.query(UserInfo.user_name, UserInfo.job_number,
                                               Classes.class_name, Profession.prof_name, Colleague.colea_name,
                                               UserInfo.last_modify_time, UserInfo.uid).join(
                 Colleague.professions).filter(Colleague.colea_name == colleague_name).join(
                 Profession.classes).filter(Profession.prof_name == profession_name).join(
-                Classes.students).filter(Classes.class_name == class_name).order_by(sort_name + " " + sort_order)
+                Classes.students).filter(Classes.class_name == class_name).filter(UserInfo.type == 2).order_by(
+                sort_name + " " + sort_order)
         students = students_query.limit(limit).offset(
             (pageIndex - 1) * limit).all()
         total = students_query.count()
@@ -297,52 +300,65 @@ def addToDb(table):
     db.session.commit()
 
 
+@api.route('/ajax/api/call_roll_range')
+def get_call_roll_range():
+    location = requestParameter('loc_name')
+    try:
+        data_dict = DataDictTable.query.filter(DataDictTable.dict_item == '签到范围').first()
+        teach_location = TeachLocation.query.filter(TeachLocation.loc_name == location).first()
+        return jsonify({'result': {'radius': data_dict.dict_value,
+                                   'refer_loc': teach_location.location}, 'success': True, })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
 @api.route('/ajax/api/call_roll_submit', methods=['POST'])
 def post_call_roll():
     """
-    学生的点名信息
+    学生提交的点名信息
     :return:
     """
     checkin_time = requestParameter('checkin_time')
-    checkin_type = requestParameter('checkin_type')
-    checkin_user = requestParameter('checkin_uid')
-    # location = requestParameter('checkin_location')
-    # checkin_notes = requestParameter('checkin_notes')
-    # checkin_grade = requestParameter('checkin_grade')
+    checkin_type = requestParameter('checkin_type')  # 考勤类型 0:缺席 1:请假 2:出席
+    checkin_uid = requestParameter('checkin_uid')
+    checkin_grade = requestParameter('checkin_grade')
     course_name = requestParameter('course_name')
-    pass
-    # try:
-    #     callname = CallName(checkin_time, checkin_type, checkin_notes, checkin_grade, course_id)
-    #     addToDb(callname)
-    # except Exception as error:
-    #     return jsonify({'error_msg': str(error),
-    #                     'success': False, })
-    # return jsonify({'result': callname.to_json(),
-    #                 'success': False, })
+    try:
+        callname = CallName(checkin_time, checkin_type, checkin_uid, checkin_grade, course_name)
+        course = Course.query.filter(Course.course_name == course_name).first()
+        callname.course_id = course.id
+        addToDb(callname)
+        return jsonify(
+            {'result': callname.to_json(),
+             'success': True, })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
 
 
-@api.route('/ajax/api/call_roll_sub', methods=['POST'])
-def post_call_ro():
+@api.route('/ajax/api/call_roll_state')
+def get_call_roll_state():
     """
-    老师提交学生的点名信息
+    查看学生点名列表
     :return:
     """
-    checkin_time = requestParameter('checkin_time')
-    checkin_user = requestParameter('checkin_uid')
-    # location = requestParameter('teacher_location')
-    grade = requestParameter('grade')
     course_name = requestParameter('course_name')
 
-    ## 下发签到范围
-    pass
-    # try:
-    #     callname = CallName(checkin_time, checkin_type, checkin_notes, checkin_grade, course_id)
-    #     addToDb(callname)
-    # except Exception as error:
-    #     return jsonify({'error_msg': str(error),
-    #                     'success': False, })
-    # return jsonify({'result': callname.to_json(),
-    #                 'success': False, })
+    # 下发签到范围
+    try:
+        callnames = CallName.query.filter(CallName.course_name == course_name).all()
+        if len(callnames):
+            return jsonify({'result': [callname.to_json() for callname in callnames],
+                            'success': True, })
+        else:
+            raise CustomFlaskErr(NOT_CALL_ROLL_INFO, 400)
+    except Exception as error:
+        if isinstance(error, CustomFlaskErr):
+            return jsonify({'error_msg': str(error.return_code),
+                            'success': False, })
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
 
 
 @api.route('/ajax/api/v1.0/post_students_from_excel', methods=['POST'])
@@ -995,15 +1011,20 @@ def get_teach_location():
 def post_course_arrange():
     course_name = requestParameter('course_name')  # 添加课程名
     week = requestParameter('course_arrange_week')  # 周次
-    time = requestParameter('course_arrange_time')  # 第几节
+    time_start = requestParameter('course_arrange_time1')  # 起始节
+    time_end = requestParameter('course_arrange_time2')  # 终止节
     location = requestParameter('course_arrange_site')  # 教学场所
     class_id = requestParameter('class_id')
     try:
-        timetable = Timetable.query.filter(Timetable.period == time).first()
+        timetable = Timetable.query.filter(Timetable.period == time_start).first()
+        timetable_end = Timetable.query.filter(Timetable.period == time_end).first()
         course = Course.query.filter(Course.course_name == course_name).first()
-        teach_location = TeachLocation.query.filter(TeachLocation.location == location).first()
+        teach_location = TeachLocation.query.filter(TeachLocation.loc_name == location).first()
         class_timetable = ClassTimeTable.query.filter(ClassTimeTable.classes_id == class_id).filter(
             ClassTimeTable.time_table_id == timetable.id).filter(ClassTimeTable.week == week).first()
+
+        class_timetable.time_table_id_end = timetable_end.id  ## 添加终止节的id
+        addToDb(class_timetable)
         course_arrange = CourseArrange.query.filter(CourseArrange.classes_id == class_id).all()
         for item in course_arrange:
             if item.course_id == course.id:
@@ -1043,12 +1064,13 @@ def get_class_course_arrange():
             course_location = TeachLocation.query.filter(TeachLocation.id == course_arrange.course_location_id).first()
             class_timetable = ClassTimeTable.query.filter(
                 ClassTimeTable.id == course_arrange.class_timetable_id).first()
-            section = Timetable.query.filter(Timetable.id == class_timetable.time_table_id).first()
+            section1 = Timetable.query.filter(Timetable.id == class_timetable.time_table_id).first()
+            section2 = Timetable.query.filter(Timetable.id == class_timetable.time_table_id_end).first()
             result.append({
                 'semester': course.semester,
                 'course_number': course.course_number,
                 'course_name': course.course_name,
-                'time_site': class_timetable.week + ' ' + section.period + ' ' + course_location.location,
+                'time_site': class_timetable.week + ' ' + section1.period + '至 ' + section2.period + ' ' + course_location.loc_name,
                 'last_modify_time': course_arrange.last_modify_time.strftime('%Y-%m-%d %H:%M:%S'),
             })
         return jsonify({
@@ -1095,6 +1117,21 @@ def get_class():
         classess = Classes.query.filter(Classes.profession_id == prof_id).all()
         return jsonify({
             'result': [classes.to_json() for classes in classess],
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/get_course_students')
+def get_students_by_class():
+    try:
+        class_name = requestParameter('class_name')
+        classes = Classes.query.filter(Classes.class_name == class_name).first()
+        userinfos = UserInfo.query.filter(UserInfo.class_id == classes.id).all()
+        return jsonify({
+            'result': [userinfo.to_json() for userinfo in userinfos],
             'success': True,
         })
     except Exception as error:

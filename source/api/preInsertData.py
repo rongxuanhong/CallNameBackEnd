@@ -1,5 +1,5 @@
 from base.models import Colleague, Profession, Classes, UserInfo, User, Role, Permission, Course, Menu, RoleMenu, \
-    RolePermission, Timetable, ClassTimeTable, TeachLocation, CourseArrange
+    RolePermission, Timetable, ClassTimeTable, TeachLocation, CourseArrange, DataDictTable
 from database import db, Base
 from flask import jsonify
 import uuid
@@ -569,19 +569,16 @@ def course_arrange():
     print(class_timetable.id)
 
 
-def student():
-    userinfos = UserInfo.query.all()
-    for userinfo in userinfos:
-        if userinfo.uid is None:
-            userinfo.uid = str(uuid.uuid4())
-            addToDb(userinfo)
-
-
 def user():
     user = User('student')
     user.password = '123456'
     addToDb(user)
-
+def addDataDict():
+    data=DataDictTable()
+    data.dict_item='签到范围'
+    data.dict_value='10m'
+    addToDb(data)
 
 if __name__ == '__main__':
-    user()
+    addDataDict()
+

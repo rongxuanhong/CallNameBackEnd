@@ -69,9 +69,9 @@ class UserInfo(Base):
     user_name = Column(String(60), unique=True)
     uid = Column(String(40))
     sex = Column(SmallInteger, default=0)  # 0 未知， 1 男 2 女
-    avatar = Column(String(150))
+    avatar = Column(String(150), default='')
     job_number = Column(String(32), unique=True)
-    total_grade = Column(Float)
+    total_grade = Column(Float, default=0)
     type = Column(Integer)  # 0 表示管理员 1 表示教师 2 表示学生
     last_modify_time = Column(DateTime, default=datetime.now)
 
@@ -99,12 +99,22 @@ class UserInfo(Base):
     #     return UserInfo.query.join(role_menu).join(Role).join(UserInfo).filter(UserInfo.id == self.id).order_by(
     #         Base.order)
 
-    # def __init__(self, **kwargs):
-    #     for property, value in kwargs.items():
-    #         setattr(self, property, value)
-
     def __repr__(self):
         return str(self.user_name)
+
+    def to_json(self):
+        if self.job_number is None:
+            self.job_number = ''
+        if self.total_grade is None:
+            self.total_grade = 0
+        return {
+            'user_name': self.user_name,
+            'user_uid': self.uid,
+            'sex': self.sex,
+            'job_number': self.job_number,
+            'total_grade': self.total_grade,
+            'type': self.type,
+        }
 
 
 class Classes(Base):
@@ -316,21 +326,22 @@ class Menu(Base):  ## 手动创建
 class CallName(Base):
     __tablename__ = 'callname'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    checkin_time = Column(DateTime, unique=True, default=False)  # 签到时间
+    checkin_time = Column(DateTime, default=False)  # 签到时间
     checkin_type = Column(Integer, default=0)  # 考勤类型 0:缺席 1:请假 2:出席
-    checkin_notes = Column(String(60))  # 备注
+    checkin_uid = Column(String(60))  # 点名学生的uid
+    course_name = Column(String(20))  # 点名的课程名
     checkin_grade = Column(Float)  # 考勤得分
-    last_modify_time = Column(DateTime, unique=True, default=datetime.now)
+    last_modify_time = Column(DateTime, default=datetime.now)
 
     # 外键
     course_id = Column(Integer, ForeignKey('course.id'))
 
-    def __init__(self, checkin_time, checkin_type, checkin_notes, checkin_grade, course_id):
+    def __init__(self, checkin_time, checkin_type, checkin_uid, course_name, checkin_grade):
         self.checkin_time = checkin_time
         self.checkin_type = checkin_type
-        self.checkin_notes = checkin_notes
+        self.checkin_uid = checkin_uid
+        self.course_name = course_name
         self.checkin_grade = checkin_grade
-        self.course_id = course_id
 
     def __repr__(self):
         return str(self.checkin_grade)
@@ -339,8 +350,10 @@ class CallName(Base):
         return {
             'checkin_time': self.checkin_time,
             'checkin_type': self.checkin_type,
-            'checkin_notes': self.checkin_notes,
-            'checkin_grade': self.checkin_grade
+            'checkin_uid': self.checkin_uid,
+            'course_name': self.course_name,
+            'checkin_grade': self.checkin_grade,
+            'last_modify_time': self.last_modify_time.strftime('%Y-%m-%d %H:%M:%S'),
         }
 
 
@@ -384,8 +397,9 @@ class ClassTimeTable(Base):  # 班级作息关系表
     __tablename__ = 'class_timetable'
     id = Column(Integer, primary_key=True, autoincrement=True)
     classes_id = Column(Integer, ForeignKey('classes.id'), primary_key=True)
-    time_table_id = Column(Integer, ForeignKey('timetable.id'), primary_key=True)
-    week = Column(String(10), primary_key=True)
+    time_table_id = Column(Integer, ForeignKey('timetable.id'), primary_key=True)  # 起始节id
+    time_table_id_end = Column(Integer, default=-1)  # 终止节id
+    week = Column(String(10))
     check = Column(Integer, default=0)
 
     timetable = relationship('Timetable', backref='timetables')  # 关联的每一个时间表对象 child  Classes 类似Parent
@@ -394,11 +408,13 @@ class ClassTimeTable(Base):  # 班级作息关系表
 class TeachLocation(Base):
     __tablename__ = 'teach_location'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    location = Column(String(40))
+    loc_name = Column(String(40))
+    location = Column(String(20))
 
     def to_json(self):
         return {
             'id': self.id,
+            'loc_name': self.loc_name,
             'location': self.location,
         }
 
@@ -412,3 +428,11 @@ class CourseArrange(Base):
 
     last_modify_time = Column(DateTime, default=datetime.now)
     # course = relationship('Course', backref='course_arranges')
+
+
+class DataDictTable(Base):  ## 数据字典表
+    __tablename__ = 'data_dict_table'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    dict_item = Column(String(20))  # 字典项
+    dict_value = Column(String(20))  # 字典值
+    last_modify_time = Column(DateTime, default=datetime.now)

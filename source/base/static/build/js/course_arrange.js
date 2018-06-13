@@ -100,10 +100,20 @@ function tableOperationEvent(){
              $('#course_arrange_btn').off('click').on('click',function(){
             var course_name=$('#course_arrange_name').val();
             var week=$('#course_arrange_weeks').val();
-            var time=$('#course_arrange_times').val();
+            var time1=$('#course_arrange_times1').val();
+            var time2=$('#course_arrange_times2').val();
+
+             if(time1>time2){
+                toastr.error('起始节设置有误');
+                return;
+             }
+              if(time1==time2){
+                toastr.error('至少设置两节课');
+                return;
+             }
+                            
             var location=$('#course_arrange_sites').val();
             var class_id=row.class_id;
-//             var params={'course_name':course_name,'week':week,'time':time,'location':location,'class_id':class_id};
             var form=$('#courseArrangeForm');
             $.ajax({
                 url:'/ajax/api/v1.0/course_arrange',
@@ -137,10 +147,17 @@ function drop_menu_item_change(){
          });
         });
 
-     var dropdown=$('#course_arrange_time');
+     var dropdown=$('#course_arrange_time1');
         dropdown.children().each(function(){
          $(this).off('click').on('click',function(event){
-             var input3=$('#course_arrange_times');
+             var input3=$('#course_arrange_times1');
+             input3.val(event.target.innerText);
+         });
+        });
+        var dropdown=$('#course_arrange_time2');
+        dropdown.children().each(function(){
+         $(this).off('click').on('click',function(event){
+             var input3=$('#course_arrange_times2');
              input3.val(event.target.innerText);
          });
         });
