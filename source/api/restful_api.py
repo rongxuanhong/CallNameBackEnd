@@ -321,7 +321,7 @@ def post_call_roll():
     #                 'success': False, })
 
 
-@api.route('/ajax/api/call_roll_submit', methods=['POST'])
+@api.route('/ajax/api/call_roll_sub', methods=['POST'])
 def post_call_ro():
     """
     老师提交学生的点名信息
