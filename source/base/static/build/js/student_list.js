@@ -416,7 +416,6 @@ function get_profession(collea_id){
     $.ajax({
         url:'/ajax/api/v1.0/get_profession?collea_id='+collea_id,
         type:'GET',
-//        async: false,
         success:function(data){
              if(data.success){
                    var profession_btn=$('#profession_btn');
@@ -427,10 +426,6 @@ function get_profession(collea_id){
                    profession_btn.text('全部');
                     profession_btn.append('  <span class="caret"></span>');
                     for(var i=0,len=data.length;i<len;i++){
-//                       if(i==0){
-//                        profession_btn.text(data[i].prof_name);
-//                        profession_btn.append('  <span class="caret"></span>');
-//                       }
                        prof_menu.append('<li><a href="#" class='+data[i].id+'>'+data[i].prof_name+'</a></li>')
                      }
                      var prof_id=data[0].id;
@@ -444,7 +439,6 @@ function get_class(prof_id){
        $.ajax({
         url:'/ajax/api/v1.0/get_class?prof_id='+prof_id,
         type:'GET',
-//        async: false,
         success:function(data){
              if(data.success){
               var class_btn=$('#classes_btn');
@@ -455,7 +449,6 @@ function get_class(prof_id){
                  class_btn.text('全部');
                  class_btn.append('  <span class="caret"></span>');
                  for(var i=0,len=data.length;i<len;i++){
-//
                    class_menu.append('<li><a href="#">'+data[i].class_name+'</a></li>')
                    change_class_menu();
                    //1.初始化Table
@@ -471,8 +464,6 @@ function get_class(prof_id){
                     changeStudentModifyOrDeleteStatus();//切换修改和删除按钮
 
                     modifyStudentValidatorForm();//修改学生的表单验证
-
-                    // controlModifyModalClass();//控制修改学生班级的切换
 
                     deleteStudent();
                   }
@@ -514,11 +505,7 @@ function change_class_menu(){
          });
         });
 }
-//$( document ).ajaxSuccess(function( event, request, settings ) {
-//if ( settings.url === "ajax/test.html" ) {
-// console.log('11111');
-//}
-//});
+
 $(document).ready(function(){
 
     get_colleague();

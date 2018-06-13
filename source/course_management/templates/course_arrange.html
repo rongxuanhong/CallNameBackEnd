@@ -59,19 +59,38 @@
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>授课节次</label>
-                            <span>&nbsp;</span>
-                            <div class="col-sm-6">
+                            <div class="col-sm-3">
                                 <div class="input-group">
                                     <div class="input-group-btn">
-                                        <input type="text" class="form-control" name="course_arrange_time"
+                                        <input type="text" class="form-control" name="course_arrange_time1"
                                                value="{{times[0]}}"
-                                               id="course_arrange_times"/>
-                                        <button id="course_arrange_time_btn" type="button"
+                                               id="course_arrange_times1"/>
+                                        <button id="course_arrange_time_btn1" type="button"
                                                 class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false">
                                             <span class="caret"></span>
                                         </button>
-                                        <ul id="course_arrange_time" class="dropdown-menu">
+                                        <ul id="course_arrange_time1" class="dropdown-menu">
+                                            {% for item in times %}
+                                            <li><a href="#">{{item}}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="col-sm-1" id="course_arrange_label"><span>至</span></label>
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <input type="text" class="form-control" name="course_arrange_time2"
+                                               value="{{times[0]}}"
+                                               id="course_arrange_times2"/>
+                                        <button id="course_arrange_time_btn2" type="button"
+                                                class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul id="course_arrange_time2" class="dropdown-menu">
                                             {% for item in times %}
                                             <li><a href="#">{{item}}</a></li>
                                             {% endfor %}

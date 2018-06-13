@@ -59,30 +59,6 @@ class User(Base, UserMixin):  # 继承UserMixin简便地实现用户类,配合fl
     def __init__(self, username):
         self.username = username
 
-
-        # def __init__(self, **kwargs):
-        #     for property, value in kwargs.items():
-        # depending on whether value is an iterable or not, we must
-        # unpack it's value (when **kwargs is request.form, some values
-        # will be a 1-element list)
-        # if hasattr(value, '__iter__') and not isinstance(value, str):
-        #     # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
-        #     value = value[0]
-        # setattr(self, property, value)
-        ########## 创建用户时，立即分配角色 ###########
-        # if self.is_admin:
-        #     admin_role = Role.query.filter_by(role_name='admin').first()
-        #     if admin_role is None:
-        #         admin_role = Role(1, "admin", "管理员", datetime.utcnow)
-        #     db.session.add(admin_role)
-        #     self.role_id = admin_role.id  # 用户注册时分配管理员角色
-        # else:
-        #     teacher_role = Role.query.filter_by(role_name='teacher').first()
-        #     if teacher_role is None:
-        #         teacher_role = Role(2, "teacher", "教师", datetime.utcnow)
-        #     db.session.commit()
-        #     self.role_id = teacher_role.id # 用户注册时分配教师角色
-
     def __repr__(self):
         return str(self.username)
 

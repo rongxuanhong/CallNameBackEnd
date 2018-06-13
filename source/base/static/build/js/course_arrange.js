@@ -134,7 +134,6 @@ function drop_menu_item_change(){
          $(this).off('click').on('click',function(event){
              var input3=$('#course_arrange_sites');
              input3.val(event.target.innerText);
-//             btn3.append(' <span class="caret"></span>');
          });
         });
 
@@ -143,7 +142,6 @@ function drop_menu_item_change(){
          $(this).off('click').on('click',function(event){
              var input3=$('#course_arrange_times');
              input3.val(event.target.innerText);
-//             btn3.append(' <span class="caret"></span>');
          });
         });
         var dropdown=$('#course_arrange_week');
@@ -151,7 +149,6 @@ function drop_menu_item_change(){
          $(this).off('click').on('click',function(event){
              var input3=$('#course_arrange_weeks');
              input3.val(event.target.innerText);
-//             input3.append(' <span class="caret"></span>');
          });
         });
 }
@@ -164,7 +161,6 @@ $(document).ready(function(){
    var tableInit=new TableInit();
    tableInit.Init();
 
-//   addCourseArrange();
    tableOperationEvent();
    drop_menu_item_change();
 });

@@ -213,8 +213,14 @@ def login():
         user = User.query.filter(User.username == username).first()
         if user:
             if user.password == password:
-                # userinfo = UserInfo.query.filter(UserInfo.userid == user.id).first()
-                return jsonify({'success': True, })
+                userinfo = UserInfo.query.filter(UserInfo.userid == user.id).first()
+                if userinfo.class_id is not None:
+                    classes = Classes.query.filter(Classes.id == userinfo.class_id).first()
+                    return jsonify({'success': True,
+                                    'class_name': classes.class_name,
+                                    'uid': userinfo.uid})
+                else:
+                    error_msg = '未设定所属班级'
             else:
                 error_msg = '帐号或密码错误'
         else:
@@ -294,23 +300,49 @@ def addToDb(table):
 @api.route('/ajax/api/call_roll_submit', methods=['POST'])
 def post_call_roll():
     """
-    提交学生的点名信息
+    学生的点名信息
     :return:
     """
     checkin_time = requestParameter('checkin_time')
     checkin_type = requestParameter('checkin_type')
-    checkin_notes = requestParameter('checkin_notes')
-    checkin_grade = requestParameter('checkin_grade')
-    course_id = requestParameter('course_id')
+    checkin_user = requestParameter('checkin_uid')
+    # location = requestParameter('checkin_location')
+    # checkin_notes = requestParameter('checkin_notes')
+    # checkin_grade = requestParameter('checkin_grade')
+    course_name = requestParameter('course_name')
+    pass
+    # try:
+    #     callname = CallName(checkin_time, checkin_type, checkin_notes, checkin_grade, course_id)
+    #     addToDb(callname)
+    # except Exception as error:
+    #     return jsonify({'error_msg': str(error),
+    #                     'success': False, })
+    # return jsonify({'result': callname.to_json(),
+    #                 'success': False, })
 
-    try:
-        callname = CallName(checkin_time, checkin_type, checkin_notes, checkin_grade, course_id)
-        addToDb(callname)
-    except Exception as error:
-        return jsonify({'error_msg': str(error),
-                        'success': False, })
-    return jsonify({'result': callname.to_json(),
-                    'success': False, })
+
+@api.route('/ajax/api/call_roll_submit', methods=['POST'])
+def post_call_roll():
+    """
+    老师提交学生的点名信息
+    :return:
+    """
+    checkin_time = requestParameter('checkin_time')
+    checkin_user = requestParameter('checkin_uid')
+    # location = requestParameter('teacher_location')
+    grade = requestParameter('grade')
+    course_name = requestParameter('course_name')
+
+    ## 下发签到范围
+    pass
+    # try:
+    #     callname = CallName(checkin_time, checkin_type, checkin_notes, checkin_grade, course_id)
+    #     addToDb(callname)
+    # except Exception as error:
+    #     return jsonify({'error_msg': str(error),
+    #                     'success': False, })
+    # return jsonify({'result': callname.to_json(),
+    #                 'success': False, })
 
 
 @api.route('/ajax/api/v1.0/post_students_from_excel', methods=['POST'])

@@ -568,5 +568,20 @@ def course_arrange():
 
     print(class_timetable.id)
 
+
+def student():
+    userinfos = UserInfo.query.all()
+    for userinfo in userinfos:
+        if userinfo.uid is None:
+            userinfo.uid = str(uuid.uuid4())
+            addToDb(userinfo)
+
+
+def user():
+    user = User('student')
+    user.password = '123456'
+    addToDb(user)
+
+
 if __name__ == '__main__':
-    course_arrange()
+    user()

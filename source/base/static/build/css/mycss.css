@@ -38,5 +38,11 @@
 .level_btn{
     background:#D8D8D8;
     padding:10px 20px;
-
+}
+#course_arrange_label{
+    vertical-align: middle;
+    margin-bottom: 0;
+    text-align: right;
+    padding-top:10px;
+    margin-left:10px;
 }
