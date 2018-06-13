@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50719
 File Encoding         : 65001
 
-Date: 2018-06-12 17:39:58
+Date: 2018-06-13 14:37:41
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1070,13 +1070,14 @@ CREATE TABLE `user` (
   UNIQUE KEY `last_modify_time` (`last_modify_time`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'Admin', '123456', '2018-05-30 20:05:59', null);
-INSERT INTO `user` VALUES ('2', 'Teacher', '123456', '2018-05-31 15:06:34', '2');
+INSERT INTO `user` VALUES ('1', 'Admin', '123456', '2018-05-30 20:05:59', '1');
+INSERT INTO `user` VALUES ('2', 'teacher', '123456', '2018-05-31 15:06:34', '2');
+INSERT INTO `user` VALUES ('3', 'student', '123456', '2018-06-12 19:16:24', '3');
 
 -- ----------------------------
 -- Table structure for `userinfo`
@@ -1106,44 +1107,44 @@ CREATE TABLE `userinfo` (
 -- ----------------------------
 -- Records of userinfo
 -- ----------------------------
-INSERT INTO `userinfo` VALUES ('1', 'Admin', '6de79739-2195-4d4b-b7e9-7d966c9b660b', '0', null, null, null, '0', '2018-05-30 20:05:59', null, '1');
-INSERT INTO `userinfo` VALUES ('97', '鲍尔', null, '0', null, 'N170427094', null, '2', '2018-05-30 20:15:49', '3', null);
-INSERT INTO `userinfo` VALUES ('98', '库兹马', null, '0', null, 'N170427096', null, '2', '2018-05-30 20:15:49', '3', null);
-INSERT INTO `userinfo` VALUES ('99', '哈特', null, '0', null, 'N170427097', null, '2', '2018-05-30 20:15:49', '5', null);
-INSERT INTO `userinfo` VALUES ('100', '兰德尔', null, '0', null, 'N1704270100', null, '2', '2018-05-30 20:15:49', '3', null);
-INSERT INTO `userinfo` VALUES ('101', '波普', null, '0', null, 'N170427095', null, '2', '2018-05-30 20:15:49', '3', null);
-INSERT INTO `userinfo` VALUES ('102', '威尔', null, '0', null, 'N170427098', null, '2', '2018-05-30 20:15:49', '3', null);
-INSERT INTO `userinfo` VALUES ('103', '托马斯', null, '0', null, 'N170427099', null, '2', '2018-05-30 20:15:49', '5', null);
-INSERT INTO `userinfo` VALUES ('104', '卡鲁索', null, '0', null, 'N1704270101', null, '2', '2018-05-30 20:15:49', '3', null);
-INSERT INTO `userinfo` VALUES ('105', '祖巴茨', null, '0', null, 'N170427093', null, '2', '2018-05-30 20:15:49', '3', null);
-INSERT INTO `userinfo` VALUES ('106', '哈登', null, '0', null, 'N170427092', null, '2', '2018-05-30 20:15:49', '3', null);
-INSERT INTO `userinfo` VALUES ('107', '保罗', null, '0', null, 'N170427091', null, '2', '2018-05-30 20:15:49', '5', null);
-INSERT INTO `userinfo` VALUES ('108', '克莱汤普森', null, '0', null, 'N170427090', null, '2', '2018-05-30 20:15:49', '3', null);
-INSERT INTO `userinfo` VALUES ('109', '杜兰特', null, '0', null, 'N170327020', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('110', '格林', null, '0', null, 'N1703270120', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('111', '米切尔', null, '0', null, 'N170327001', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('112', '尼克杨', null, '0', null, 'N170327099', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('113', '欧文', null, '0', null, 'N170327019', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('114', '韦德', null, '0', null, 'N1703270110', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('115', '沃顿', null, '0', null, 'N170327002', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('116', '英格拉姆', null, '0', null, 'N170327098', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('117', '科比', null, '0', null, 'N170327094', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('118', '詹姆斯', null, '0', null, 'N170327096', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('119', '奥拉迪波', null, '0', null, 'N170327097', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('120', '库里', null, '0', null, 'N1703270100', null, '2', '2018-05-30 20:15:49', '2', null);
-INSERT INTO `userinfo` VALUES ('121', '布莱德索', null, '0', null, 'N170527094', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('122', '帕克', null, '0', null, 'N170527096', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('123', '邓肯', null, '0', null, 'N170527097', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('124', '奥拉朱旺', null, '0', null, 'N1705270100', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('125', '姚明', null, '0', null, 'N170527095', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('126', '巴特勒', null, '0', null, 'N170527098', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('127', '唐斯', null, '0', null, 'N170527099', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('128', '维金斯', null, '0', null, 'N1705270101', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('129', '雷迪克', null, '0', null, 'N170527093', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('130', '恩比德', null, '0', null, 'N170527092', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('131', '本西蒙斯', null, '0', null, 'N170527091', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('132', '乔西蒙斯', null, '0', null, 'N170527090', null, '2', '2018-05-30 20:15:49', '4', null);
-INSERT INTO `userinfo` VALUES ('133', 'Teacher', 'c515a715-8a97-4986-bdf7-47ba05b9c709', '0', null, null, null, '1', '2018-05-31 15:06:34', null, '2');
+INSERT INTO `userinfo` VALUES ('1', 'Admin', '001fbfd5-05ce-4422-8cff-81feecf4c8ae', '0', null, null, null, '0', '2018-05-30 20:05:59', null, '1');
+INSERT INTO `userinfo` VALUES ('97', '鲍尔', '387ffc07-e457-435f-b47f-5b2583de15ea', '0', null, 'N170427094', null, '2', '2018-05-30 20:15:49', '3', null);
+INSERT INTO `userinfo` VALUES ('98', '库兹马', '34d850b4-ff9e-4bf3-917f-fcdd935157a5', '0', null, 'N170427096', null, '2', '2018-05-30 20:15:49', '3', null);
+INSERT INTO `userinfo` VALUES ('99', '哈特', '4a0fa683-ca6b-404b-a391-39f115bcf02d', '0', null, 'N170427097', null, '2', '2018-05-30 20:15:49', '5', null);
+INSERT INTO `userinfo` VALUES ('100', '兰德尔', 'dd6c1012-8a65-413b-8a87-329ed64ce054', '0', null, 'N1704270100', null, '2', '2018-05-30 20:15:49', '3', null);
+INSERT INTO `userinfo` VALUES ('101', '波普', '33d82154-6c45-4c20-9d34-6202e3a34200', '0', null, 'N170427095', null, '2', '2018-05-30 20:15:49', '3', null);
+INSERT INTO `userinfo` VALUES ('102', '威尔', '0fd3c513-15f5-4230-9ad2-feb0e4e9968e', '0', null, 'N170427098', null, '2', '2018-05-30 20:15:49', '3', null);
+INSERT INTO `userinfo` VALUES ('103', '托马斯', '7d079f20-5d0e-4c89-80c0-d7e4c907ac83', '0', null, 'N170427099', null, '2', '2018-05-30 20:15:49', '5', null);
+INSERT INTO `userinfo` VALUES ('104', '卡鲁索', '9d93bf7b-90aa-41f3-8df0-00da3f5cc05e', '0', null, 'N1704270101', null, '2', '2018-05-30 20:15:49', '3', null);
+INSERT INTO `userinfo` VALUES ('105', '祖巴茨', '2c688fe9-15fb-4969-a3ce-3f6ed2752a90', '0', null, 'N170427093', null, '2', '2018-05-30 20:15:49', '3', null);
+INSERT INTO `userinfo` VALUES ('106', '哈登', '2995c674-c751-4e04-848f-cabc3b0c2e50', '0', null, 'N170427092', null, '2', '2018-05-30 20:15:49', '3', null);
+INSERT INTO `userinfo` VALUES ('107', '保罗', 'ad5d23ce-0204-4ecb-be5e-eccfbae26573', '0', null, 'N170427091', null, '2', '2018-05-30 20:15:49', '5', null);
+INSERT INTO `userinfo` VALUES ('108', '克莱汤普森', '047c1df8-5c64-46ac-8965-ecb52c9ca80d', '0', null, 'N170427090', null, '2', '2018-05-30 20:15:49', '3', null);
+INSERT INTO `userinfo` VALUES ('109', '杜兰特', 'a81c2643-4b42-44f7-a906-3e85e3caa80c', '0', null, 'N170327020', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('110', '格林', '8642ddda-c3bb-462f-acbf-23924366acbf', '0', null, 'N1703270120', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('111', '米切尔', '5ff26777-f6af-4191-b2eb-fe16139e9493', '0', null, 'N170327001', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('112', '尼克杨', 'aef0fcd7-f08d-4722-8638-ed85671e6214', '0', null, 'N170327099', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('113', '欧文', '1f26248a-73ad-48dc-aedb-e5a365eb5b44', '0', null, 'N170327019', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('114', '韦德', 'f477a33f-42f8-4337-9059-2fd3854d637a', '0', null, 'N1703270110', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('115', '沃顿', 'e4976b91-65c8-4d73-bddd-7a5fe79e556a', '0', null, 'N170327002', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('116', '英格拉姆', '30f57b57-c550-46d4-9977-bebd3bbc7eaa', '0', null, 'N170327098', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('117', '科比', '60947838-9be1-4d06-b713-0dfbf004f859', '0', null, 'N170327094', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('118', '詹姆斯', 'aa267299-b6b4-45f7-8421-578eacf34236', '0', null, 'N170327096', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('119', '奥拉迪波', '6bfcb7a9-7ee0-4ad8-baa5-8799c1390223', '0', null, 'N170327097', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('120', '库里', 'f9ea924f-b1ba-43f8-8a9a-701023d984d3', '0', null, 'N1703270100', null, '2', '2018-05-30 20:15:49', '2', null);
+INSERT INTO `userinfo` VALUES ('121', '布莱德索', '476a80e8-fd85-4f79-884f-2c5c9c5fc63e', '0', null, 'N170527094', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('122', '帕克', 'e18efd92-2734-448c-8b0a-9a167bf064ef', '0', null, 'N170527096', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('123', '邓肯', '0c3c20d6-2bb7-4e4b-b71b-78949b15c51f', '0', null, 'N170527097', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('124', '奥拉朱旺', '1ee57755-6520-4211-b2a5-4a3317814d74', '0', null, 'N1705270100', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('125', '姚明', 'db597a90-034d-4f4f-a43d-1fd63f2215c4', '0', null, 'N170527095', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('126', '巴特勒', '0275ab30-6970-4fcd-b560-a06d8d7d5f08', '0', null, 'N170527098', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('127', '唐斯', '914b62f4-b747-4eea-b775-e39c54220a24', '0', null, 'N170527099', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('128', '维金斯', 'f337e455-d304-4ba4-896d-7ab087e6053f', '0', null, 'N1705270101', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('129', '雷迪克', '7ca06dd8-5fb3-4382-8886-0ad39b4a8583', '0', null, 'N170527093', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('130', '恩比德', '339e2eb9-f5d6-43f0-90bd-1f99d222d032', '0', null, 'N170527092', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('131', '本西蒙斯', '35e98325-f736-468c-a6f5-bb834f2d3006', '0', null, 'N170527091', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('132', '乔西蒙斯', '9e7f2908-2529-452e-b4db-c40e237d9d0f', '0', null, 'N170527090', null, '2', '2018-05-30 20:15:49', '4', null);
+INSERT INTO `userinfo` VALUES ('133', 'teacher', '13ad8157-5a6c-4d82-bde3-0be99fe2e23c', '0', null, null, null, '1', '2018-05-31 15:06:34', '1', '2');
 
 -- ----------------------------
 -- Table structure for `userinfocourse`
