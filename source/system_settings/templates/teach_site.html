@@ -1,0 +1,53 @@
+{% extends "base_site.html" %}
+
+{% block title %} 教学场所设置 {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <ol class="breadcrumb">
+        <li><a href="/index">首页</a></li>
+        <li class="active">教学场所设置</li>
+    </ol>
+    <table id="teach_site_table" class="table table-hover"></table>
+</div>
+ <!--  修改课程Modal -->
+    <div class="modal fade" id="modifyTeachSiteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <form id="modifyTeachSiteForm" method="post" role="form" class="form-horizontal"
+              action="/ajax/api/v1.0/teach_site">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modifyModalLabel">修改教学场所</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>场所名称</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="loc_name" id="modify_site_name"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>场所位置</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="location" id="modify_location"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="from-group">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button id="teach_site_modify_btn" type="button" class="btn btn-primary">修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+</div>
+{% endblock content %}
+{% block javascripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='build/js/teach_site.js') }}"></script>
+
+{% endblock javascripts %}

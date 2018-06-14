@@ -97,7 +97,7 @@ class UserInfo(Base):
         if self.total_grade is None:
             self.total_grade = 0
         return {
-            'user_id':self.userid,
+            'user_id': self.userid,
             'user_name': self.user_name,
             'user_uid': self.uid,
             'sex': self.sex,
@@ -377,6 +377,7 @@ class Timetable(Base):  # 作息时间表
 
     def to_json(self):
         return {
+            'id': self.id,
             'period': self.period,
             'start': self.start,
             'end': self.end,
@@ -401,12 +402,16 @@ class TeachLocation(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     loc_name = Column(String(40))
     location = Column(String(20))
+    last_modify_time = Column(DateTime, default=datetime.now)
 
     def to_json(self):
+        spilt=self.location.split(',')
+        self.location='('+spilt[0]+','+spilt[1]+')'
         return {
             'id': self.id,
             'loc_name': self.loc_name,
             'location': self.location,
+            'last_modify_time': self.last_modify_time.strftime('%Y-%m-%d %H:%M:%S')
         }
 
 

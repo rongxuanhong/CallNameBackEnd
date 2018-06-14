@@ -38,7 +38,7 @@ def register_blueprints(app):
     """
     for module_name in (
             'student_management', 'teacher_management', 'forms', 'ui', 'home', 'tables',
-            'data', 'additional', 'base', 'settings_management', 'course_management'):
+            'data', 'additional', 'base', 'settings_management', 'course_management','system_settings'):
         module = import_module('{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
     app.register_blueprint(api)

@@ -12,7 +12,7 @@ from BadRequest import CustomFlaskErr
 ####   restful 接口       ######
 from utils.ERROR_DEFINE import ACTION_INCORRECT, ROLE_ALREADY_EXISTS, ROLE_ALREADY_DELETE, ROLE_ALREADY_NOT_EXISTS, \
     COURSE_ALREADY_EXISTS, ORGANIZATION_TYPE_NOT_EXISTS, PARENT_ORGANIZATION_NAME_NOT_EXITS, ORGANIZATION_NAME_EXITS, \
-    TEACH_TIME_DUPLICATION, COURSE_ALREADY_ARRANGE, NOT_CALL_ROLL_INFO
+    TEACH_TIME_DUPLICATION, COURSE_ALREADY_ARRANGE, NOT_CALL_ROLL_INFO, SITE_ALREADY_EXIST
 
 api = Blueprint(
     'api',
@@ -567,6 +567,7 @@ def modify_role():
         if role:
             role.role_name = role_name
             role.role_desc = role_desc
+            role.last_modify_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             addToDb(role)
             return jsonify({
                 'result': role.to_json(),
@@ -684,6 +685,7 @@ def modifyCourse():
             course.course_week_times = course_week_times
             # course.course_time = course_time
             course.course_members = course_members
+            course.last_modify_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             addToDb(course)
         else:
             raise CustomFlaskErr(COURSE_ALREADY_EXISTS, 400)
@@ -780,6 +782,7 @@ def modifyColleague():
         colleague = Colleague.query.filter(Colleague.uuid == uid).first()
         if colleague:
             colleague.colea_name = colea_name
+            colleague.last_modify_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             addToDb(colleague)
             return jsonify({
                 'result': colleague.to_json(),
@@ -823,6 +826,7 @@ def modifyProfession():
         profession = Profession.query.filter(Profession.uuid == uid).first()
         if profession:
             profession.prof_name = prob_name
+            profession.last_modify_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             addToDb(profession)
             return jsonify({
                 'result': profession.to_json(),
@@ -866,6 +870,7 @@ def modifyClass():
         classes = Classes.query.filter(Classes.uuid == uid).first()
         if classes:
             classes.class_name = class_name
+            classes.last_modify_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             addToDb(classes)
             return jsonify({
                 'result': classes.to_json(),
@@ -1178,15 +1183,104 @@ def delete_teacher():
 def modify_teacher():
     user_name = requestParameter('teacher_name')
     job_number = requestParameter('teacher_jobnumber')
-    uid=requestParameter('teacher_uid')
+    uid = requestParameter('teacher_uid')
     try:
         userinfo = UserInfo.query.filter(UserInfo.uid == uid).first()
         userinfo.user_name = user_name
         userinfo.job_number = job_number
+        userinfo.last_modify_time= datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         addToDb(userinfo)
         user = User.query.filter(User.id == userinfo.userid).first()
         user.username = user_name
+        user.last_modify_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         addToDb(user)
+        return jsonify({
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/daily_schedule')
+def daily_schedule():
+    try:
+        timetables = Timetable.query.all()
+        return jsonify({
+            'result': [timetable.to_json() for timetable in timetables],
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/daily_schedule', methods=['PUT'])
+def modify_daily_schedule():
+    id = requestParameter('daily_schedule_id')
+    start_time = requestParameter('start_time')
+    end_time = requestParameter('end_time')
+    try:
+        timetable = Timetable.query.filter(Timetable.id == id).first()
+        timetable.start = start_time
+        timetable.end = end_time
+        timetable.last_modify_time= datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        addToDb(timetable)
+        return jsonify({
+            'result': timetable.to_json(),
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/teach_site')
+def teach_site():
+    try:
+        teachsites = TeachLocation.query.all()
+        return jsonify({
+            'result': [teachsite.to_json() for teachsite in teachsites],
+            'success': True,
+        })
+    except Exception as error:
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/teach_site', methods=['PUT'])
+def modify_teach_site():
+    id = requestParameter('teach_site_id')
+    loc_name = requestParameter('loc_name')
+    location = requestParameter('location')
+    try:
+        teach_site = TeachLocation.query.filter(TeachLocation.id == id).first()
+        teach = TeachLocation.query.filter(TeachLocation.loc_name == loc_name).first()
+        if teach is None:
+            teach_site.loc_name = loc_name
+            teach_site.location = location
+            teach_site.last_modify_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            addToDb(teach_site)
+            return jsonify({
+                'result': teach_site.to_json(),
+                'success': True,
+            })
+        else:
+            raise CustomFlaskErr(SITE_ALREADY_EXIST, 400)
+    except Exception as error:
+        if isinstance(error, CustomFlaskErr):
+            return jsonify({'error_msg': str(error.return_code),
+                            'success': False, })
+        return jsonify({'error_msg': str(error),
+                        'success': False, })
+
+
+@api.route('/ajax/api/v1.0/teach_site', methods=['DELETE'])
+def delete_teach_site():
+    id = requestParameter('teach_site_id')
+    try:
+        teach_site = TeachLocation.query.filter(TeachLocation.id == id).first()
+        delete_table_or_record(teach_site)
         return jsonify({
             'success': True,
         })

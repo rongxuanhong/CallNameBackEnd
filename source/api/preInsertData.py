@@ -585,5 +585,56 @@ def addDataDict():
     addToDb(data)
 
 
+def add_menu_1():
+    role = Role.query.filter(Role.role_name == '教师').first()
+    menu = Menu.query.filter(Menu.name == '系统设置').first()
+    rolemenu = RoleMenu(display=1)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+
+def add_menu_2():
+    role = Role.query.filter(Role.role_name == '管理员').first()
+    rolemenu = RoleMenu(display=1)
+    menu = Menu()
+    menu.name = '作息时间设置'
+    menu.icon = 'fa fa-table'
+    menu.menu_type = 2
+    menu.order = 51
+    # menu.parent_id = menu4.id
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+    rolemenu = RoleMenu(display=1)
+    menu = Menu()
+    menu.name = '教学场所设置'
+    menu.icon = 'fa fa-table'
+    menu.menu_type = 2
+    menu.order = 52
+    # menu.parent_id = menu4.id
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+def add_menu_3():
+    role = Role.query.filter(Role.role_name == '教师').first()
+    menu = Menu.query.filter(Menu.name == '作息时间设置').first()
+    rolemenu = RoleMenu(display=1)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+    menu = Menu.query.filter(Menu.name == '教学场所设置').first()
+    rolemenu = RoleMenu(display=1)
+    rolemenu.menu = menu
+    role.menus.append(rolemenu)
+    addToDb(role)
+
+def get_teach_site():
+    role = Role.query.filter(Role.role_name == '管理员').first()
+    sites=TeachLocation.query.all()
+    for site in sites:
+        site.last_modify_time=role.last_modify_time
+        addToDb(site)
 if __name__ == '__main__':
-    user()
+    get_teach_site()

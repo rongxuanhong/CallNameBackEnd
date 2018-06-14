@@ -1,0 +1,53 @@
+{% extends "base_site.html" %}
+
+{% block title %} 作息时间设置 {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <ol class="breadcrumb">
+        <li><a href="/index">首页</a></li>
+        <li class="active">作息时间设置</li>
+    </ol>
+    <table id="daily_schedule_table" class="table table-hover"></table>
+</div>
+ <!--  修改课程Modal -->
+    <div class="modal fade" id="modifyDailyScheduleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <form id="modifyDailyScheduleForm" method="post" role="form" class="form-horizontal"
+              action="/ajax/api/v1.0/daily_schedule">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modifyModalLabel">修改节次信息</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>开始时间</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="start_time" id="modify_start_time"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>结束时间</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="end_time" id="modify_end_time"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="from-group">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button id="daily_schedule_modify_btn" type="button" class="btn btn-primary">修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+</div>
+{% endblock content %}
+{% block javascripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='build/js/daily_schedule.js') }}"></script>
+
+{% endblock javascripts %}
