@@ -5068,7 +5068,6 @@ if (typeof NProgress != 'undefined') {
         });
     });
 function init_user_menu(){
-
     current_username=$('.current_username').text().trim();
     role_name=(current_username.startsWith('A')?'管理员':'教师');
 
@@ -5086,23 +5085,22 @@ function init_user_menu(){
                 {
                     pmenu=menus[i];
                     var children=pmenu.children;
-                    var str='<li><a><i class="'+pmenu.icon+'"></i> '+pmenu.name+' <span class="fa fa-chevron-down"></span></a>'+
-                    '<ul class="nav child_menu">';
+                    var str='<li><a><i class="'+pmenu.icon+'"></i>'+pmenu.name+'<span class="fa fa-chevron-down"></span></a>'
+                    +'<ul class="nav child_menu '+pmenu.name+'">';
                     side_menu.append(str);
+                    var child_menu=$('.'+pmenu.name);
                     for(j=0, len2=children.length;j<len2;++j)
                     {
                       cmenu=children[j];
                       var str='<li><a href="'+cmenu.url+'">'+cmenu.name+'</a></li>';
-                      side_menu.append(str);
+                      child_menu.append(str);
                     }
                     side_menu.append('</ul></li>');
                 }
-                  init_sidebar();
+                init_sidebar();
          }
         },
     })
-
-
 }
 
 	$(document).ready(function() {

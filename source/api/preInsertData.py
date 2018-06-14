@@ -1,5 +1,5 @@
 from base.models import Colleague, Profession, Classes, UserInfo, User, Role, Permission, Course, Menu, RoleMenu, \
-    RolePermission, Timetable, ClassTimeTable, TeachLocation, CourseArrange, DataDictTable
+    RolePermission, Timetable, ClassTimeTable, TeachLocation, CourseArrange, DataDictTable, CallName
 from database import db, Base
 from flask import jsonify
 import uuid
@@ -616,6 +616,8 @@ def add_menu_2():
     rolemenu.menu = menu
     role.menus.append(rolemenu)
     addToDb(role)
+
+
 def add_menu_3():
     role = Role.query.filter(Role.role_name == '教师').first()
     menu = Menu.query.filter(Menu.name == '作息时间设置').first()
@@ -630,11 +632,19 @@ def add_menu_3():
     role.menus.append(rolemenu)
     addToDb(role)
 
+
 def get_teach_site():
     role = Role.query.filter(Role.role_name == '管理员').first()
-    sites=TeachLocation.query.all()
+    sites = TeachLocation.query.all()
     for site in sites:
-        site.last_modify_time=role.last_modify_time
+        site.last_modify_time = role.last_modify_time
         addToDb(site)
+
+
+# def add_call_name():
+#     callnam = CallName('2018-05-30 20:05:59', '2', '11', '英语', '1.0')
+#     addToDb(callnam)
+
+
 if __name__ == '__main__':
     get_teach_site()
