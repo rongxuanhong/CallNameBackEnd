@@ -480,7 +480,7 @@ def get_role_menu():
         role = Role.query.filter(Role.role_name == role_name).first()
         if role:
             role_ids = [menu.menu_id for menu in role.menus if menu.display]
-            menus = Menu.query.filter(Menu.id.in_(role_ids)).all()
+            menus = Menu.query.filter(Menu.id.in_(role_ids)).order_by('id').all()
             data = dict()
             result = list()
             for menu in menus:

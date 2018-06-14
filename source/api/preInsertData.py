@@ -641,10 +641,10 @@ def get_teach_site():
         addToDb(site)
 
 
-# def add_call_name():
-#     callnam = CallName('2018-05-30 20:05:59', '2', '11', '英语', '1.0')
-#     addToDb(callnam)
-
+def add_call_name():
+    menus = Menu.query.order_by('id').all()
+    for me in menus:
+        print(me)
 
 if __name__ == '__main__':
-    get_teach_site()
+    add_call_name()
