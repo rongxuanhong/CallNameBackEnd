@@ -448,7 +448,7 @@ def modify_role_menu_display():
     修改角色的菜单权限
     :return:
     """
-    selected = requestParameter('selected')
+    selected = requestParameter('selected') ### 为啥父节点没返回？？？有选中啊
     role_name = requestParameter('role_name')
     try:
         split = selected.split(',')
@@ -531,7 +531,7 @@ def add_role():
         return str(error)
 
 
-@api.route('/ajax/api/v1.0/role', methods=['GET'])
+@api.route('/ajax/api/v1.0/role')
 def get_role_list():
     """
     获取角色列表
@@ -665,7 +665,7 @@ def addCourse():
 @api.route('/ajax/api/v1.0/course', methods=['PUT'])
 def modifyCourse():
     """
-    添加课程
+    修改课程
     :return:
     """
     course_number = requestParameter('course_number')  ## 课程编号
@@ -1015,7 +1015,7 @@ def get_teach_location():
 @api.route('/ajax/api/v1.0/course_arrange', methods=['POST'])
 def post_course_arrange():
     course_name = requestParameter('course_name')  # 添加课程名
-    week = requestParameter('course_arrange_week')  # 周次
+    week = requestParameter('course_weeks')  # 周次
     time_start = requestParameter('course_arrange_time1')  # 起始节
     time_end = requestParameter('course_arrange_time2')  # 终止节
     location = requestParameter('course_arrange_site')  # 教学场所

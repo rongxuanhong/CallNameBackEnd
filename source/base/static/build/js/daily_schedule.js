@@ -113,14 +113,14 @@ function tableOperationEvent(){
                 validating: 'glyphicon glyphicon-refresh'
             },
             fields:{
-                 start:{
+                 start_time:{
                     validators:{
                         notEmpty: {
                             message: '开始时间不空'
                         },
                     }
                 },
-                end:{
+                end_time:{
                     validators:{
                         notEmpty: {
                             message: '结束时间不空'

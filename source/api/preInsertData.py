@@ -642,9 +642,10 @@ def get_teach_site():
 
 
 def add_call_name():
-    menus = Menu.query.order_by('id').all()
-    for me in menus:
-        print(me)
+    import re
+    a='(119.131,26.150)'
+    a=re.split('[,()]',a)
+    print(a)
 
 if __name__ == '__main__':
     add_call_name()

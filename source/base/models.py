@@ -405,8 +405,6 @@ class TeachLocation(Base):
     last_modify_time = Column(DateTime, default=datetime.now)
 
     def to_json(self):
-        spilt=self.location.split(',')
-        self.location='('+spilt[0]+','+spilt[1]+')'
         return {
             'id': self.id,
             'loc_name': self.loc_name,

@@ -267,11 +267,13 @@ function tableOperationEvent(){
                             'data':result,
                         },
                         "checkbox" : {
-                            "keep_selected_style" : false
+                            "keep_selected_style" : false,
+                            "three_state":false,
                          },
                         "plugins" : [ "checkbox" ]
                         });
                         //监听jstree 选项改变
+//                        var checkeds = $('#menu_tree').tree('getChecked', 'checked')
 
                         $('#menu_tree').on('changed.jstree',function(e,data){
                             var str='';

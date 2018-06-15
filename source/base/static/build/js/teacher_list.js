@@ -107,14 +107,14 @@ function tableOperationEvent(){
                 validating: 'glyphicon glyphicon-refresh'
             },
             fields:{
-                 user_name:{
+                 teacher_name:{
                     validators:{
                         notEmpty: {
                             message: '教师姓名不空'
                         },
                     }
                 },
-                job_number:{
+                teacher_jobnumber:{
                     validators:{
                         notEmpty: {
                             message: '教师工号不空'

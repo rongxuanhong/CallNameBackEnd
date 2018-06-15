@@ -144,6 +144,8 @@ function tableOperationEvent(){
                         $('#modifyTeachSiteModal').modal('toggle');
                             refreshCourseTable();
                             toastr.success('修改教学场所成功');
+                        }else if(result.error_msg=='200012'){
+                            toastr.error('教学场所已存在');
                         }else{
                             toastr.error('修改教学场所失败');
                         }

@@ -97,11 +97,58 @@ function tableOperationEvent(){
       'click .btn_course_arrange': function (e, value, row, index) {
             $('#courseArrangeModal').modal('toggle');
 
-             $('#course_arrange_btn').off('click').on('click',function(){
-            var course_name=$('#course_arrange_name').val();
-            var week=$('#course_arrange_weeks').val();
-            var time1=$('#course_arrange_times1').val();
-            var time2=$('#course_arrange_times2').val();
+
+            $('#courseArrangeForm').bootstrapValidator({
+            message:'',
+             feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields:{
+                 course_name:{
+                    validators:{
+                        notEmpty: {
+                            message: '课程名称不空'
+                        },
+                    }
+                },
+                course_weeks:{
+                    validators:{
+                        notEmpty: {
+                            message: '授课周次不空'
+                        },
+                    }
+                    },
+                   course_arrange_time1:{
+                    validators:{
+                        notEmpty: {
+                            message: '开始时间不空'
+                        },
+                    }
+                    },
+                    course_arrange_time2:{
+                    validators:{
+                        notEmpty: {
+                            message: '结束时间不空'
+                        },
+                    }
+                    },
+                     course_arrange_site:{
+                    validators:{
+                        notEmpty: {
+                            message: '教学场所不空'
+                        },
+                    }
+                    },
+                },
+        });
+
+            $('#course_arrange_btn').off('click').on('click',function(){
+                var course_name=$('#course_arrange_name').val();
+                var week=$('#course_arrange_weeks').val();
+                var time1=$('#course_arrange_times1').val();
+                var time2=$('#course_arrange_times2').val();
 
              if(time1>time2){
                 toastr.error('起始节设置有误');
@@ -114,10 +161,14 @@ function tableOperationEvent(){
                             
             var location=$('#course_arrange_sites').val();
             var class_id=row.class_id;
-            var form=$('#courseArrangeForm');
+
+             var $form=$('#courseArrangeForm');
+             var bv = $form.data('bootstrapValidator');
+             bv.validate();
+           if(bv.isValid()){
             $.ajax({
                 url:'/ajax/api/v1.0/course_arrange',
-                data:form.serialize()+'&class_id='+class_id,
+                data:$form.serialize()+'&class_id='+class_id,
                 type:'POST',
                 success:function(result){
                     if(result.success){
@@ -133,6 +184,7 @@ function tableOperationEvent(){
                     }
                 },
             });
+           };
         });
       },
       };

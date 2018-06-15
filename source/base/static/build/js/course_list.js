@@ -188,13 +188,6 @@ function addCourseValidatorForm(){
                         },
                     }
                     },
-//                course_position:{
-//                    validators:{
-//                        notEmpty: {
-//                            message: '课程位置不空'
-//                        },
-//                    }
-//                },
                 },
         });
 
@@ -233,12 +226,10 @@ function tableOperationEvent(){
          $('#modify_course_name').val(row.course_name);
          $('#modify_course_weeks').val(row.course_week_times);
          $('#modify_course_semester').val(row.semester);
-//         $('#modify_course_time').val(row.course_time);
-//         $('#modify_course_position').val(row.position);
          $('#modify_course_members').val(row.course_members);
          $('#modifyCourseModal').modal('toggle');
 
-        $('#modifycourseForm').bootstrapValidator({
+        $('#modifyCourseForm').bootstrapValidator({
             message:'',
              feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
@@ -260,17 +251,17 @@ function tableOperationEvent(){
                         },
                     }
                     },
+                    course_members:{
+                    validators:{
+                        notEmpty: {
+                            message: '课程人数不空'
+                        },
+                    }
+                    },
                 course_weeks:{
                     validators:{
                         notEmpty: {
                             message: '课程周次不空'
-                        },
-                    }
-                    },
-                  course_members:{
-                    validators:{
-                        notEmpty: {
-                            message: '课程人数不空'
                         },
                     }
                     },

@@ -29,24 +29,23 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>课程名称</label>
+                            <label class="col-sm-2 control-label"><label class="needed">*&nbsp;</label>课程名称</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" name="course_name" id="course_arrange_name"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>授课周次</label>
-                            <span>&nbsp;</span>
+                            <label class="col-sm-2 control-label"><label class="needed">*&nbsp;</label>授课周次</label>
                             <div class="col-sm-6">
                                 <div class="input-group">
                                     <div class="input-group-btn">
-                                        <input type="text" class="form-control" name="course_arrange_week"
+                                        <input type="text" class="form-control" name="course_weeks"
                                                value="{{weeks[0]}}"
                                                id="course_arrange_weeks"/>
                                         <button id='course_arrange_week_btn' type="button"
                                                 class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false">
-                                            <span class="caret"></span>
+                                            <span class="caret" style="height:20px;"></span>
                                         </button>
                                         <ul id="course_arrange_week" class="dropdown-menu">
                                             {% for item in weeks %}
@@ -58,7 +57,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>授课节次</label>
+                            <label class="col-sm-2 control-label"><label class="needed">*&nbsp;</label>授课节次</label>
                             <div class="col-sm-3">
                                 <div class="input-group">
                                     <div class="input-group-btn">
@@ -68,7 +67,7 @@
                                         <button id="course_arrange_time_btn1" type="button"
                                                 class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false">
-                                            <span class="caret"></span>
+                                            <span class="caret" style="height:20px;"></span>
                                         </button>
                                         <ul id="course_arrange_time1" class="dropdown-menu">
                                             {% for item in times %}
@@ -88,7 +87,7 @@
                                         <button id="course_arrange_time_btn2" type="button"
                                                 class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false">
-                                            <span class="caret"></span>
+                                            <span class="caret" style="height:20px;"></span>
                                         </button>
                                         <ul id="course_arrange_time2" class="dropdown-menu">
                                             {% for item in times %}
@@ -100,7 +99,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><span class="needed">*&nbsp;</span>教学场所</label>
+                            <label class="col-sm-2 control-label"><label class="needed">*&nbsp;</label>教学场所</label>
                             <div class="col-sm-6">
                                 <div class="input-group">
                                     <div class="input-group-btn">
@@ -110,7 +109,7 @@
                                         <button id="course_arrange_site_btn" type="button"
                                                 class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false">
-                                            <span class="caret"></span>
+                                            <span class="caret" style="height:20px;"></span>
                                         </button>
                                         <ul id="course_arrange_site" class="dropdown-menu">
                                             {% for item in teach_locations %}
