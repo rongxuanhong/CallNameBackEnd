@@ -6,10 +6,8 @@
 <a href="#" onclick="test()">asdasdasd</a>
 <script>
     function test() {
-    $.post('http://111.230.252.141/ajax/api/login?username=Admin&pwd=123456',function(){
-
+    $.post('http://localhost:5000/ajax/api/call_roll_submit?checkin_time=2018-05-30 21:06:40&checkin_type=1&checkin_uid=11&course_name=英语&checkin_grade=1.2',function(){
             alert(data);
-    });
         <!--$.ajax({-->
             <!--url:'http://111.230.252.141/ajax/api/login?username=Admin&pwd=123456',-->
             <!--type:'post',-->
@@ -17,6 +15,8 @@
                 <!--alert(data);-->
             <!--}-->
         <!--});-->
+
+    });
     }
 
 

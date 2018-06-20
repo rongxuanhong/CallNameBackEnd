@@ -321,7 +321,7 @@ class CallName(Base):
     checkin_type = Column(Integer, default=0)  # 考勤类型 0:缺席 1:请假 2:出席
     checkin_uid = Column(String(60))  # 点名学生的uid
     course_name = Column(String(20))  # 点名的课程名
-    checkin_grade = Column(Integer)  # 考勤得分
+    checkin_grade = Column(Float)  # 考勤得分
     last_modify_time = Column(DateTime, default=datetime.now)
 
     # 外键

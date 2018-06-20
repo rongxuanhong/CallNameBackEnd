@@ -325,7 +325,7 @@ def post_call_roll():
     checkin_grade = requestParameter('checkin_grade')
     course_name = requestParameter('course_name')
     try:
-        callname = CallName(checkin_time, checkin_type, checkin_uid, checkin_grade, course_name)
+        callname = CallName(checkin_time, checkin_type, checkin_uid, course_name,checkin_grade)
         course = Course.query.filter(Course.course_name == course_name).first()
         callname.course_id = course.id
         addToDb(callname)
